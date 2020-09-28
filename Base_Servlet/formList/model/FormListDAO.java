@@ -37,7 +37,7 @@ public class FormListDAO implements FormListDAOInterface{
 			con = DriverManager.getConnection(url, userid, passwd);
 			ptmt = con.prepareStatement(INSERT_STMT);
 			
-			ptmt.setString(1, supplyListVO.getMembrId());
+			ptmt.setString(1, supplyListVO.getMemberId());
 			ptmt.setString(2, supplyListVO.getEmpId());
 			ptmt.setDate(3, supplyListVO.getFormListCreateDate());
 			ptmt.setString(4, supplyListVO.getFormListType());
@@ -118,7 +118,7 @@ public class FormListDAO implements FormListDAOInterface{
 			con = DriverManager.getConnection(url, userid, passwd);
 			ptmt = con.prepareStatement(UPDATE);
 			
-			ptmt.setString(1, supplyListVO.getMembrId());
+			ptmt.setString(1, supplyListVO.getMemberId());
 			ptmt.setString(2, supplyListVO.getEmpId());
 			ptmt.setDate(3, supplyListVO.getFormListCreateDate());
 			ptmt.setString(4, supplyListVO.getFormListType());
@@ -171,7 +171,7 @@ public class FormListDAO implements FormListDAOInterface{
 			rs = ptmt.executeQuery();
 			while (rs.next()) {
 				supplyListVO.setFormListId(rs.getString("FORM_LIST_ID"));
-				supplyListVO.setMembrId(rs.getString("MEMBER_ID"));
+				supplyListVO.setMemberId(rs.getString("MEMBER_ID"));
 				supplyListVO.setEmpId(rs.getString("EMP_ID"));
 				supplyListVO.setFormListCreateDate(rs.getDate("FORM_CREATEDATE"));
 				supplyListVO.setFormListType(rs.getString("FORM_LIST_TYPE"));
@@ -229,7 +229,7 @@ public class FormListDAO implements FormListDAOInterface{
 			while (rs.next()) {
 				supplyListVO = new FormListVO();
 				supplyListVO.setFormListId(rs.getString("FORM_LIST_ID"));
-				supplyListVO.setMembrId(rs.getString("MEMBER_ID"));
+				supplyListVO.setMemberId(rs.getString("MEMBER_ID"));
 				supplyListVO.setEmpId(rs.getString("EMP_ID"));
 				supplyListVO.setFormListCreateDate(rs.getDate("FORM_CREATEDATE"));
 				supplyListVO.setFormListType(rs.getString("FORM_LIST_TYPE"));

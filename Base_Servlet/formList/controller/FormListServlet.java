@@ -44,8 +44,8 @@ public class FormListServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			try {
-				String membrId = req.getParameter("membrId").trim();
-				if(membrId == null || membrId.isEmpty()) errorMsgs.add("會員編號: 請勿空白");
+				String memberId = req.getParameter("memberId").trim();
+				if(memberId == null || memberId.isEmpty()) errorMsgs.add("會員編號: 請勿空白");
 				
 				String empId = req.getParameter("empId").trim();
 				if(empId == null || empId.isEmpty()) errorMsgs.add("員工編號: 請勿空白");
@@ -101,7 +101,7 @@ public class FormListServlet extends HttpServlet {
 				if(formListStatus == null || formListStatus.isEmpty()) errorMsgs.add("表單狀態: 請勿空白");
 
 				FormListVO addFormList = new FormListVO();
-				addFormList.setMembrId(membrId);
+				addFormList.setMemberId(memberId);
 				addFormList.setEmpId(empId);
 				addFormList.setFormListCreateDate(formListCreateDate);
 				addFormList.setFormListType(formListType);
@@ -227,8 +227,8 @@ public class FormListServlet extends HttpServlet {
 			try {
 				String formListId = req.getParameter("formListId").trim();
 				
-				String membrId = req.getParameter("membrId").trim();
-				if(membrId == null || membrId.isEmpty()) errorMsgs.add("會員編號: 請勿空白");
+				String memberId = req.getParameter("memberId").trim();
+				if(memberId == null || memberId.isEmpty()) errorMsgs.add("會員編號: 請勿空白");
 				
 				String empId = req.getParameter("empId").trim();
 				if(empId == null || empId.isEmpty()) errorMsgs.add("員工編號: 請勿空白");
@@ -278,7 +278,7 @@ public class FormListServlet extends HttpServlet {
 
 				FormListVO updateFormList = new FormListVO();
 				updateFormList.setFormListId(formListId);
-				updateFormList.setMembrId(membrId);
+				updateFormList.setMemberId(memberId);
 				updateFormList.setEmpId(empId);
 				updateFormList.setFormListCreateDate(formListCreateDate);
 				updateFormList.setFormListType(formListType);

@@ -66,8 +66,8 @@
 			<tr>
 				<td>會員編號:</td>
 				<td><input type="TEXT" name="membrId" size="45"
-					value="<%=(formListVO == null)? "" : formListVO.getMembrId()%>"/>
-					<span style="color:red"><%=(!formListVO.getMembrId().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
+					value="<%=(formListVO == null)? "" : formListVO.getMemberId()%>"/>
+					<span style="color:red"><%=(!formListVO.getMemberId().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
 			</tr>
 			<tr>
 				<td>員工編號:</td>

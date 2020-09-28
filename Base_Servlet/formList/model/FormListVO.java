@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class FormListVO {
 
 	private String formListId;
-	private String membrId;
+	private String memberId;
 	private String empId;
 	private java.sql.Date formListCreateDate;
 	private String formListType;
@@ -20,11 +20,11 @@ public class FormListVO {
 	public void setFormListId(String formListId) {
 		this.formListId = formListId;
 	}
-	public String getMembrId() {
-		return membrId;
+	public String getMemberId() {
+		return memberId;
 	}
-	public void setMembrId(String membrId) {
-		this.membrId = membrId;
+	public void setMemberId(String memberId) {
+		this.memberId = memberId;
 	}
 	public String getEmpId() {
 		return empId;
@@ -70,7 +70,7 @@ public class FormListVO {
 	}
 	@Override
 	public String toString() {
-		return "FormListVO [formListId=" + formListId + ", membrId=" + membrId + ", empId=" + empId
+		return "FormListVO [formListId=" + formListId + ", memberId=" + memberId + ", empId=" + empId
 				+ ", formListCreateDate=" + formListCreateDate + ", formListType=" + formListType + ", formListTitle="
 				+ formListTitle + ", formListContext=" + formListContext + ", formListFile="
 				+ Arrays.toString(formListFile) + ", formListStatus=" + formListStatus + "]";

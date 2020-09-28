@@ -81,7 +81,7 @@
 	%>
 	<tr>
 		<td>${formListVO.formListId}</td>
-		<td>${formListVO.membrId}</td>
+		<td>${formListVO.memberId}</td>
 		<td>${formListVO.empId}</td>
 		<td>${formListVO.formListCreateDate}</td>
 		<td>${formListVO.formListType}</td>

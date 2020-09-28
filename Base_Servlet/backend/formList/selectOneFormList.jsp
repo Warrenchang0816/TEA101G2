@@ -74,7 +74,7 @@
 	</tr>
 	<tr>
 		<td><%= formListVO.getFormListId()%></td>
-		<td><%= formListVO.getMembrId()%></td>
+		<td><%= formListVO.getMemberId()%></td>
 		<td><%= formListVO.getEmpId()%></td>
 		<td><%= formListVO.getFormListCreateDate()%></td>
 		<td><%= formListVO.getFormListType()%></td>

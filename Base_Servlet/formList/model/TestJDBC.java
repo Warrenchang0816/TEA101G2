@@ -34,7 +34,7 @@ public class TestJDBC {
 		//All
 //		List<FormListVO> list = dao.selectAll();
 //		for(FormListVO formListVO : list) {
-//			System.out.println(formListVO.getMembrId());
+//			System.out.println(formListVO.getMemberId());
 //			System.out.println(formListVO.getFormListTitle());
 //			System.out.println(formListVO.getFormListContext());
 //		}		
@@ -48,7 +48,7 @@ public class TestJDBC {
 		
 		//insert
 		FormListVO add = new FormListVO();
-		add.setMembrId("MEM00002");
+		add.setMemberId("MEM00002");
 		add.setEmpId("EMP00002");
 		add.setFormListCreateDate(java.sql.Date.valueOf("2020-09-06"));
 		add.setFormListType("檢舉");
@@ -65,7 +65,7 @@ public class TestJDBC {
 		//update
 //		FormListVO update = new FormListVO();
 //		update.setFormListId("10");
-//		update.setMembrId("20");
+//		update.setMemberId("20");
 //		update.setEmpId("10");
 //		update.setFormListCreateDate(java.sql.Date.valueOf("2020-09-06"));
 //		update.setFormListType("檢舉");
