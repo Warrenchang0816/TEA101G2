@@ -12,6 +12,7 @@ public class FormListVO {
 	private String formListTitle;
 	private String formListContext;
 	private byte[] formListFile;
+	private String formListStatus;
 	
 	public String getFormListId() {
 		return formListId;
@@ -61,13 +62,20 @@ public class FormListVO {
 	public void setFormListFile(byte[] formListFile) {
 		this.formListFile = formListFile;
 	}
-	
+	public String getFormListStatus() {
+		return formListStatus;
+	}
+	public void setFormListStatus(String formListStatus) {
+		this.formListStatus = formListStatus;
+	}
 	@Override
 	public String toString() {
 		return "FormListVO [formListId=" + formListId + ", membrId=" + membrId + ", empId=" + empId
 				+ ", formListCreateDate=" + formListCreateDate + ", formListType=" + formListType + ", formListTitle="
 				+ formListTitle + ", formListContext=" + formListContext + ", formListFile="
-				+ Arrays.toString(formListFile) + "]";
+				+ Arrays.toString(formListFile) + ", formListStatus=" + formListStatus + "]";
 	}
+	
+
 	
 }

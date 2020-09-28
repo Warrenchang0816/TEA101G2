@@ -96,6 +96,9 @@ public class FormListServlet extends HttpServlet {
 					baos.close();
 					in.close();
 				}
+				
+				String formListStatus = req.getParameter("formListStatus").trim();
+				if(formListStatus == null || formListStatus.isEmpty()) errorMsgs.add("表單狀態: 請勿空白");
 
 				FormListVO addFormList = new FormListVO();
 				addFormList.setMembrId(membrId);
@@ -105,6 +108,7 @@ public class FormListServlet extends HttpServlet {
 				addFormList.setFormListTitle(formListTitle);
 				addFormList.setFormListContext(formListContext);
 				addFormList.setFormListFile(formListFile);
+				addFormList.setFormListStatus(formListStatus);
 				
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("addFormList", addFormList);
@@ -267,6 +271,10 @@ public class FormListServlet extends HttpServlet {
 					baos.close();
 					in.close();
 				}
+				
+				String formListStatus = req.getParameter("formListStatus").trim();
+				if(formListStatus == null || formListStatus.isEmpty()) errorMsgs.add("表單狀態: 請勿空白");
+
 
 				FormListVO updateFormList = new FormListVO();
 				updateFormList.setFormListId(formListId);
@@ -277,6 +285,7 @@ public class FormListServlet extends HttpServlet {
 				updateFormList.setFormListTitle(formListTitle);
 				updateFormList.setFormListContext(formListContext);
 				updateFormList.setFormListFile(formListFile);
+				updateFormList.setFormListStatus(formListStatus);
 				
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("selectOneUpdate", updateFormList);

@@ -17,7 +17,7 @@ public class FormListDAO implements FormListDAOInterface{
 	
 
 	private static final String INSERT_STMT = 
-	    "INSERT INTO FORM_LIST VALUES ('FORMS' || lpad(FORM_LIST_ID_SEQ.NEXTVAL, 7, '0'),?,?,?,?,?,?,?)";
+	    "INSERT INTO FORM_LIST VALUES ('FORMS' || lpad(FORM_LIST_ID_SEQ.NEXTVAL, 7, '0'),?,?,?,?,?,?,?,?)";
 	private static final String SELECT_ALL_STMT = 
 		"SELECT * FROM FORM_LIST order by FORM_LIST_ID";
 	private static final String SELECT_ONE_STMT = 
@@ -25,7 +25,7 @@ public class FormListDAO implements FormListDAOInterface{
 	private static final String DELETE = 
 		"DELETE FROM FORM_LIST where FORM_LIST_ID = ?";
 	private static final String UPDATE = 
-		"UPDATE FORM_LIST set MEMBER_ID=?,EMP_ID=?,FORM_CREATEDATE=?,FORM_LIST_TYPE=?,FORM_TITLE=?,FORM_CONTENT=?,FORM_FILE=? where FORM_LIST_ID = ?";
+		"UPDATE FORM_LIST set MEMBER_ID=?,EMP_ID=?,FORM_CREATEDATE=?,FORM_LIST_TYPE=?,FORM_TITLE=?,FORM_CONTENT=?,FORM_FILE=?,FORM_STATUS=? where FORM_LIST_ID = ?";
 
 	@Override
 	public void insert(FormListVO supplyListVO) {
@@ -44,6 +44,7 @@ public class FormListDAO implements FormListDAOInterface{
 			ptmt.setString(5, supplyListVO.getFormListTitle());
 			ptmt.setString(6, supplyListVO.getFormListContext());
 			ptmt.setBytes(7, supplyListVO.getFormListFile());
+			ptmt.setString(8, supplyListVO.getFormListStatus());
 
 			ptmt.executeUpdate();
 			
@@ -124,7 +125,8 @@ public class FormListDAO implements FormListDAOInterface{
 			ptmt.setString(5, supplyListVO.getFormListTitle());
 			ptmt.setString(6, supplyListVO.getFormListContext());
 			ptmt.setBytes(7, supplyListVO.getFormListFile());
-			ptmt.setString(8, supplyListVO.getFormListId());
+			ptmt.setString(8, supplyListVO.getFormListStatus());
+			ptmt.setString(9, supplyListVO.getFormListId());
 			
 
 			ptmt.executeUpdate();
@@ -176,6 +178,7 @@ public class FormListDAO implements FormListDAOInterface{
 				supplyListVO.setFormListTitle(rs.getString("FORM_TITLE"));
 				supplyListVO.setFormListContext(rs.getString("FORM_CONTENT"));
 				supplyListVO.setFormListFile(rs.getBytes("FORM_FILE"));
+				supplyListVO.setFormListStatus(rs.getString("FORM_STATUS"));
 				
 			}
 
@@ -233,6 +236,7 @@ public class FormListDAO implements FormListDAOInterface{
 				supplyListVO.setFormListTitle(rs.getString("FORM_TITLE"));
 				supplyListVO.setFormListContext(rs.getString("FORM_CONTENT"));
 				supplyListVO.setFormListFile(rs.getBytes("FORM_FILE"));
+				supplyListVO.setFormListStatus(rs.getString("FORM_STATUS"));
 				
 				list.add(supplyListVO);
 			}
