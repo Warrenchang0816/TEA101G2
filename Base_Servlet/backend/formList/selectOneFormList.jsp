@@ -80,7 +80,7 @@
 		<td><%= formListVO.getFormListTitle()%></td>
 		<td><%= formListVO.getFormListContext()%></td>
 		<td><img src="data:image/png;base64,<%=encode.encodeToString(formListVO.getFormListFile())%>" class="perview"/></td>
-		
+		<td><%= formListVO.getFormListStatus()%></td>
 		
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/FormListServlet" style="margin-bottom: 0px;">

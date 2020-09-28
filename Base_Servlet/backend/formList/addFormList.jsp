@@ -132,6 +132,12 @@
 					<span style="color:red"><%= (errorMsgs == null)? "" : !(formListVO.getFormListFile() == null)? "" : "  " + errorMsgs.poll()%></span></td>
 			</tr>
 			<tr><div class= "preview" id="preview"><span class="text1">預覽圖</span></div>
+			<tr>
+				<td>表單狀態:</td>
+				<td><input type="TEXT" name="formListStatus" size="45"
+					value="<%= (formListVO == null)? "" : formListVO.getFormListStatus()%>"/>
+					<span style="color:red"><%= (errorMsgs == null)? "" : (!formListVO.getFormListStatus().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
+			</tr>
 			
 
 		</table>

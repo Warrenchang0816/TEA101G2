@@ -87,6 +87,7 @@
 		<td>${formListVO.formListTitle}</td>
 		<td>${formListVO.formListContext}</td>
 		<td><img src="data:image/png;base64,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>" class="perview"/></td>
+		<td>${formListVO.formListStatus}</td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/FormListServlet" style="margin-bottom: 0px;">
 			    <input type="submit" value="修改">

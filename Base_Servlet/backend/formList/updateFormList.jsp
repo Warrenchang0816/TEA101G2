@@ -107,6 +107,12 @@
 			<tr><div class= "preview" id="preview">
 			<img src="data:image/png;base64,<%= encode.encodeToString(formListDAO.selectOne(formListVO.getFormListId()).getFormListFile())%>" class ="preview">
 				<span class="text1">預覽圖</span></div>
+			<tr>
+				<td>表單狀態:</td>
+				<td><input type="TEXT" name="formListStatus" size="45"
+					value="<%= (formListVO == null)? "" : formListVO.getFormListStatus()%>"/>
+					<span style="color:red"><%= (!formListVO.getFormListStatus().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
+			</tr>
 		
 		</table>
 
