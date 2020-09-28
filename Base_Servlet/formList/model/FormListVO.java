@@ -13,6 +13,8 @@ public class FormListVO {
 	private String formListContext;
 	private byte[] formListFile;
 	private String formListStatus;
+	private String formListSolu;
+	private java.sql.Date formListSoluDate;
 	
 	public String getFormListId() {
 		return formListId;
@@ -68,14 +70,25 @@ public class FormListVO {
 	public void setFormListStatus(String formListStatus) {
 		this.formListStatus = formListStatus;
 	}
+	public String getFormListSolu() {
+		return formListSolu;
+	}
+	public void setFormListSolu(String formListSolu) {
+		this.formListSolu = formListSolu;
+	}
+	public java.sql.Date getFormListSoluDate() {
+		return formListSoluDate;
+	}
+	public void setFormListSoluDate(java.sql.Date formListSoluDate) {
+		this.formListSoluDate = formListSoluDate;
+	}
+	
 	@Override
 	public String toString() {
 		return "FormListVO [formListId=" + formListId + ", memberId=" + memberId + ", empId=" + empId
 				+ ", formListCreateDate=" + formListCreateDate + ", formListType=" + formListType + ", formListTitle="
 				+ formListTitle + ", formListContext=" + formListContext + ", formListFile="
-				+ Arrays.toString(formListFile) + ", formListStatus=" + formListStatus + "]";
+				+ Arrays.toString(formListFile) + ", formListStatus=" + formListStatus + ", formListSolu="
+				+ formListSolu + ", formListSoluDate=" + formListSoluDate + "]";
 	}
-	
-
-	
 }

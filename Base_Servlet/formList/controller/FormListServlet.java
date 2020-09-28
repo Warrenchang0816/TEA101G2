@@ -161,7 +161,7 @@ public class FormListServlet extends HttpServlet {
 				
 				req.setAttribute("selectOneFormList", selectOneFormList);
 
-				String url = "/backend/formList/selectOneFormList.jsp";
+				String url = "/backend/formList/formListProfile.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				
@@ -274,7 +274,17 @@ public class FormListServlet extends HttpServlet {
 				
 				String formListStatus = req.getParameter("formListStatus").trim();
 				if(formListStatus == null || formListStatus.isEmpty()) errorMsgs.add("表單狀態: 請勿空白");
-
+				
+				String formListSolu = req.getParameter("formListSolu").trim();
+				if(formListSolu == null || formListSolu.isEmpty()) errorMsgs.add("表單結案: 請勿空白");
+				
+				java.sql.Date formListSoluDate = null;
+				try {
+					formListSoluDate = java.sql.Date.valueOf(req.getParameter("formListSoluDate").trim());
+				} catch (IllegalArgumentException e) {
+					formListSoluDate = new java.sql.Date(System.currentTimeMillis());
+					errorMsgs.add("表單申請日期: 格式錯誤");
+				}
 
 				FormListVO updateFormList = new FormListVO();
 				updateFormList.setFormListId(formListId);
@@ -286,6 +296,8 @@ public class FormListServlet extends HttpServlet {
 				updateFormList.setFormListContext(formListContext);
 				updateFormList.setFormListFile(formListFile);
 				updateFormList.setFormListStatus(formListStatus);
+				updateFormList.setFormListSolu(formListSolu);
+				updateFormList.setFormListSoluDate(formListSoluDate);
 				
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("selectOneUpdate", updateFormList);

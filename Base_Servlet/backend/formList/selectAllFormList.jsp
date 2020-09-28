@@ -71,6 +71,8 @@
 		<th>表單內容</th>
 		<th>表單圖片</th>
 		<th>表單狀態</th>
+		<td>表單結案</td>
+		<td>表單結案日期</td>
 		<th>修改</th>
 		<th>刪除</th>
 	</tr>
@@ -89,6 +91,8 @@
 		<td>${formListVO.formListContext}</td>
 		<td><img src="data:image/png;base64,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>" class="perview"/></td>
 		<td>${formListVO.formListStatus}</td>
+		<td>${formListVO.formListSolu}</td>
+		<td>${formListVO.formListSoluDate}</td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/FormListServlet" style="margin-bottom: 0px;">
 			    <input type="submit" value="修改">

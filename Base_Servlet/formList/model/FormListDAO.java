@@ -17,7 +17,7 @@ public class FormListDAO implements FormListDAOInterface{
 	
 
 	private static final String INSERT_STMT = 
-	    "INSERT INTO FORM_LIST VALUES ('FORMS' || lpad(FORM_LIST_ID_SEQ.NEXTVAL, 7, '0'),?,?,?,?,?,?,?,?)";
+	    "INSERT INTO FORM_LIST (FORM_LIST_ID, MEMBER_ID, EMP_ID, FORM_CREATE_DATE, FORM_LIST_TYPE, FORM_TITLE, FORM_CONTENT, FORM_FILE, FORM_STATUS) VALUES ('FORMS' || lpad(FORM_LIST_ID_SEQ.NEXTVAL, 7, '0'),?,?,?,?,?,?,?,?)";
 	private static final String SELECT_ALL_STMT = 
 		"SELECT * FROM FORM_LIST order by FORM_LIST_ID";
 	private static final String SELECT_ONE_STMT = 
@@ -25,7 +25,7 @@ public class FormListDAO implements FormListDAOInterface{
 	private static final String DELETE = 
 		"DELETE FROM FORM_LIST where FORM_LIST_ID = ?";
 	private static final String UPDATE = 
-		"UPDATE FORM_LIST set MEMBER_ID=?,EMP_ID=?,FORM_CREATEDATE=?,FORM_LIST_TYPE=?,FORM_TITLE=?,FORM_CONTENT=?,FORM_FILE=?,FORM_STATUS=? where FORM_LIST_ID = ?";
+		"UPDATE FORM_LIST set MEMBER_ID=?,EMP_ID=?,FORM_CREATE_DATE=?,FORM_LIST_TYPE=?,FORM_TITLE=?,FORM_CONTENT=?,FORM_FILE=?,FORM_STATUS=?,FORM_SOLU=?,FORM_SOLU_DATE=? where FORM_LIST_ID = ?";
 
 	@Override
 	public void insert(FormListVO supplyListVO) {
@@ -126,7 +126,9 @@ public class FormListDAO implements FormListDAOInterface{
 			ptmt.setString(6, supplyListVO.getFormListContext());
 			ptmt.setBytes(7, supplyListVO.getFormListFile());
 			ptmt.setString(8, supplyListVO.getFormListStatus());
-			ptmt.setString(9, supplyListVO.getFormListId());
+			ptmt.setString(9, supplyListVO.getFormListSolu());
+			ptmt.setDate(10, supplyListVO.getFormListSoluDate());
+			ptmt.setString(11, supplyListVO.getFormListId());
 			
 
 			ptmt.executeUpdate();
@@ -173,13 +175,22 @@ public class FormListDAO implements FormListDAOInterface{
 				supplyListVO.setFormListId(rs.getString("FORM_LIST_ID"));
 				supplyListVO.setMemberId(rs.getString("MEMBER_ID"));
 				supplyListVO.setEmpId(rs.getString("EMP_ID"));
-				supplyListVO.setFormListCreateDate(rs.getDate("FORM_CREATEDATE"));
+				supplyListVO.setFormListCreateDate(rs.getDate("FORM_CREATE_DATE"));
 				supplyListVO.setFormListType(rs.getString("FORM_LIST_TYPE"));
 				supplyListVO.setFormListTitle(rs.getString("FORM_TITLE"));
 				supplyListVO.setFormListContext(rs.getString("FORM_CONTENT"));
 				supplyListVO.setFormListFile(rs.getBytes("FORM_FILE"));
 				supplyListVO.setFormListStatus(rs.getString("FORM_STATUS"));
-				
+				if(rs.getString("FORM_SOLU") != null) {
+					supplyListVO.setFormListSolu(rs.getString("FORM_SOLU"));
+				}else {
+					supplyListVO.setFormListSolu("");
+				}
+				if(rs.getDate("FORM_SOLU_DATE") != null) {
+					supplyListVO.setFormListSoluDate(rs.getDate("FORM_SOLU_DATE"));
+				}else {
+					supplyListVO.setFormListSoluDate(new java.sql.Date(System.currentTimeMillis()));
+				}
 			}
 
 		} catch (ClassNotFoundException e) {
@@ -231,12 +242,14 @@ public class FormListDAO implements FormListDAOInterface{
 				supplyListVO.setFormListId(rs.getString("FORM_LIST_ID"));
 				supplyListVO.setMemberId(rs.getString("MEMBER_ID"));
 				supplyListVO.setEmpId(rs.getString("EMP_ID"));
-				supplyListVO.setFormListCreateDate(rs.getDate("FORM_CREATEDATE"));
+				supplyListVO.setFormListCreateDate(rs.getDate("FORM_CREATE_DATE"));
 				supplyListVO.setFormListType(rs.getString("FORM_LIST_TYPE"));
 				supplyListVO.setFormListTitle(rs.getString("FORM_TITLE"));
 				supplyListVO.setFormListContext(rs.getString("FORM_CONTENT"));
 				supplyListVO.setFormListFile(rs.getBytes("FORM_FILE"));
 				supplyListVO.setFormListStatus(rs.getString("FORM_STATUS"));
+				supplyListVO.setFormListSolu(rs.getString("FORM_SOLU"));
+				supplyListVO.setFormListSoluDate(rs.getDate("FORM_SOLU_DATE"));
 				
 				list.add(supplyListVO);
 			}

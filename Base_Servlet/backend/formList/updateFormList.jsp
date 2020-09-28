@@ -65,7 +65,7 @@
 			</tr>
 			<tr>
 				<td>會員編號:</td>
-				<td><input type="TEXT" name="membrId" size="45"
+				<td><input type="TEXT" name="memberId" size="45"
 					value="<%=(formListVO == null)? "" : formListVO.getMemberId()%>"/>
 					<span style="color:red"><%=(!formListVO.getMemberId().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
 			</tr>
@@ -113,6 +113,16 @@
 					value="<%= (formListVO == null)? "" : formListVO.getFormListStatus()%>"/>
 					<span style="color:red"><%= (!formListVO.getFormListStatus().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
 			</tr>
+			<tr>
+				<td>表單結案:</td>
+				<td><input type="TEXT" name="formListSolu" size="45"
+					value="<%= (formListVO == null)? "" : formListVO.getFormListSolu()%>"/>
+					<span style="color:red"><%= (!formListVO.getFormListSolu().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
+			</tr>
+			<tr>
+				<td>表單結案日期:</td>
+				<td><input type="TEXT" name="formListSoluDate" id="formListSoluDate" /></td>
+			</tr>			
 		
 		</table>
 
@@ -132,6 +142,7 @@
 
 <% 
   java.sql.Date formListCreateDate = new java.sql.Date(System.currentTimeMillis());
+  java.sql.Date formListSoluDate = new java.sql.Date(System.currentTimeMillis());
  %>
 
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/backend/datetimepicker/jquery.datetimepicker.css" />
@@ -155,6 +166,19 @@
 	       step: 1,                //step: 60 (這是timepicker的預設間隔60分鐘)
 	       format:'Y-m-d',         //format:'Y-m-d H:i:s',
 		   value: '<%=formListCreateDate%>', // value:   new Date(),
+           //disabledDates:        ['2017/06/08','2017/06/09','2017/06/10'], // 去除特定不含
+           //startDate:	            '2017/07/10',  // 起始日
+           //minDate:               '-1970-01-01', // 去除今日(不含)之前
+           //maxDate:               '+1970-01-01'  // 去除今日(不含)之後
+        });
+        
+        $.datetimepicker.setLocale('zh');
+        $('#formListSoluDate').datetimepicker({
+	       theme: '',              //theme: 'dark',
+	       timepicker:false,       //timepicker:true,
+	       step: 1,                //step: 60 (這是timepicker的預設間隔60分鐘)
+	       format:'Y-m-d',         //format:'Y-m-d H:i:s',
+		   value: '<%=formListSoluDate%>', // value:   new Date(),
            //disabledDates:        ['2017/06/08','2017/06/09','2017/06/10'], // 去除特定不含
            //startDate:	            '2017/07/10',  // 起始日
            //minDate:               '-1970-01-01', // 去除今日(不含)之前

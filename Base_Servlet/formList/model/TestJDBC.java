@@ -34,7 +34,7 @@ public class TestJDBC {
 		//All
 //		List<FormListVO> list = dao.selectAll();
 //		for(FormListVO formListVO : list) {
-//			System.out.println(formListVO.getMemberId());
+//			System.out.println(formListVO.getMembrId());
 //			System.out.println(formListVO.getFormListTitle());
 //			System.out.println(formListVO.getFormListContext());
 //		}		
@@ -42,7 +42,7 @@ public class TestJDBC {
 		
 		//One
 //		FormListVO one = dao.selectOne("5");
-//		System.out.println(one.getMembrId());
+//		System.out.println(one.getMemberId());
 //		System.out.println(one.getFormListTitle());
 //		System.out.println(one.getFormListContext());
 		
