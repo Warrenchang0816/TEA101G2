@@ -8,7 +8,7 @@ public interface OrderDetailDAOInterface {
 	public void update(OrderDetailVO orderDetailVO);
 	public OrderDetailVO selectOne(String orderDetailId);
 	public List<OrderDetailVO> selectAll();
-	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId);
+//	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId);
 	
 
 }

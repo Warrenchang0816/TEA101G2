@@ -9,7 +9,7 @@
 	List<EmpVO> list = empSvc.selectAllEmp();
 	pageContext.setAttribute("list",list);
 	
-	EmpVO empVO = empSvc.selectOneEmp("EMP00001");
+	EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 
 %>
 
@@ -46,9 +46,25 @@
   <link href="<%=request.getContextPath()%>/backend/css/custom.css" rel="stylesheet">
 
 <style>
-    #perview {
-      width: 100px;
-    }
+#img {
+	height: 110px;
+	position: relative;
+	left: -30%;
+    top: -10px;
+}
+#figure {
+	left: 30px;
+    top: 30px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin-bottom: 0px;
+    margin-right: 0px;
+}
+    
 </style>
 	
 </head>
@@ -76,7 +92,7 @@
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -91,14 +107,6 @@
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -142,6 +150,10 @@
           </a>
         </li>
       </ul>
+      
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -234,7 +246,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -264,7 +276,6 @@
 					<th>員工編號</th>
 					<th>姓名</th>
 					<th>信箱</th>
-					<th>到職日</th>
 					<th>職稱</th>
 					<th>在職狀態</th>
                 </tr>
@@ -275,7 +286,6 @@
 					<th>員工編號</th>
 					<th>姓名</th>
 					<th>信箱</th>
-					<th>到職日</th>
 					<th>職稱</th>
 					<th>在職狀態</th>
 			    </tr>
@@ -284,9 +294,11 @@
 <c:forEach var="empVO" items="${list}" begin="0" end="<%=list.size()%>">
 <% Base64.Encoder encode = Base64.getEncoder();%>
 	<tr>
-		<td><img src="data:image/png;base64,<%=encode.encodeToString(((EmpVO)pageContext.getAttribute("empVO")).getEmpPhoto())%>" id="perview"/></td>
-		<td>${empVO.empId}
-			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/EmpServlet" style="margin-bottom: 0px;">
+		<td>
+			<figure id="figure"><img src="data:image/png;base64,<%=encode.encodeToString(((EmpVO)pageContext.getAttribute("empVO")).getEmpPhoto())%>" id="img"/></figure>
+		</td>
+		<td>
+			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/EmpServlet" style="margin-bottom: 0px;">${empVO.empId}
 			    <button type="submit" class="btn btn-link">
 					<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-in-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 					  <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
@@ -299,9 +311,8 @@
 		</td>
 		<td>${empVO.empName}</td>
 		<td>${empVO.empEmail}</td>
-		<td>${empVO.empHireDate}</td>
 		<td>${empVO.empJob}</td>
-		<td>${empVO.empStatus}</td>
+		<td>${(empVO.empStatus == "O")? "在職" : (empVO.empStatus == "P")? "停職" : "離職"}</td>
 	</tr>
 </c:forEach>
  
@@ -345,15 +356,17 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="<%=request.getContextPath()%>/backend/login.jsp">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

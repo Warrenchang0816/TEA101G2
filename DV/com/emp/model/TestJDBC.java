@@ -14,8 +14,8 @@ public class TestJDBC {
 		
 		ByteArrayOutputStream baos = null;
 		try {
-//			File file = new File("C:\\Users\\user\\Desktop\\TEA101G2\\BlobTest1.jpg");
-			File file = new File("C:\\Users\\user\\Desktop\\TEA101G2\\BlobTest2.jpg");
+//			File file = new File("C:\\Users\\CJ01007\\Desktop\\TEA101G2\\BlobTest1.jpg");
+			File file = new File("C:\\Users\\CJ01007\\Desktop\\TEA101G2\\BlobTest2.jpg");
 			FileInputStream fis = new FileInputStream(file);
 			baos = new ByteArrayOutputStream();
 			byte[] buffer = new byte[8192];
@@ -49,6 +49,27 @@ public class TestJDBC {
 //		System.out.println(one.getEmpPhotoBase64());
 //		System.out.println("FUCK");
 		
+		//login
+//		EmpService es = new EmpService();
+//		if(es.isEmpLogin("rutruw217d", "eleif74w8")) {
+//			System.out.println("FUCKLogin");
+//		}else {
+//			System.out.println("NOTLogin");
+//		}
+			
+		//login
+//		EmpService es = new EmpService();
+//		EmpVO emp = es.selectAllEmpByAccount("rutruw217d");
+//		System.out.println(emp.getEmpPassword());
+		
+		//empAccount
+		EmpService es = new EmpService();
+		if(es.isEmpAccountLogin("123213")) {
+			System.out.println("FUCKLogin");
+		}else {
+			System.out.println("NOTLogin");
+		}
+		
 		//insert
 //		EmpVO add = new EmpVO();
 //		add.setEmpAccount("EMP_ACCOUNT");
@@ -74,25 +95,25 @@ public class TestJDBC {
 //		System.out.println("FUCK");
 		
 		//update
-		EmpVO update = new EmpVO();
-		update.setEmpId("20");
-		update.setEmpAccount("EMP_ACCOUNT");
-		update.setEmpPassword("EMP_PASSWORD");
-		update.setEmpName("EMP_NAME");
-		update.setEmpNickname("EMP_NICKNAME");
-		update.setEmpEmail("EMP_EMAIL");
-		update.setEmpPhoto(baos.toByteArray());
-		update.setEmpPhone("EMP_PHONE");
-		update.setEmpAddress("EMP_ADRESS");
-		update.setEmpBirth(java.sql.Date.valueOf("2020-09-01"));
-		update.setEmpSex("M");
-		update.setEmpCountry("EMP_COUNTRY");
-		update.setEmpHireDate(java.sql.Date.valueOf("2020-09-01"));
-		update.setEmpJob("JOB");
-		update.setEmpAuth(2);
-		update.setEmpStatus("Y");
-		dao.update(update);
-		System.out.println("FUCK");
+//		EmpVO update = new EmpVO();
+//		update.setEmpId("20");
+//		update.setEmpAccount("EMP_ACCOUNT");
+//		update.setEmpPassword("EMP_PASSWORD");
+//		update.setEmpName("EMP_NAME");
+//		update.setEmpNickname("EMP_NICKNAME");
+//		update.setEmpEmail("EMP_EMAIL");
+//		update.setEmpPhoto(baos.toByteArray());
+//		update.setEmpPhone("EMP_PHONE");
+//		update.setEmpAddress("EMP_ADRESS");
+//		update.setEmpBirth(java.sql.Date.valueOf("2020-09-01"));
+//		update.setEmpSex("M");
+//		update.setEmpCountry("EMP_COUNTRY");
+//		update.setEmpHireDate(java.sql.Date.valueOf("2020-09-01"));
+//		update.setEmpJob("JOB");
+//		update.setEmpAuth(2);
+//		update.setEmpStatus("Y");
+//		dao.update(update);
+//		System.out.println("FUCK");
 		
 	}
 	

@@ -25,8 +25,8 @@ public class OrderDetailDAO implements OrderDetailDAOInterface{
 		"DELETE FROM ORDER_DETAIL where ORDER_DETAIL_ID = ?";
 	private static final String UPDATE = 
 		"UPDATE ORDER_DETAIL set ORDER_MASTER_ID=?,SPACE_DETAIL_ID=?,RENT_START_TIME=?,RENT_END_TIME=? where ORDER_DETAIL_ID = ?";
-	private static final String SELECT_ALL_BY_MASTERID_STMT = 
-		"SELECT * FROM ORDER_DETAIL where ORDER_MASTER_ID = ? order by ORDER_DETAIL_ID";
+//	private static final String SELECT_ALL_BY_MASTERID_STMT = 
+//		"SELECT * FROM ORDER_DETAIL where ORDER_MASTER_ID = ? order by ORDER_DETAIL_ID";
 
 
 	@Override
@@ -256,60 +256,60 @@ public class OrderDetailDAO implements OrderDetailDAOInterface{
 		return list;
 	}
 
-	@Override
-	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId) {
-		Connection con = null;
-		PreparedStatement ptmt = null;
-		ResultSet rs = null;
-		
-		OrderDetailVO orderDetailVO = null;
-		List<OrderDetailVO> list = new ArrayList<OrderDetailVO>();;
-		
-		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
-			ptmt = con.prepareStatement(SELECT_ALL_BY_MASTERID_STMT);
-			
-			ptmt.setString(1, orderMasterId);
-			
-			rs = ptmt.executeQuery();
-			while (rs.next()) {
-				orderDetailVO = new OrderDetailVO();
-				orderDetailVO.setOrderDetailId(rs.getString("ORDER_DETAIL_ID"));
-				orderDetailVO.setOrderMasterId(rs.getString("ORDER_MASTER_ID"));
-				orderDetailVO.setSpaceDetailId(rs.getString("SPACE_DETAIL_ID"));
-				orderDetailVO.setRentStartTime(rs.getTimestamp("RENT_START_TIME"));
-				orderDetailVO.setRentEndTime(rs.getTimestamp("RENT_END_TIME"));
-				list.add(orderDetailVO);
-			}
-
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (ptmt != null) {
-					try {
-						ptmt.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}if (con != null) {
-					try {
-						con.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}
-			}
-		return list;
-	}
+//	@Override
+//	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId) {
+//		Connection con = null;
+//		PreparedStatement ptmt = null;
+//		ResultSet rs = null;
+//		
+//		OrderDetailVO orderDetailVO = null;
+//		List<OrderDetailVO> list = new ArrayList<OrderDetailVO>();;
+//		
+//		try {
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+//			ptmt = con.prepareStatement(SELECT_ALL_BY_MASTERID_STMT);
+//			
+//			ptmt.setString(1, orderMasterId);
+//			
+//			rs = ptmt.executeQuery();
+//			while (rs.next()) {
+//				orderDetailVO = new OrderDetailVO();
+//				orderDetailVO.setOrderDetailId(rs.getString("ORDER_DETAIL_ID"));
+//				orderDetailVO.setOrderMasterId(rs.getString("ORDER_MASTER_ID"));
+//				orderDetailVO.setSpaceDetailId(rs.getString("SPACE_DETAIL_ID"));
+//				orderDetailVO.setRentStartTime(rs.getTimestamp("RENT_START_TIME"));
+//				orderDetailVO.setRentEndTime(rs.getTimestamp("RENT_END_TIME"));
+//				list.add(orderDetailVO);
+//			}
+//
+//			}catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}finally {
+//				if (rs != null) {
+//					try {
+//						rs.close();
+//					} catch (SQLException se) {
+//						se.printStackTrace(System.err);
+//					}
+//				}
+//				if (ptmt != null) {
+//					try {
+//						ptmt.close();
+//					} catch (Exception e) {
+//						e.printStackTrace(System.err);
+//					}
+//				}if (con != null) {
+//					try {
+//						con.close();
+//					} catch (Exception e) {
+//						e.printStackTrace(System.err);
+//					}
+//				}
+//			}
+//		return list;
+//	}
 
 }

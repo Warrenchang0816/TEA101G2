@@ -18,7 +18,7 @@ public class MemberDAO implements MemberDAOInterface{
 	
 
 	private static final String INSERT_STMT = 
-	    "INSERT INTO MEMBER VALUES ('MEM' || lpad(MEMBER_ID_SEQ.NEXTVAL, 5, '0' ),?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    "INSERT INTO MEMBER VALUES ('MEM' || lpad(MEMBER_ID_SEQ.NEXTVAL, 5, '0' ),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String SELECT_ALL_STMT = 
 		"SELECT * FROM MEMBER order by MEMBER_ID";
 	private static final String SELECT_ONE_STMT = 
@@ -26,7 +26,7 @@ public class MemberDAO implements MemberDAOInterface{
 	private static final String DELETE = 
 		"DELETE FROM MEMBER where MEMBER_ID = ?";
 	private static final String UPDATE = 
-		"UPDATE MEMBER set MEMBER_ACCOUNT=?,MEMBER_PASSWORD=?,MEMBER_NAME=?,MEMBER_NICKNAME=?,MEMBER_EMAIL=?,MEMBER_PHOTO=?,MEMBER_PHONE=?,MEMBER_ADDRESS=?,MEMBER_BIRTH=?,MEMBER_SEX=?,MEMBER_COUNTRY=?,MEMBER_SIGNUP_DATE=?,MEMBER_AUTH=?,MEMBER_STATUS=? where MEMBER_ID = ?";
+		"UPDATE MEMBER set MEMBER_ACCOUNT=?,MEMBER_PASSWORD=?,MEMBER_NAME=?,MEMBER_NICKNAME=?,MEMBER_EMAIL=?,MEMBER_PHOTO=?,MEMBER_PHONE=?,MEMBER_ADDRESS=?,MEMBER_BIRTH=?,MEMBER_SEX=?,MEMBER_COUNTRY=?,MEMBER_SIGNUP_DATE=?,MEMBER_AUTH=?,MEMBER_STATUS=?,MEMBER_STATUS_EMP=?,MEMBER_STATUS_COMM=? where MEMBER_ID = ?";
 
 
 	@Override
@@ -53,6 +53,9 @@ public class MemberDAO implements MemberDAOInterface{
 			ptmt.setDate(12, memberVO.getMemberSignupDate());
 			ptmt.setInt(13, memberVO.getMemberAuth());
 			ptmt.setString(14, memberVO.getMemberStatus());
+			ptmt.setString(15, "");
+			ptmt.setString(16, "");
+			
 
 			ptmt.executeUpdate();
 			
@@ -138,7 +141,9 @@ public class MemberDAO implements MemberDAOInterface{
 			ptmt.setDate(12, memberVO.getMemberSignupDate());
 			ptmt.setInt(13, memberVO.getMemberAuth());
 			ptmt.setString(14, memberVO.getMemberStatus());
-			ptmt.setString(15, memberVO.getMemberId());
+			ptmt.setString(15, memberVO.getMemberStatusEmp());
+			ptmt.setString(16, memberVO.getMemberStatusComm());
+			ptmt.setString(17, memberVO.getMemberId());
 
 			ptmt.executeUpdate();
 			
@@ -196,6 +201,8 @@ public class MemberDAO implements MemberDAOInterface{
 				memberVO.setMemberSignupDate(rs.getDate("MEMBER_SIGNUP_DATE"));
 				memberVO.setMemberAuth(rs.getInt("MEMBER_AUTH"));
 				memberVO.setMemberStatus(rs.getString("MEMBER_STATUS"));
+				memberVO.setMemberStatusEmp(rs.getString("MEMBER_STATUS_EMP"));
+				memberVO.setMemberStatusComm(rs.getString("MEMBER_STATUS_COMM"));
 				
 			}
 
@@ -260,6 +267,8 @@ public class MemberDAO implements MemberDAOInterface{
 				memberVO.setMemberSignupDate(rs.getDate("MEMBER_SIGNUP_DATE"));
 				memberVO.setMemberAuth(rs.getInt("MEMBER_AUTH"));
 				memberVO.setMemberStatus(rs.getString("MEMBER_STATUS"));
+				memberVO.setMemberStatusEmp(rs.getString("MEMBER_STATUS_EMP"));
+				memberVO.setMemberStatusComm(rs.getString("MEMBER_STATUS_COMM"));
 				
 				list.add(memberVO);
 			}

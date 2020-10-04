@@ -1,6 +1,9 @@
 package com.memberComm.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class MemberCommService {
 	private MemberCommDAOInterface dao;
@@ -30,6 +33,17 @@ public class MemberCommService {
 	
 	public List<MemberCommVO> selectAllMemberComm() {
 		return dao.selectAll();
+	}
+	
+	public List<MemberCommVO> selectAllMemberCommByMember(String memberId) {
+		List<MemberCommVO> all = dao.selectAll();
+		List<MemberCommVO> allById = new ArrayList<MemberCommVO>();
+		
+		allById = all.stream()
+				.filter(mc -> memberId.equals(mc.getMemberAId()))
+				.collect(Collectors.toList());
+		
+		return allById;
 	}
 
 }

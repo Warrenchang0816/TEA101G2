@@ -5,6 +5,8 @@
 <%@ page import="com.member.model.*"%>
 <%@ page import="com.spaceDetail.model.*"%>
 <%@ page import="com.spacePhoto.model.*"%>
+<%@ page import="com.emp.model.*"%>
+
 
 <%
 	Base64.Encoder encode = Base64.getEncoder();
@@ -22,6 +24,8 @@
 	SpacePhotoService spacePhotoSvc = new SpacePhotoService();
 	List<SpacePhotoVO> photoList = spacePhotoSvc.selectAllSpacePhotoBySpace(spaceId);
 	pageContext.setAttribute("photoList",photoList);
+	
+	EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 
 %>
 
@@ -30,21 +34,21 @@
 
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
   <title>PANAGEA - Admin dashboard</title>
 	
   <!-- Favicons-->
-  <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
   <link rel="apple-touch-icon" type="image/x-icon" href="<%=request.getContextPath()%>/backend/img/apple-touch-icon-57x57-precomposed.png">
   <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="<%=request.getContextPath()%>/backend/img/apple-touch-icon-72x72-precomposed.png">
   <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="<%=request.getContextPath()%>/backend/img/apple-touch-icon-114x114-precomposed.png">
   <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="<%=request.getContextPath()%>/backend/img/apple-touch-icon-144x144-precomposed.png">
 
   <!-- GOOGLE WEB FONT -->
-  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800" rel="stylesheet">
+  <link href="<%=request.getContextPath()%>/backend/https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800" rel="stylesheet">
 	
   <!-- Bootstrap core CSS-->
   <link href="<%=request.getContextPath()%>/backend/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -54,7 +58,6 @@
   <link href="<%=request.getContextPath()%>/backend/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
   <!-- Plugin styles -->
   <link href="<%=request.getContextPath()%>/backend/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-  <link href="<%=request.getContextPath()%>/backend/vendor/dropzone.css" rel="stylesheet">
   <!-- Your custom styles -->
   <link href="<%=request.getContextPath()%>/backend/css/custom.css" rel="stylesheet">
   
@@ -89,7 +92,7 @@
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -104,14 +107,6 @@
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -155,6 +150,10 @@
           </a>
         </li>
       </ul>
+      
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -247,7 +246,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -297,7 +296,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>場地編號</label>
-								<input type="text" class="form-control" placeholder="帳號" name="empAccount" readonly
+								<input type="text" class="form-control" name="spaceId" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceId()%>"/>
 							</div>
 						</div>
@@ -305,7 +304,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>場地類型</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAddress" readonly
+								<input type="text" class="form-control" name="spaceType" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceType()%>"/>
 								
 							</div>
@@ -313,7 +312,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>場地申請日期</label> 
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empJob" readonly
+								<input type="text" class="form-control" name="spaceSignupDate" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceSignupDate()%>"/>
 								
 							</div>
@@ -321,10 +320,11 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>場主</label>
-								<input type="text" class="form-control" placeholder="密碼" name="empPassword" readonly
-									value="[<%= (spaceVO == null)? "" : spaceVO.getMemberId()%>]<%= memberVO.getMemberName()%>" />
-							</div>
+								
+							
 							<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">
+							<input type="text" class="form-control" name="memberId" readonly
+									value="[<%= (spaceVO == null)? "" : spaceVO.getMemberId()%>]<%= memberVO.getMemberName()%>" />
 							    <button type="submit" class="btn btn-link">
 									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-in-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 									  <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
@@ -333,12 +333,13 @@
 				        		</button>
 							    <input type="hidden" name="memberId"  value="<%=spaceVO.getMemberId()%>">
 							    <input type="hidden" name="action"	value="backend_SelectOneMember"></FORM>
+							 </div>
 						</div>
 						
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>場地地址</label>
-								<input type="text" class="form-control" placeholder="Your last name" name="empNickname" readonly
+								<input type="text" class="form-control" name="spaceAddress" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceAddress()%>"/>
 							</div>
 						</div>
@@ -346,7 +347,7 @@
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>場地設備</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empEmail" readonly
+								<input type="text" class="form-control" name="spaceEqument" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceEqument()%>"/>
 							</div>
 						</div>
@@ -355,7 +356,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>場地容納人數</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empBirth" id="empBirth" readonly
+								<input type="text" class="form-control" name="spaceContain"readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceContain()%>"/>
 							</div>
 						</div>
@@ -364,7 +365,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>退費規定</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empCountry" readonly
+								<input type="text" class="form-control" name="spaceRefund" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceRefund()%>"/>
 								
 							</div>
@@ -373,7 +374,7 @@
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>場地規範</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empSex" readonly
+								<input type="text" class="form-control" name="spaceRule" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceRule()%>"/>
 								
 							</div>
@@ -383,15 +384,15 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>場地狀態</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empHireDate" id="empHireDate" readonly
-									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceStatus()%>"/>
+								<input type="text" class="form-control" name="spaceStatus" readonly
+									value="<%= (spaceVO == null)? "" : (spaceVO.getSpaceStatus().equals("T"))? "上架" : "下架"%>"/>
 							</div>
 						</div>
-						
+						<%-- 
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>場地上架日期</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAuth" readonly
+								<input type="text" class="form-control" name="spaceOnsaleDate" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceOnsaleDate()%>"/>
 
 							</div>
@@ -399,8 +400,8 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>場地下架日期</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAuth" readonly
-									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceOffsaleDate()%>"/>
+								<input type="text" class="form-control" name="spaceOffsaleDate" readonly
+									value="<%= (spaceVO == null)? "" : (spaceVO.getSpaceOffsaleDate() == null)? "" : spaceVO.getSpaceOffsaleDate()%>"/>
 
 							</div>
 						</div>
@@ -408,11 +409,11 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工編號</label>
-								<input type="text" class="form-control" placeholder="Your name" name="empName" readonly
+								<input type="text" class="form-control" name="empId" readonly
 									value="<%= (spaceVO == null)? "" : spaceVO.getEmpId()%>"/>
 							</div>
 						</div>
-
+						--%>
 					</div>
 					
 					<!-- /row-->
@@ -423,22 +424,11 @@
 			
 		<div class="row">
 			<div class="col-md-4">
-				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">
-				    <input type="submit" class="btn_1 medium" value="更改上架/下架">
-				    <input type="hidden" name="memberId"  value="<%=spaceVO.getMemberId()%>">
-				    <input type="hidden" name="action"	value="backend_SelectOneUpdate"></FORM>
-			</div>
-			<div class="col-md-4">
-				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">
-				    <input type="submit" class="btn_1 medium" value="訂單紀錄">
-				    <input type="hidden" name="memberId"  value="<%=spaceVO.getMemberId()%>">
-				    <input type="hidden" name="action"	value="backend_SelectOneUpdate"></FORM>
-			</div>
-			<div class="col-md-4">
-				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">
+				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/SpaceCommServlet" style="margin-bottom: 0px;">
 				    <input type="submit" class="btn_1 medium" value="評價紀錄">
-				    <input type="hidden" name="memberId"  value="<%=spaceVO.getMemberId()%>">
-				    <input type="hidden" name="action"	value="backend_SelectOneUpdate"></FORM>
+				    <input type="hidden" name="spaceId"  value="<%=spaceVO.getSpaceId()%>">
+				    <input type="hidden" name="spaceName"  value="<%=spaceVO.getSpaceName()%>">
+				    <input type="hidden" name="action"	value="backend_SelectSpaceCommBySpace"></FORM>
 			</div>
 		</div>
 			
@@ -551,6 +541,7 @@
 	</tr>
 </c:forEach>
 
+<%-- 
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -577,6 +568,7 @@
     <span class="sr-only">Next</span>
   </a>
 </div>
+--%>
 			</tbody>
             </table>
 	  			</div>
@@ -609,15 +601,17 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="<%=request.getContextPath()%>/backend/login.jsp">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>
@@ -639,7 +633,7 @@
     <!-- Custom scripts for all pages-->
     <script src="<%=request.getContextPath()%>/backend/js/admin.js"></script>
 	<!-- Custom scripts for this page-->
-	<script src="<%=request.getContextPath()%>/backend/vendor/dropzone.min.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/js/admin-datatables.js"></script>
 	
 </body>
 

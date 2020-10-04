@@ -17,7 +17,7 @@ public class SpaceDAO implements SpaceDAOInterface{
 	String passwd = "TEA101G2";
 
 	private static final String INSERT_STMT = 
-	    "INSERT INTO SPACE VALUES ('SPACE' || lpad(SPACE_ID_SEQ.NEXTVAL, 5, '0'),?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	    "INSERT INTO SPACE VALUES ('SPACE' || lpad(SPACE_ID_SEQ.NEXTVAL, 5, '0'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String SELECT_ALL_STMT = 
 		"SELECT * FROM SPACE order by space_Id";
 	private static final String SELECT_ONE_STMT = 
@@ -25,9 +25,9 @@ public class SpaceDAO implements SpaceDAOInterface{
 	private static final String DELETE = 
 		"DELETE FROM SPACE where space_Id = ?";
 	private static final String UPDATE = 
-		"UPDATE SPACE set member_Id=?,emp_Id=?,space_Address=?,space_Name=?,space_Type=?,space_Equment=?,space_Contain=?,space_Rule=?,space_Refund=?,space_Status=?,space_Signup_Date=?,space_Onsale_Date=?,space_Offsale_Date=? where space_Id = ?";
-	private static final String SELECT_ALL_BY_MEMBERID_STMT = 
-		"SELECT * FROM SPACE where member_Id = ? order by space_Id";
+		"UPDATE SPACE set member_Id=?,emp_Id=?,space_Address=?,space_Name=?,space_Type=?,space_Equment=?,space_Contain=?,space_Rule=?,space_Refund=?,space_Status=?,space_Signup_Date=?,space_Onsale_Date=?,space_Offsale_Date=?,space_Status_Emp=?,space_Status_Comm=? where space_Id = ?";
+//	private static final String SELECT_ALL_BY_MEMBERID_STMT = 
+//		"SELECT * FROM SPACE where member_Id = ? order by space_Id";
 
 	@Override
 	public void insert(SpaceVO spaceVO) {
@@ -52,6 +52,8 @@ public class SpaceDAO implements SpaceDAOInterface{
 			ptmt.setDate(11, spaceVO.getSpaceSignupDate());
 			ptmt.setDate(12, spaceVO.getSpaceOnsaleDate());
 			ptmt.setDate(13, spaceVO.getSpaceOffsaleDate());
+			ptmt.setString(14, "");
+			ptmt.setString(15, "");
 
 			ptmt.executeUpdate();
 			
@@ -138,7 +140,9 @@ public class SpaceDAO implements SpaceDAOInterface{
 			ptmt.setDate(11, spaceVO.getSpaceSignupDate());
 			ptmt.setDate(12, spaceVO.getSpaceOnsaleDate());
 			ptmt.setDate(13, spaceVO.getSpaceOffsaleDate());
-			ptmt.setString(14, spaceVO.getSpaceId());
+			ptmt.setString(14, spaceVO.getSpaceStatusEmp());
+			ptmt.setString(15, spaceVO.getSpaceStatusComm());
+			ptmt.setString(16, spaceVO.getSpaceId());
 
 			ptmt.executeUpdate();
 			
@@ -195,6 +199,8 @@ public class SpaceDAO implements SpaceDAOInterface{
 				spaceVO.setSpaceSignupDate(rs.getDate("Space_Signup_Date"));
 				spaceVO.setSpaceOnsaleDate(rs.getDate("Space_Onsale_Date"));
 				spaceVO.setSpaceOffsaleDate(rs.getDate("Space_Offsale_Date"));
+				spaceVO.setSpaceStatusEmp(rs.getString("Space_Status_Emp"));
+				spaceVO.setSpaceStatusComm(rs.getString("Space_Status_Comm"));
 				
 			}
 		} catch (ClassNotFoundException e) {
@@ -259,6 +265,8 @@ public class SpaceDAO implements SpaceDAOInterface{
 				spaceVO.setSpaceSignupDate(rs.getDate("Space_Signup_Date"));
 				spaceVO.setSpaceOnsaleDate(rs.getDate("Space_Onsale_Date"));
 				spaceVO.setSpaceOffsaleDate(rs.getDate("Space_Offsale_Date"));
+				spaceVO.setSpaceStatusEmp(rs.getString("Space_Status_Emp"));
+				spaceVO.setSpaceStatusComm(rs.getString("Space_Status_Comm"));
 
 				list.add(spaceVO);
 			}
@@ -292,71 +300,71 @@ public class SpaceDAO implements SpaceDAOInterface{
 		return list;
 	}
 
-	@Override
-	public List<SpaceVO> selectAllByMember(String memberId) {
-		Connection con = null;
-		PreparedStatement ptmt = null;
-		ResultSet rs = null;
-		
-		SpaceVO spaceVO = null;
-		List<SpaceVO> list = new ArrayList<SpaceVO>();;
-		
-		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
-			ptmt = con.prepareStatement(SELECT_ALL_BY_MEMBERID_STMT);
-			
-			ptmt.setString(1, memberId);
-			
-			rs = ptmt.executeQuery();
-			while (rs.next()) {
-				spaceVO = new SpaceVO();
-
-				spaceVO.setSpaceId(rs.getString("space_Id"));
-				spaceVO.setMemberId(rs.getString("member_Id"));
-				spaceVO.setEmpId(rs.getString("Emp_Id"));
-				spaceVO.setSpaceAddress(rs.getString("Space_Address"));
-				spaceVO.setSpaceName(rs.getString("Space_Name"));
-				spaceVO.setSpaceType(rs.getString("Space_Type"));
-				spaceVO.setSpaceEqument(rs.getString("Space_Equment"));
-				spaceVO.setSpaceContain(rs.getString("Space_Contain"));
-				spaceVO.setSpaceRule(rs.getString("Space_Rule"));
-				spaceVO.setSpaceRefund(rs.getString("Space_Refund"));
-				spaceVO.setSpaceStatus(rs.getString("Space_Status"));
-				spaceVO.setSpaceSignupDate(rs.getDate("Space_Signup_Date"));
-				spaceVO.setSpaceOnsaleDate(rs.getDate("Space_Onsale_Date"));
-				spaceVO.setSpaceOffsaleDate(rs.getDate("Space_Offsale_Date"));
-
-				list.add(spaceVO);
-			}
-
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (ptmt != null) {
-					try {
-						ptmt.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}if (con != null) {
-					try {
-						con.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}
-			}
-		return list;
-	}
+//	@Override
+//	public List<SpaceVO> selectAllByMember(String memberId) {
+//		Connection con = null;
+//		PreparedStatement ptmt = null;
+//		ResultSet rs = null;
+//		
+//		SpaceVO spaceVO = null;
+//		List<SpaceVO> list = new ArrayList<SpaceVO>();;
+//		
+//		try {
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+//			ptmt = con.prepareStatement(SELECT_ALL_BY_MEMBERID_STMT);
+//			
+//			ptmt.setString(1, memberId);
+//			
+//			rs = ptmt.executeQuery();
+//			while (rs.next()) {
+//				spaceVO = new SpaceVO();
+//
+//				spaceVO.setSpaceId(rs.getString("space_Id"));
+//				spaceVO.setMemberId(rs.getString("member_Id"));
+//				spaceVO.setEmpId(rs.getString("Emp_Id"));
+//				spaceVO.setSpaceAddress(rs.getString("Space_Address"));
+//				spaceVO.setSpaceName(rs.getString("Space_Name"));
+//				spaceVO.setSpaceType(rs.getString("Space_Type"));
+//				spaceVO.setSpaceEqument(rs.getString("Space_Equment"));
+//				spaceVO.setSpaceContain(rs.getString("Space_Contain"));
+//				spaceVO.setSpaceRule(rs.getString("Space_Rule"));
+//				spaceVO.setSpaceRefund(rs.getString("Space_Refund"));
+//				spaceVO.setSpaceStatus(rs.getString("Space_Status"));
+//				spaceVO.setSpaceSignupDate(rs.getDate("Space_Signup_Date"));
+//				spaceVO.setSpaceOnsaleDate(rs.getDate("Space_Onsale_Date"));
+//				spaceVO.setSpaceOffsaleDate(rs.getDate("Space_Offsale_Date"));
+//
+//				list.add(spaceVO);
+//			}
+//
+//			}catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}finally {
+//				if (rs != null) {
+//					try {
+//						rs.close();
+//					} catch (SQLException se) {
+//						se.printStackTrace(System.err);
+//					}
+//				}
+//				if (ptmt != null) {
+//					try {
+//						ptmt.close();
+//					} catch (Exception e) {
+//						e.printStackTrace(System.err);
+//					}
+//				}if (con != null) {
+//					try {
+//						con.close();
+//					} catch (Exception e) {
+//						e.printStackTrace(System.err);
+//					}
+//				}
+//			}
+//		return list;
+//	}
 
 }

@@ -6,14 +6,27 @@ public class TestJDBC {
 	public static void main(String[] args) {
 	
 		SpaceDAOInterface dao = new SpaceDAO();
-		List<SpaceVO> list = dao.selectAll();
 		
+		
+		SpaceService ss = new SpaceService();
+		List<SpaceVO> list = ss.selectAllNewSpace("F");
 		for(SpaceVO spaceVO : list) {
-			System.out.println(spaceVO.getEmpId());
-		}		
+		System.out.println(spaceVO.getSpaceId());
+		}
+		
+		
+//		List<SpaceVO> list = dao.selectAll();
+//		for(SpaceVO spaceVO : list) {
+//		System.out.println(spaceVO.getSpaceId());
+//		}
+//		System.out.println("FUCK");
+		
+//		for(SpaceVO spaceVO : list) {
+//			System.out.println(spaceVO.getEmpId());
+//		}		
 		
 		//selectone
-//		SpaceVO one = dao.selectOne("10");
+//		SpaceVO one = dao.selectOne("SPACE00001");
 //		System.out.println(one.getSpaceId());
 		
 		//add
@@ -35,10 +48,18 @@ public class TestJDBC {
 //		System.out.println("FUCK");
 		
 		//selectall
-		SpaceVO selectOne = new SpaceVO();
-		selectOne = dao.selectOne("20");
-		System.out.println(selectOne.getMemberId());
-		System.out.println(selectOne.getSpaceRule());
+//		SpaceVO selectOne = new SpaceVO();
+//		selectOne = dao.selectOne("20");
+//		System.out.println(selectOne.getMemberId());
+//		System.out.println(selectOne.getSpaceRule());
+		
+		//AllByMember
+//		SpaceService ss = new SpaceService();
+//		List<SpaceVO> all = ss.selectAllSpaceByMember("MEM00003");
+//		for(SpaceVO spaceVO : all) {
+//			System.out.println(spaceVO.getSpaceId());
+////			System.out.println(spaceVO.getEmpId());
+//		}
 		
 		//delete
 //		dao.delete("50");

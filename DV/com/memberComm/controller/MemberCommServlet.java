@@ -1,7 +1,9 @@
 package com.memberComm.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import javax.servlet.RequestDispatcher;
@@ -123,6 +125,50 @@ public class MemberCommServlet extends HttpServlet {
 				req.setAttribute("selectOneMemberComm", selectOneMemberComm);
 
 				String url = "/backend/memberComm/selectOneMemberComm.jsp";
+				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+				sucessVeiw.forward(req, res);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				errorMsgs.add(e.getMessage());
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}
+		
+		if ("backend_SelectMemberCommByMember".equals(action)) {
+			Queue<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			try {
+				String memberId = req.getParameter("memberId").trim();
+				req.setAttribute("memberId", memberId);
+				
+				String memberName = req.getParameter("memberName").trim();
+				req.setAttribute("memberName", memberName);
+				
+				if (!errorMsgs.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/backend/member/memberProfile.jsp");
+					failureView.forward(req, res);
+					return;
+				}
+
+				MemberCommService memberCommServ = new MemberCommService();
+				List<MemberCommVO> selectMemberCommByMember = new ArrayList<MemberCommVO>();
+				selectMemberCommByMember = memberCommServ.selectAllMemberCommByMember(memberId);
+				
+				if (selectMemberCommByMember == null) {
+					errorMsgs.add("查無資料");
+				}
+				if (!errorMsgs.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/backend/member/memberProfile.jsp");
+					failureView.forward(req, res);
+					return;
+				}
+				
+				req.setAttribute("selectMemberCommByMember", selectMemberCommByMember);
+
+				String url = "/backend/memberComm/memberComm.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				

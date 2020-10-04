@@ -2,7 +2,9 @@ package com.spaceComm.controller;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import javax.servlet.RequestDispatcher;
@@ -124,6 +126,50 @@ public class SpaceCommServlet extends HttpServlet {
 				req.setAttribute("selectOneSpaceComm", selectOneSpaceComm);
 
 				String url = "/backend/spaceComm/selectOneSpaceComm.jsp";
+				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+				sucessVeiw.forward(req, res);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				errorMsgs.add(e.getMessage());
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}
+		
+		if ("backend_SelectSpaceCommBySpace".equals(action)) {
+			Queue<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			try {
+				String spaceId = req.getParameter("spaceId").trim();
+				req.setAttribute("spaceId", spaceId);
+				
+				String spaceName = req.getParameter("spaceName").trim();
+				req.setAttribute("spaceName", spaceName);
+				
+				if (!errorMsgs.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/backend/space/spaceProfile.jsp");
+					failureView.forward(req, res);
+					return;
+				}
+
+				SpaceCommService spaceCommServ = new SpaceCommService();
+				List<SpaceCommVO> selectSpaceCommBySpace = new ArrayList<SpaceCommVO>();
+				selectSpaceCommBySpace = spaceCommServ.selectAllSpaceCommBySpace(spaceId);
+				
+				if (selectSpaceCommBySpace == null) {
+					errorMsgs.add("查無資料");
+				}
+				if (!errorMsgs.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/backend/space/spaceProfile.jsp");
+					failureView.forward(req, res);
+					return;
+				}
+				
+				req.setAttribute("selectSpaceCommBySpace", selectSpaceCommBySpace);
+
+				String url = "/backend/spaceComm/spaceComm.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				

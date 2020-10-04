@@ -1,6 +1,8 @@
 package com.formList.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FormListService {
 private FormListDAOInterface dao;
@@ -32,6 +34,17 @@ private FormListDAOInterface dao;
 	
 	public List<FormListVO> selectAllFormList() {
 		return dao.selectAll();
+	}
+	
+	public List<FormListVO> selectAllFormListByStatus(String formListStatus) {
+		List<FormListVO> all = dao.selectAll();
+		List<FormListVO> allByStatus = new ArrayList<FormListVO>();
+		
+		allByStatus = all.stream()
+				.filter(fl -> formListStatus.equals(fl.getFormListStatus()))
+				.collect(Collectors.toList());
+		
+		return allByStatus;
 	}
 
 }

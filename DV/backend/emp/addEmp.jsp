@@ -5,8 +5,11 @@
 
 <%
 	EmpVO empVO = (EmpVO) request.getAttribute("addEmp");
+	pageContext.setAttribute("empVO",empVO);
 	LinkedList<String> errorMsgs = (LinkedList<String>) request.getAttribute("errorMsgs");
 	Base64.Encoder encode = Base64.getEncoder();
+	
+	EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 %>
 
 <!DOCTYPE html>
@@ -42,10 +45,42 @@
   <!-- Your custom styles -->
   <link href="<%=request.getContextPath()%>/backend/css/custom.css" rel="stylesheet">
   
-  <style>
+<style>
     img.preview {
       width: 200px;
     }
+
+	.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.upload_cover {
+position: relative;
+width: 100px;
+height: 100px;
+text-align: center;
+cursor: pointer;
+background: #efefef;
+border: 1px solid #595656;
+}
+
+.upload_icon {
+font-weight: bold;
+font-size: 180%;
+position: absolute;
+left: 0;
+width: 100%;
+top: 20%;
+}
+.delAvatar {
+position: absolute;
+right: 2px;
+top: 2px;
+}
+
+
 </style>
 	
 </head>
@@ -56,7 +91,7 @@
 
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg navbar-dark bg-default fixed-top" id="mainNav">
-    <a class="navbar-brand" href="index.jsp"><img src="img/logo.png" data-retina="true" alt="" width="150" height="36"></a>
+    <a class="navbar-brand" href="<%=request.getContextPath()%>/backend/index.jsp"><img src="<%=request.getContextPath()%>/backend/img/logo.png" data-retina="true" alt="" width="150" height="36"></a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -66,18 +101,18 @@
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/index.jsp">
             <i class="fa fa-fw fa-dashboard"></i>
-            <span class="nav-link-text">Dashboard</span>
+            <span class="nav-link-text">首頁</span>
           </a>
         </li>
         
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
-              <a href="<%=request.getContextPath()%>/backend/emp/empProfile.jsp">個人資料</a>
+              <a href="<%=request.getContextPath()%>/backend/emp/emp.jsp">個人資料</a>
             </li>
             <li>
               <a href="<%=request.getContextPath()%>/backend/emp/changePassword.jsp">修改密碼</a>
@@ -88,14 +123,6 @@
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">Messages</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -139,6 +166,9 @@
           </a>
         </li>
       </ul>
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -231,14 +261,14 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
   </nav>
   
  
-<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/EmpServlet" name="addEmp" enctype="multipart/form-data"> 
+<%-- <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/EmpServlet" name="addEmp" enctype="multipart/form-data"> --%> 
  
   <!-- /Navigation-->
   <div class="content-wrapper">
@@ -246,34 +276,43 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="index.jsp">Dashboard</a>
+          <a href="index.jsp">首頁</a>
         </li>
-        <li class="breadcrumb-item active">Add listing</li>
+        <li class="breadcrumb-item active">新增員工</li>
       </ol>
+      
+<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/EmpServlet" name="addEmp" enctype="multipart/form-data"> 
 		<div class="box_general padding_bottom">
 			<div class="header_box version_2">
-				<h2><i class="fa fa-user"></i>Profile details</h2>
+				<h2><i class="fa fa-user"></i>新增員工</h2>
 			</div>
 			
- 			<%-- 
+ 			
 			<div class="row">
 
 				<div class="col-md-4">
+				<%--
 					<div class="form-group">
-					<label>Your photo</label>
-						<form action="/file-upload" class="dropzone" name="empPhoto"></form> 
-						<input type="file" class="dropzone" name="empPhoto"></input>
+					<label>員工照片</label>
+						 <form action="/file-upload" class="dropzone" name="empPhoto"></form>
+						<div class="dropzone"><div class="dz-default dz-message"><span>照片預覽</span></div></div>
 				    </div>
+				    --%>
+				    
+				    <img id="blah" src="#" alt="your image" />
 				</div>
 			</div>
+			<%-- 
+			<label for="file-upload" class="custom-file-upload">
+			    <i class="fa fa-cloud-upload"></i> 上傳照片
+			</label>
 			--%>
+			<input id="file-upload" type="file" class = "empPhoto" name="empPhoto"/>
 			
-				<div class= "preview" id="preview"><span class="text1">預覽圖</span></div>
-				
+			<%-- 
+				<div class="preview" id="preview"><span class="text1">預覽圖</span></div>
 				<input type="file" name="empPhoto"/>
-
-			
- <%-- <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/EmpServlet" name="addEmp" enctype="multipart/form-data"> --%> 
+			--%>
 
  			<div class="row">
 				<div class="col-md-8 add_top_30">
@@ -281,99 +320,95 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工帳號</label>
-								<input type="text" class="form-control" placeholder="帳號" name="empAccount"
+								<input type="text" class="form-control" placeholder="請輸入帳號" name="empAccount"
 									value="<%= (empVO == null)? "" : empVO.getEmpAccount()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpAccount().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpAccount().equals("") && errorMsgs.peek().contains("帳號"))? errorMsgs.poll() : (errorMsgs.peek().contains("帳號"))? errorMsgs.poll() : ""%></span>
 							</div>
 						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<span style="color:blue" id="accountSpan">帳號請輸入6~16個英文字母和數字且至少包含一個大寫英文字母，不能包含特殊符號</span>
+							</div>
+						</div>
+					</div>
+								
+					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工密碼</label>
-								<input type="text" class="form-control" placeholder="密碼" name="empPassword"
+								<input type="text" class="form-control" placeholder="請輸入密碼" name="empPassword"
 									value="<%= (empVO == null)? "" : empVO.getEmpPassword()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpPassword().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpPassword().equals("") && errorMsgs.peek().contains("密碼"))? errorMsgs.poll() : (errorMsgs.peek().contains("密碼"))? errorMsgs.poll() : ""%></span>
 							</div>
 						</div>
-
+						<div class="col-md-6">
+							<div class="form-group">
+								<span style="color:blue" id="accountSpan">密碼請輸入6~16個英文字母和數字，不能包含特殊符號</span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工姓名</label>
-								<input type="text" class="form-control" placeholder="Your name" name="empName"
+								<input type="text" class="form-control" placeholder="請輸入姓名" name="empName"
 									value="<%= (empVO == null)? "" : empVO.getEmpName()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpName().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label>員工名稱</label>
-								<input type="text" class="form-control" placeholder="Your last name" name="empNickname"
-									value="<%= (empVO == null)? "" : empVO.getEmpNickname()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpNickname().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-							</div>
-						</div>
-
-					<!-- /row-->
-
-						<div class="col-md-6">
-							<div class="form-group">
-								<label>員工連絡電話</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empPhone"
-									value="<%= (empVO == null)? "" : empVO.getEmpPhone()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpPhone().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<label>員工聯絡地址</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAddress"
-									value="<%= (empVO == null)? "" : empVO.getEmpAddress()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpAddress().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-								
-							</div>
-						</div>
-						
-						<div class="col-md-12">
-							<div class="form-group">
-								<label>員工Email</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empEmail"
-									value="<%= (empVO == null)? "" : empVO.getEmpEmail()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpEmail().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-							</div>
-						</div>
-
-					
-
-						<div class="col-md-6">
-							<div class="form-group">
-								<label>員工生日</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empBirth" id="empBirth">
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpName().equals("") && errorMsgs.peek().contains("姓名"))? errorMsgs.poll() : (errorMsgs.peek().contains("姓名"))? errorMsgs.poll() : ""%></span>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工性別</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empSex"
-									value="<%= (empVO == null)? "" : empVO.getEmpSex()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpSex().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-								
+								<div class="styled-select">
+								<select  size="1" name="empSex">
+									<option value = "" ${empVO == null ? 'selected' : empVO.empSex == '' ? 'selected' : ''} >------</option>
+									<option value = "M" ${empVO == null ? '' : empVO.empSex == 'M' ? 'selected' : ''} >男</option>
+									<option value = "F" ${empVO == null ? '' : empVO.empSex == 'F' ? 'selected' : ''} >女</option>
+								</select>
+								</div>
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpSex().equals("") && errorMsgs.peek().contains("性別"))? errorMsgs.poll() : (errorMsgs.peek().contains("性別"))? errorMsgs.poll() : ""%></span>
 							</div>
 						</div>
-	
-					
+						
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>員工連絡電話</label>
+								<input type="text" class="form-control" placeholder="請輸入電話" name="empPhone"
+									value="<%= (empVO == null)? "" : empVO.getEmpPhone()%>"/>
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpPhone().equals("") && errorMsgs.peek().contains("電話"))? errorMsgs.poll() : (errorMsgs.peek().contains("電話"))? errorMsgs.poll() : ""%></span>
+							</div>
+						</div>
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label>員工國籍</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empCountry"
-									value="<%= (empVO == null)? "" : empVO.getEmpCountry()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpCountry().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-								
+								<label>員工Email</label>
+								<input type="text" class="form-control" placeholder="請輸入email" name="empEmail"
+									value="<%= (empVO == null)? "" : empVO.getEmpEmail()%>"/>
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpEmail().equals("") && errorMsgs.peek().contains("email"))? errorMsgs.poll() : (errorMsgs.peek().contains("email"))? errorMsgs.poll() : ""%></span>
 							</div>
 						</div>
+						
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>員工聯絡地址</label>
+								<input type="text" class="form-control" placeholder="請輸入地址" name="empAddress"
+									value="<%= (empVO == null)? "" : empVO.getEmpAddress()%>"/>
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpAddress().equals("") && errorMsgs.peek().contains("地址"))? errorMsgs.poll() : (errorMsgs.peek().contains("地址"))? errorMsgs.poll() : ""%></span>
+							</div>
+						</div>
+						
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>員工生日</label>
+								<input type="text" class="form-control" name="empBirth" id="empBirth">
+							</div>
+						</div>
+
+	
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工到職日</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empHireDate" id="empHireDate">
+								<input type="text" class="form-control" name="empHireDate" id="empHireDate">
 							</div>
 						</div>
 
@@ -382,116 +417,65 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>員工職稱</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empJob"
+								<input type="text" class="form-control" placeholder="請輸入職稱" name="empJob"
 									value="<%= (empVO == null)? "" : empVO.getEmpJob()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpJob().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-								
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpJob().equals("") && errorMsgs.peek().contains("職稱"))? errorMsgs.poll() : (errorMsgs.peek().contains("職稱"))? errorMsgs.poll() : ""%></span>
 							</div>
 						</div>
+						
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>員工權限</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAuth"
-									value="<%= (empVO == null)? "" : empVO.getEmpAuth()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : !(empVO.getEmpAuth() <= 0 || empVO.getEmpAuth() > 5)? "" : "  " + errorMsgs.poll()%></span></td>
-
+								<div class="styled-select">
+								<select  size="1" name="empAuth">
+									<option value = "0" ${empVO == null ? "selected" : empVO.empAuth == "0" ? "selected" : ""}>------</option>
+									<option value = "1" ${empVO == null ? "" : empVO.empAuth == "1" ? "selected" : ""}>員工</option>
+									<option value = "2" ${empVO == null ? "" : empVO.empAuth == "2" ? "selected" : ""}>主管</option>
+								</select>
+								</div>
+								<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpAuth() == 0 && errorMsgs.peek().contains("權限"))? errorMsgs.poll() : "" %></span>
 							</div>
 						</div>
+						
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>員工在職狀態</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empStatus"
-									value="<%= (empVO == null)? "" : empVO.getEmpStatus()%>"/>
-								<span style="color:red"><%= (errorMsgs == null)? "" : (!empVO.getEmpStatus().equals(""))? "" : "  " + errorMsgs.poll()%></span></td>
-								
+								<input type="hidden" class="form-control" name="empStatus" value="O"/>
+								<input type="text" class="form-control" value="在職" readonly/>
 							</div>
 						</div>
+						
+						<%--
+						<div class="col-md-4">
+							<div class="form-group">
+								<label>員工在職狀態</label>
+								<div class="styled-select">
+								<select  size="1" name="empStatus">
+									<option value = "" >------</option>
+									<option value = "O">在職</option>
+									<option value = "P">停職</option>
+									<option value = "L">離職</option>
+								</select>
+								</div>
+							</div>
+						</div>
+						 --%>
 					</div>
 					
-					<!-- /row-->
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group">
-								<label>Personal info</label>
-								<textarea style="height:100px;" class="form-control" placeholder="Personal info"></textarea>
-							</div>
-						</div>
-					</div>
-					<!-- /row-->
 				</div>
 			</div>
 			
-			
+		</div>
 		<input type="hidden" name="action" value="backend_AddEmp">
 		<button name="add" type="submit" class="btn_1 medium" onclick="javascript:return confirm('確認新增?');">送出新增</button>
-		<a class="btn_1 medium" href='<%=request.getContextPath()%>/backend/emp/empProfile.jsp'>取消</a>
-		</FORM>
+		<a class="btn_1 medium" href='<%=request.getContextPath()%>/backend/index.jsp'>取消</a>
+</FORM>
 				
 				
 			
 		</div>
-		
-		
-		
-		<!-- /box_general-->
-		<!--
-		<div class="row">
-			<div class="col-md-6">
-				<div class="box_general padding_bottom">
-					<div class="header_box version_2">
-						<h2><i class="fa fa-lock"></i>Change password</h2>
-					</div>
-					<div class="form-group">
-						<label>Old password</label>
-						<input class="form-control" type="password">
-					</div>
-					<div class="form-group">
-						<label>New password</label>
-						<input class="form-control" type="password">
-					</div>
-					<div class="form-group">
-						<label>Confirm new password</label>
-						<input class="form-control" type="password">
-					</div>
-				</div>
-			</div>
-			-->
-			
-			<!--
-			<div class="col-md-6">
-				<div class="box_general padding_bottom">
-					<div class="header_box version_2">
-						<h2><i class="fa fa-envelope"></i>Change email</h2>
-					</div>
-					<div class="form-group">
-						<label>Old email</label>
-						<input class="form-control" name="old_email" id="old_email" type="email">
-					</div>
-					<div class="form-group">
-						<label>New email</label>
-						<input class="form-control" name="new_email" id="new_email" type="email">
-					</div>
-					<div class="form-group">
-						<label>Confirm new email</label>
-						<input class="form-control" name="confirm_new_email" id="confirm_new_email" type="email">
-					</div>
-				</div>
-			</div>
-		</div>
-		-->
-		
-		<%-- 
-		<!-- /row SAVE-->
-		<input type="hidden" name="action" value="backend_AddEmp">
-		<button name="add" type="submit" class="btn_1 medium" onclick="javascript:return confirm('確認新增?');">送出新增</button>
-		
-		</FORM>
-		--%>
 		
 	  </div>
-	  
-	  <!-- /.container-fluid-->
-   	</div>
    	
    	
    	
@@ -516,15 +500,17 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>
@@ -532,27 +518,28 @@
     
     
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/vendor/jquery/jquery.min.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/vendor/jquery-easing/jquery.easing.min.js"></script>
     <!-- Page level plugin JavaScript-->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-	<script src="vendor/jquery.selectbox-0.2.js"></script>
-	<script src="vendor/retina-replace.min.js"></script>
-	<script src="vendor/jquery.magnific-popup.min.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/vendor/chart.js/Chart.min.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/vendor/datatables/dataTables.bootstrap4.js"></script>
+	<script src="<%=request.getContextPath()%>/backend/vendor/jquery.selectbox-0.2.js"></script>
+	<script src="<%=request.getContextPath()%>/backend/vendor/retina-replace.min.js"></script>
+	<script src="<%=request.getContextPath()%>/backend/vendor/jquery.magnific-popup.min.js"></script>
     <!-- Custom scripts for all pages-->
-    <script src="js/admin.js"></script>
+    <script src="<%=request.getContextPath()%>/backend/js/admin.js"></script>
 	<!-- Custom scripts for this page-->
-	<script src="vendor/dropzone.min.js"></script>
+	<script src="<%=request.getContextPath()%>/backend/vendor/dropzone.min.js"></script>
 	
 </body>
 
   <% 
-  java.sql.Date empBirth = new java.sql.Date(System.currentTimeMillis());
-  java.sql.Date empHireDate = new java.sql.Date(System.currentTimeMillis());
+  	java.sql.Date empBirth = new java.sql.Date(System.currentTimeMillis());
+  	java.sql.Date empHireDate = new java.sql.Date(System.currentTimeMillis());
+  	java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
   %>
 
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/backend/datetimepicker/jquery.datetimepicker.css" />
@@ -575,7 +562,7 @@
 	       timepicker:false,       //timepicker:true,
 	       step: 1,                //step: 60 (這是timepicker的預設間隔60分鐘)
 	       format:'Y-m-d',         //format:'Y-m-d H:i:s',
-		   value: '<%=empBirth%>', // value:   new Date(),
+		   value: '<%= (empVO == null)? empBirth : empVO.getEmpBirth()%>', // value:   new Date(),
            //disabledDates:        ['2017/06/08','2017/06/09','2017/06/10'], // 去除特定不含
            //startDate:	            '2017/07/10',  // 起始日
            //minDate:               '-1970-01-01', // 去除今日(不含)之前
@@ -587,10 +574,10 @@
 	       timepicker:false,       //timepicker:true,
 	       step: 1,                //step: 60 (這是timepicker的預設間隔60分鐘)
 	       format:'Y-m-d',         //format:'Y-m-d H:i:s',
-		   value: '<%=empHireDate%>', // value:   new Date(),
+	       value: '<%= (empVO == null)? "-1970-01-01" : empVO.getEmpHireDate()%>',
            //disabledDates:        ['2017/06/08','2017/06/09','2017/06/10'], // 去除特定不含
            //startDate:	            '2017/07/10',  // 起始日
-           //minDate:               '-1970-01-01', // 去除今日(不含)之前
+           minDate: '-1970-01-01',                              // 去除今日(不含)之前
            //maxDate:               '+1970-01-01'  // 去除今日(不含)之後
         });
         

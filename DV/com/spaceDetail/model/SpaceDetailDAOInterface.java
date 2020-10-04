@@ -8,6 +8,6 @@ public interface SpaceDetailDAOInterface {
 	public void update(SpaceDetailVO spaceDetailVO);
 	public SpaceDetailVO selectOne(String spaceDetailId);
 	public List<SpaceDetailVO> selectAll();
-	public List<SpaceDetailVO> selectAllBySpace(String spaceId);
+//	public List<SpaceDetailVO> selectAllBySpace(String spaceId);
 
 }

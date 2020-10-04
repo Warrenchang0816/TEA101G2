@@ -7,6 +7,8 @@
 	EmpVO empVO = (EmpVO) request.getAttribute("selectOneUpdate");
 	LinkedList<String> errorMsgs = (LinkedList<String>) request.getAttribute("errorMsgs");
 	Base64.Encoder encode = Base64.getEncoder();
+	
+	EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 %>
 
 <!DOCTYPE html>
@@ -73,7 +75,7 @@
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -88,14 +90,6 @@
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -139,6 +133,10 @@
           </a>
         </li>
       </ul>
+      
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -231,7 +229,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -246,13 +244,17 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="index.jsp">Dashboard</a>
+          <a href="<%=request.getContextPath()%>/backend/index.jsp">首頁</a>
         </li>
-        <li class="breadcrumb-item active">Add listing</li>
+        <li class="breadcrumb-item">
+          <a href="<%=request.getContextPath()%>/backend/emp/emp.jsp">個人資料</a>
+        </li>
+        <li class="breadcrumb-item active">修改基本資料</li>
       </ol>
+      
 		<div class="box_general padding_bottom">
 			<div class="header_box version_2">
-				<h2><i class="fa fa-user"></i><%=empVO.getEmpId()%> / <%= (empVO == null)? "" : empVO.getEmpName()%></h2>
+				<h2><i class="fa fa-user"></i><%=loginEmp.getEmpId()%> / <%= (loginEmp == null)? "" : loginEmp.getEmpName()%></h2>
 			</div>
 			
  			<%-- 
@@ -359,7 +361,8 @@
 								
 							</div>
 						</div>
-			</div>
+					</div>
+
 			
 			
 		<input type="hidden" name="action" value="backend_UpdateEmpBasic">
@@ -458,15 +461,17 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

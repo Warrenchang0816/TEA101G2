@@ -1,11 +1,17 @@
+<%@page import="java.sql.Date"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.formList.model.*"%>
+<%@ page import="com.emp.model.*"%>
 
 <%
 FormListVO formListVO = (FormListVO)request.getAttribute("selectOneUpdate");
 Base64.Encoder encode = Base64.getEncoder();
+
+EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
+
+java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 
 %>
 
@@ -73,7 +79,7 @@ Base64.Encoder encode = Base64.getEncoder();
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -88,14 +94,6 @@ Base64.Encoder encode = Base64.getEncoder();
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -139,6 +137,10 @@ Base64.Encoder encode = Base64.getEncoder();
           </a>
         </li>
       </ul>
+      
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -231,7 +233,7 @@ Base64.Encoder encode = Base64.getEncoder();
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -331,9 +333,13 @@ Base64.Encoder encode = Base64.getEncoder();
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>表單狀態</label>
-								<input type="text" class="form-control" placeholder="" name="formListStatus" 
-									value="<%= (formListVO == null)? "" : formListVO.getFormListStatus()%>"/>
-								
+									<div class="styled-select">
+										<select  size="1" name="formListStatus">
+											<option value = "new" ${formListVO == null ? "selected" : formListVO.formListStatus.equals("new") ? "selected" : ""}>未結案</option>
+											<option value = "handle" ${formListVO == null ? "" : formListVO.formListStatus.equals("handle") ? "selected" : ""}>已處理</option>
+											<option value = "done" ${formListVO == null ? "" : formListVO.formListStatus.equals("done") ? "selected" : ""}>結案</option>
+										</select>
+									</div>						
 							</div>
 								  <%--
 								 <div class="input-group mb-3">
@@ -350,36 +356,36 @@ Base64.Encoder encode = Base64.getEncoder();
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label>表單結案日期</label>
-								<input type="text" class="form-control" placeholder="" name="formListSoluDate" id="formListSoluDate"
-									value="<%= (formListVO == null)? "" : formListVO.getFormListSoluDate()%>"/>
+								<label>表單新更日期</label>
+								<input type="text" class="form-control" placeholder="" name="formListSoluDate" readonly
+									value="<%= (formListVO == null)? date : formListVO.getFormListSoluDate()%>"/>
 							</div>
 						</div>
 						
 					</div>
 					
 					<jsp:useBean id="empServ" scope="page" class="com.emp.model.EmpService" />
-					<%
-						String empId = "";
-						if("".equals(formListVO.getEmpId())){
-							empId = "";
-						}else{
-							empId = formListVO.getEmpId();
-						}
-						String empName = "";
-						if("".equals(empServ.selectOneEmp(empId).getEmpName())){
-							empName = "";
-						}else{
-							empName = empServ.selectOneEmp(empId).getEmpName();
-						}
-					%>
+						<%
+							String empId = "";
+							if("".equals(formListVO.getEmpId())){
+								empId = "";
+							}else{
+								empId = formListVO.getEmpId();
+							}
+							String empName = "";
+							if("".equals(empServ.selectOneEmp(empId).getEmpName())){
+								empName = "";
+							}else{
+								empName = empServ.selectOneEmp(empId).getEmpName();
+							}
+						%>
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工</label>
 								<input type="text" class="form-control" placeholder="" name="empName" 
-									value="<%= empName %>"/>
-								<input type="hidden" name="empId"  value="<%=empId%>">
+									value="<%= loginEmp.getEmpName() %>" readonly/>
+								<input type="hidden" name="empId"  value="<%=loginEmp.getEmpId()%>">
 								<%--
 								<select size="1" name="empName" class="custom-select" id="inputGroupSelect01">
 									<c:forEach var="empVO" items="<%= empServ.selectAllEmp() %>">
@@ -389,24 +395,29 @@ Base64.Encoder encode = Base64.getEncoder();
 								--%>
 							</div>
 						</div>
-
+					</div>
+					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<label>表單結案</label>
+								<label>表單處理</label>
 								<input style="height:200px;" type="text" class="form-control" placeholder="" name="formListSolu" 
 									value="<%= (formListVO == null)? "" : formListVO.getFormListSolu()%>"/>
 							</div>
 						</div>
-						
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+							    <input type="submit" class="btn_1 medium" value="更新表單">
+							    <input type="hidden" name="formListId"  value="<%=formListVO.getFormListId()%>">
+							    <input type="hidden" name="action"	value="backend_UpdateFormList">
+						    </div>
+					    </div>
+
 					</div>
 				</div>
 			</div>
-		<td>
-			
-			    <input type="submit" class="btn_1 medium" value="確定結案">
-			    <input type="hidden" name="formListId"  value="<%=formListVO.getFormListId()%>">
-			    <input type="hidden" name="action"	value="backend_UpdateFormList">
-		</td>
+
 		
 	  </div>
 	  
@@ -435,15 +446,17 @@ Base64.Encoder encode = Base64.getEncoder();
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="<%=request.getContextPath()%>/backend/login.jsp">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

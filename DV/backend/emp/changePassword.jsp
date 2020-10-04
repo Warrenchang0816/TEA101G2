@@ -4,11 +4,11 @@
 <%@ page import="com.emp.model.*"%>
 
 <%
-EmpVO empVO2 = (EmpVO)request.getAttribute("selectOneEmp");
-Base64.Encoder encode = Base64.getEncoder();
 
-EmpService empSvc = new EmpService();
-EmpVO empVO = empSvc.selectOneEmp("EMP00001");
+EmpVO empVO = (EmpVO) request.getAttribute("changePassword");
+LinkedList<String> errorMsgs = (LinkedList<String>) request.getAttribute("errorMsgs");
+
+EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 
 %>
 
@@ -73,7 +73,7 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -88,14 +88,6 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -139,6 +131,10 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
           </a>
         </li>
       </ul>
+      
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -231,7 +227,7 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -245,31 +241,39 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
 
 		<!-- /box_general-->
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
 				<div class="box_general padding_bottom">
 					<div class="header_box version_2">
 						<h2><i class="fa fa-lock"></i>更改密碼</h2>
 					</div>
 					<div class="form-group">
 						<label>舊密碼</label>
-						<input class="form-control" type="password">
+						<input class="form-control" type="password" name="empPassword">
+						<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpPassword().equals(""))? "請輸入密碼" : (errorMsgs.peek().contains("密碼錯誤"))? errorMsgs.poll() : ""%></span>
 					</div>
 					<div class="form-group">
 						<label>新密碼</label>
-						<input class="form-control" type="password">
+						<input class="form-control" type="password" name="newEmpPassword">
+						<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpPassword().equals(""))? "請輸入密碼" : (errorMsgs.peek() == null)? "" : (errorMsgs.peek().contains("格式"))? errorMsgs.poll() : ""%></span>
 					</div>
 					<div class="form-group">
 						<label>確認密碼</label>
-						<input class="form-control" type="password">
+						<input class="form-control" type="password" name="empPasswordConfirm">
+						<span style="color:red"><%= (errorMsgs == null)? "" : (empVO.getEmpPassword().equals(""))? "請輸入密碼" : (errorMsgs.peek() == null)? "" : (errorMsgs.peek().equals("密碼確認不一致"))? errorMsgs.poll() : ""%></span>
 					</div>
+					
+					<input type="hidden" name="action" value="backend_ChangePassword">
+					<input type="hidden" name="empId" value="<%=loginEmp.getEmpId()%>">
+					<button name="update" type="submit" class="btn_1 medium" onclick="javascript:return confirm('確認修改?');">送出修改</button>
+					<a class="btn_1 medium" href='<%=request.getContextPath()%>/backend/emp/emp.jsp'>取消</a>
 				</div>
 			</div>
+			<div class="col-md-2"></div>
 	  <!-- /.container-fluid-->
    	</div>
 			
-		<input type="hidden" name="action" value="backend_ChangePassword">
-		<button name="update" type="submit" class="btn_1 medium" onclick="javascript:return confirm('確認修改?');">送出修改</button>
-		<a class="btn_1 medium" href='<%=request.getContextPath()%>/backend/emp/emp.jsp'>取消</a>
+
 		
 </FORM>
    	
@@ -294,15 +298,17 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

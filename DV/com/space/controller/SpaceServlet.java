@@ -305,68 +305,20 @@ public class SpaceServlet extends HttpServlet {
 			try {
 				String spaceId = req.getParameter("spaceId").trim();
 				
-				String memberId = req.getParameter("memberId").trim();
-//				String memberIdReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{2,10}$";
-				if(memberId == null || memberId.isEmpty()) {
-					errorMsgs.add("會員編號: 請勿空白");
-				}
-				
 				String empId = req.getParameter("empId").trim();
-				if(empId == null || empId.isEmpty()) {
-					errorMsgs.add("員工編號: 請勿空白");
-				}
 				
-				String spaceAddress = req.getParameter("spaceAddress").trim();
-				if(spaceAddress == null || spaceAddress.isEmpty()) {
-					errorMsgs.add("場地地址: 請勿空白");
-				}
-				
-				String spaceName = req.getParameter("spaceName").trim();
-				if(spaceName == null || spaceName.isEmpty()) {
-					errorMsgs.add("場地名稱: 請勿空白");
-				}
-				
-				String spaceType = req.getParameter("spaceType").trim();
-				if(spaceType == null || spaceType.isEmpty()) {
-					errorMsgs.add("場地類型: 請勿空白");
-				}
-				
-				String spaceEqument = req.getParameter("spaceEqument").trim();
-				if(spaceEqument == null || spaceEqument.isEmpty()) {
-					errorMsgs.add("場地設備: 請勿空白");
-				}
-				
-				String spaceContain = req.getParameter("spaceContain").trim();
-				if(spaceContain == null || spaceContain.isEmpty()) {
-					errorMsgs.add("場地容納人數: 請勿空白");
-				}
-				
-				String spaceRule = req.getParameter("spaceRule").trim();
-				if(spaceRule == null || spaceRule.isEmpty()) {
-					errorMsgs.add("場地規範: 請勿空白");
-				}
-				
-				String spaceRefund = req.getParameter("spaceRefund").trim();
-				if(spaceRefund == null || spaceRefund.isEmpty()) {
-					errorMsgs.add("退費機制: 請勿空白");
-				}
+				SpaceService spaceServ = new SpaceService();
+				SpaceVO SpaceVO = spaceServ.selectOneSpace(spaceId);
 				
 				String spaceStatus = req.getParameter("spaceStatus").trim();
-				if(spaceStatus == null || spaceStatus.isEmpty()) {
-					errorMsgs.add("場地狀態: 請勿空白");
-				}
 				
-				Date spaceSignupDate = null;
-				try {
-					spaceSignupDate = java.sql.Date.valueOf(req.getParameter("spaceSignupDate").trim());
-				} catch (IllegalArgumentException e) {
-					spaceSignupDate = new java.sql.Date(System.currentTimeMillis());
-					errorMsgs.add("場地申請日期: 請勿空白");
-				}
-				
+				Date today = java.sql.Date.valueOf(req.getParameter("today").trim());
 				Date spaceOnsaleDate = null;
 				try {
 					spaceOnsaleDate = java.sql.Date.valueOf(req.getParameter("spaceOnsaleDate").trim());
+//					if(spaceStatus.equals("T") && (spaceOnsaleDate.getTime() < today.getTime())) {
+//						errorMsgs.add("上架日期不可小於今日");
+//					}
 				} catch (IllegalArgumentException e) {
 					spaceOnsaleDate = new java.sql.Date(System.currentTimeMillis());
 				}
@@ -374,39 +326,51 @@ public class SpaceServlet extends HttpServlet {
 				Date spaceOffsaleDate;
 				try {
 					spaceOffsaleDate = java.sql.Date.valueOf(req.getParameter("spaceOffsaleDate").trim());
+//					if(spaceStatus.equals("F") && (spaceOffsaleDate.getTime() < today.getTime())) {
+//						errorMsgs.add("下架日期不可小於今日");
+//					}
 				} catch (IllegalArgumentException e) {
 					spaceOffsaleDate = new java.sql.Date(System.currentTimeMillis());
 				}
 				
+				String spaceStatusEmp = req.getParameter("spaceStatusEmp").trim();
+				
+				String spaceStatusComm = req.getParameter("spaceStatusComm").trim();
+				if(spaceStatusComm == null || spaceStatusComm.isEmpty()) {
+					errorMsgs.add("原因請勿空白");
+				}
+				
 				SpaceVO updateSpace = new SpaceVO();
 				updateSpace.setSpaceId(spaceId);
-				updateSpace.setMemberId(memberId);
+				updateSpace.setMemberId(SpaceVO.getMemberId());
 				updateSpace.setEmpId(empId);
-				updateSpace.setSpaceAddress(spaceAddress);
-				updateSpace.setSpaceName(spaceName);
-				updateSpace.setSpaceType(spaceType);
-				updateSpace.setSpaceEqument(spaceEqument);
-				updateSpace.setSpaceContain(spaceContain);
-				updateSpace.setSpaceRule(spaceRule);
-				updateSpace.setSpaceRefund(spaceRefund);
+				updateSpace.setSpaceAddress(SpaceVO.getSpaceAddress());
+				updateSpace.setSpaceName(SpaceVO.getSpaceName());
+				updateSpace.setSpaceType(SpaceVO.getSpaceType());
+				updateSpace.setSpaceEqument(SpaceVO.getSpaceEqument());
+				updateSpace.setSpaceContain(SpaceVO.getSpaceContain());
+				updateSpace.setSpaceRule(SpaceVO.getSpaceRule());
+				updateSpace.setSpaceRefund(SpaceVO.getSpaceRefund());
 				updateSpace.setSpaceStatus(spaceStatus);
-				updateSpace.setSpaceSignupDate(spaceSignupDate);
+				updateSpace.setSpaceSignupDate(SpaceVO.getSpaceSignupDate());
 				updateSpace.setSpaceOnsaleDate(spaceOnsaleDate);
 				updateSpace.setSpaceOffsaleDate(spaceOffsaleDate);
+				updateSpace.setSpaceStatusEmp(spaceStatusEmp);
+				updateSpace.setSpaceStatusComm(spaceStatusComm);
 				
 				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("selectOneUpdate", updateSpace); // 含有輸入格式錯誤的empVO物件,也存入req
+					req.setAttribute("selectOneUpdate", updateSpace); 
 					RequestDispatcher failureView = req.getRequestDispatcher("/backend/space/updateSpace.jsp");
 					failureView.forward(req, res);
 					return;
 				}
 				
 
-				SpaceService spaceServ = new SpaceService();
+				spaceServ = new SpaceService();
 				updateSpace = spaceServ.updateSapce(updateSpace);
-				req.setAttribute("updateSpace", updateSpace);
+//				req.setAttribute("updateSpace", updateSpace);
 
-				String url = "/backend/space/selectAllSapce.jsp";
+				String url = "/backend/space/selectSpaceStatus.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				

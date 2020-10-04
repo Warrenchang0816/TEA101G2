@@ -7,9 +7,7 @@ public interface SpaceDAOInterface {
 	public void delete(String spaceId);
 	public void update(SpaceVO spaceVO);
 	public SpaceVO selectOne(String spaceId);
-//	public SpaceVO selectOneBySpaceId(String spaceId);
-//	public SpaceVO selectOneBySpaceName(String spaceName);
 	public List<SpaceVO> selectAll();
-	public List<SpaceVO> selectAllByMember(String memberId);
+//	public List<SpaceVO> selectAllByMember(String memberId);
 
 }

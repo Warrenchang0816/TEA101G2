@@ -263,8 +263,7 @@ public class MemberServlet extends HttpServlet {
 				String memberId = req.getParameter("memberId").trim();
 
 				MemberService memberService = new MemberService();
-				MemberVO selectOneUpdate = new MemberVO();
-				selectOneUpdate = memberService.selectOneMember(memberId);
+				MemberVO selectOneUpdate = memberService.selectOneMember(memberId);
 				req.setAttribute("selectOneUpdate", selectOneUpdate);
 
 				String url = "/backend/member/updateMember.jsp";
@@ -284,91 +283,33 @@ public class MemberServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			try {
+				MemberService memberService = new MemberService();
+				
 				String memberId = req.getParameter("memberId").trim();
 				
 				String memberAccount = req.getParameter("memberAccount").trim();
-//				String memberIdReg = "^[(\u4e00-\u9fa5)(a-zA-Z0-9_)]{2,10}$";
-				if(memberAccount == null || memberAccount.isEmpty()) {
-					errorMsgs.add("會員帳號: 請勿空白");
-				}
 				
 				String memberPassword = req.getParameter("memberPassword").trim();
-				if(memberPassword == null || memberPassword.isEmpty()) {
-					errorMsgs.add("會員密碼: 請勿空白");
-				}
 				
 				String memberName = req.getParameter("memberName").trim();
-				if(memberName == null || memberName.isEmpty()) {
-					errorMsgs.add("會員姓名: 請勿空白");
-				}
 				
 				String memberNickname = req.getParameter("memberNickname").trim();
-				if(memberNickname == null || memberNickname.isEmpty()) {
-					errorMsgs.add("會員名稱: 請勿空白");
-				}
 				
 				String memberEmail = req.getParameter("memberEmail").trim();
-				if(memberEmail == null || memberEmail.isEmpty()) {
-					errorMsgs.add("會員email: 請勿空白");
-				}
 				
-				Part part = req.getPart("memberPhoto");
-				InputStream in = null;
-				byte[] memberPhoto = null;
-				String filename = getFileNameFromPart(part);
-				if (filename == null || filename.isEmpty()) {
-//				if (part == null) {
-					MemberService memberService = new MemberService();
-					MemberVO memberOriginPhoto = memberService.selectOneMember(memberId);
-					memberPhoto = memberOriginPhoto.getMemberPhoto();
-				} else {
-					in = part.getInputStream();
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					byte[] buffer = new byte[8192];
-					int i;
-					while ((i = in.read(buffer)) != -1) {
-						baos.write(buffer, 0, i);
-					}
-					memberPhoto = baos.toByteArray();
-					baos.close();
-					in.close();
-				}
+				byte[] memberPhoto = memberService.selectOneMember(memberId).getMemberPhoto();
 				
 				String memberPhone = req.getParameter("memberPhone").trim();
-				if(memberPhone == null || memberPhone.isEmpty()) {
-					errorMsgs.add("會員電話: 請勿空白");
-				}
 				
 				String memberAddress = req.getParameter("memberAddress").trim();
-				if(memberAddress == null || memberAddress.isEmpty()) {
-					errorMsgs.add("會員聯絡地址: 請勿空白");
-				}
 				
-				Date memberBirth = null;
-				try {
-					memberBirth = java.sql.Date.valueOf(req.getParameter("memberBirth").trim());
-				} catch (IllegalArgumentException e) {
-					memberBirth = new java.sql.Date(System.currentTimeMillis());
-					errorMsgs.add("會員生日: 請勿空白");
-				}
+				Date memberBirth = java.sql.Date.valueOf(req.getParameter("memberBirth").trim());
 				
 				String memberSex = req.getParameter("memberSex").trim();
-				if(memberSex == null || memberSex.isEmpty()) {
-					errorMsgs.add("會員性別: 請勿空白");
-				}
 				
 				String memberCountry = req.getParameter("memberCountry").trim();
-				if(memberCountry == null || memberCountry.isEmpty()) {
-					errorMsgs.add("會員國籍: 請勿空白");
-				}
 				
-				Date memberSignupDate = null;
-				try {
-					memberSignupDate = java.sql.Date.valueOf(req.getParameter("memberSignupDate").trim());
-				} catch (IllegalArgumentException e) {
-					memberSignupDate = new java.sql.Date(System.currentTimeMillis());
-					errorMsgs.add("會員註冊日: 請勿空白");
-				}
+				Date memberSignupDate = java.sql.Date.valueOf(req.getParameter("memberSignupDate").trim());
 				
 				Integer memberAuth = null;
 				try {
@@ -384,6 +325,14 @@ public class MemberServlet extends HttpServlet {
 					errorMsgs.add("會員帳號狀態: 請勿空白");
 				}
 				
+				String memberStatusEmp = req.getParameter("memberStatusEmp").trim();
+				
+				String memberStatusComm = req.getParameter("memberStatusComm").trim();
+				if(!memberStatus.equals("O")) {
+					if(memberStatusComm == null || memberStatusComm.isEmpty()) 
+					errorMsgs.add("停權原因請勿空白");
+				}
+
 				MemberVO updateMember = new MemberVO();
 				updateMember.setMemberId(memberId);
 				updateMember.setMemberAccount(memberAccount);
@@ -400,6 +349,8 @@ public class MemberServlet extends HttpServlet {
 				updateMember.setMemberSignupDate(memberSignupDate);
 				updateMember.setMemberAuth(memberAuth);
 				updateMember.setMemberStatus(memberStatus);
+				updateMember.setMemberStatusEmp(memberStatusEmp);
+				updateMember.setMemberStatusComm(memberStatusComm);
 				
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("selectOneUpdate", updateMember);
@@ -409,11 +360,11 @@ public class MemberServlet extends HttpServlet {
 				}
 				
 
-				MemberService memberService = new MemberService();
+				memberService = new MemberService();
 				updateMember = memberService.updateMember(updateMember);
-//				req.setAttribute("updateEmp", updateEmp);
+				req.setAttribute("selectOneMember", updateMember);
 
-				String url = "/backend/member/selectAllMember.jsp";
+				String url = "/backend/member/memberProfile.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				

@@ -8,7 +8,14 @@ public class TestJDBC {
 		MemberCommDAOInterface dao = new MemberCommDAO();
 		
 		//All
-		List<MemberCommVO> list = dao.selectAll();
+//		List<MemberCommVO> list = dao.selectAll();
+//		for(MemberCommVO memberCommVO : list) {
+//			System.out.println(memberCommVO.getComm());
+//		}		
+		
+		//All
+		MemberCommService mcs = new MemberCommService();
+		List<MemberCommVO> list = mcs.selectAllMemberCommByMember("MEM00001");
 		for(MemberCommVO memberCommVO : list) {
 			System.out.println(memberCommVO.getComm());
 		}		

@@ -1,6 +1,11 @@
 package com.emp.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 
 
 public class EmpService {
@@ -33,6 +38,36 @@ public class EmpService {
 	
 	public List<EmpVO> selectAllEmp() {
 		return dao.selectAll();
+	}
+	
+	public boolean isEmpAccountLogin(String empAccount) {
+		List<EmpVO> all = dao.selectAll();
+		
+		if(all.stream().anyMatch(e -> empAccount.equals(e.getEmpAccount()))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isEmpPasswordLogin(String empPassword) {
+		List<EmpVO> all = dao.selectAll();
+		
+		if(all.stream().anyMatch(e -> empPassword.equals(e.getEmpPassword()))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public EmpVO selectAllEmpByAccount(String empAccount) {
+		List<EmpVO> all = dao.selectAll();
+		EmpVO emp = new EmpVO();
+		
+		Optional<EmpVO> oemp = all.stream()
+			.filter(e -> empAccount.equals(e.getEmpAccount()))
+			.findFirst();
+		emp = oemp.get();
+		
+		return emp;
 	}
 
 }

@@ -231,48 +231,30 @@ public class OrderMasterServlet extends HttpServlet {
 			try {
 				String orderMasterId = req.getParameter("orderMasterId").trim();
 				
-				String memberId = req.getParameter("memberId").trim();
-				if(memberId == null || memberId.isEmpty()) errorMsgs.add("會員編號: 請勿空白");
+				OrderMasterService orderMasterServ = new OrderMasterService();
+				OrderMasterVO OrderMaster = orderMasterServ.selectOneOrderMaster(orderMasterId);
 				
-				java.sql.Date orderCreatDate = null;
-				try {
-					orderCreatDate = java.sql.Date.valueOf(req.getParameter("orderCreatDate").trim());
-				} catch (IllegalArgumentException e) {
-					orderCreatDate = new java.sql.Date(System.currentTimeMillis());
-				}
-				
-				Integer orderAmount = null;
-				try {
-					orderAmount = Integer.parseInt(req.getParameter("orderAmount").trim());
-					if(orderAmount <= 0) errorMsgs.add("訂單金額: 請確認金額");
-				} catch (NumberFormatException e) {
-					orderAmount = 0;
-					errorMsgs.add("訂單金額: 必須為數字");
-				}
-				
-				String orderStatus = req.getParameter("orderStatus").trim();
-				if(orderStatus == null || orderStatus.isEmpty()) errorMsgs.add("訂單狀態: 請勿空白");
-
+				String orderStatusEmp = req.getParameter("orderStatusEmp").trim();
 				
 				OrderMasterVO updateOrderMaster = new OrderMasterVO();
 				updateOrderMaster.setOrderMasterId(orderMasterId);
-				updateOrderMaster.setMemberId(memberId);
-				updateOrderMaster.setOrderCreatDate(orderCreatDate);
-				updateOrderMaster.setOrderAmount(orderAmount);
-				updateOrderMaster.setOrderStatus(orderStatus);
+				updateOrderMaster.setMemberId(OrderMaster.getMemberId());
+				updateOrderMaster.setOrderCreatDate(OrderMaster.getOrderCreatDate());
+				updateOrderMaster.setOrderAmount(OrderMaster.getOrderAmount());
+				updateOrderMaster.setOrderStatus("R");
+				updateOrderMaster.setOrderStatusComm(OrderMaster.getOrderStatusComm());
+				updateOrderMaster.setOrderStatusEmp(orderStatusEmp);
 				
 				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("selectOneUpdate", updateOrderMaster); 
-					RequestDispatcher failureView = req.getRequestDispatcher("/backend/orderMaster/updateOrderMaster.jsp");
+					RequestDispatcher failureView = req.getRequestDispatcher("/backend/orderMaster/selectOrderMasterStatusR.jsp");
 					failureView.forward(req, res);
 					return;
 				}
 
-				OrderMasterService orderMasterServ = new OrderMasterService();
+				orderMasterServ = new OrderMasterService();
 				updateOrderMaster = orderMasterServ.updateOrderMaster(updateOrderMaster);
-//				req.setAttribute("selectOneUpdate", updateMemberComm);
 
-				String url = "/backend/orderMaster/selectAllOrderMaster.jsp";
+				String url = "/backend/orderMaster/selectOrderMasterStatusR.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				

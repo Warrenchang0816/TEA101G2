@@ -9201,3 +9201,10 @@ ul.plan-features {
     display: none;
   }
 }
+
+a.social_bt.facebook {
+  background-color: #3B5998;
+}
+a.social_bt.facebook:before {
+  content: "\e093";
+}

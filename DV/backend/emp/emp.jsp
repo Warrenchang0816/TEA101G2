@@ -4,11 +4,14 @@
 <%@ page import="com.emp.model.*"%>
 
 <%
-EmpVO empVO2 = (EmpVO)request.getAttribute("selectOneEmp");
 Base64.Encoder encode = Base64.getEncoder();
+EmpService empServ = new EmpService();
 
-EmpService empSvc = new EmpService();
-EmpVO empVO = empSvc.selectOneEmp("EMP00001");
+EmpVO loginEmpVO = (EmpVO)session.getAttribute("loginEmp");
+String empId = loginEmpVO.getEmpId();
+EmpVO loginEmp = empServ.selectOneEmp(empId);
+
+EmpVO empVO = (EmpVO)request.getAttribute("selectOneEmp");
 
 %>
 
@@ -76,7 +79,7 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -91,14 +94,6 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -142,6 +137,9 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
           </a>
         </li>
       </ul>
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -234,7 +232,7 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -254,7 +252,7 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
       </ol>
 		<div class="box_general padding_bottom">
 			<div class="header_box version_2">
-				<h2><i class="fa fa-user"></i><%=empVO.getEmpId()%> / <%= (empVO == null)? "" : empVO.getEmpName()%></h2>
+				<h2><i class="fa fa-user"></i><%=loginEmp.getEmpId()%> / <%= (loginEmp == null)? "" : loginEmp.getEmpName()%></h2>
 			</div>
 			
  			<%-- 
@@ -270,24 +268,23 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
 			</div>
 			--%>
 			
-			<img src="<%=(empVO.getEmpPhoto() == null)? application.getRealPath("/backend/img/BlobTest3") : "data:image/png;base64," + encode.encodeToString(empVO.getEmpPhoto())%>" class="perview"/>
+			<img src="<%=(loginEmp.getEmpPhoto() == null)? application.getRealPath("/backend/img/BlobTest3") : "data:image/png;base64," + encode.encodeToString(loginEmp.getEmpPhoto())%>" class="perview"/>
 
 
  			<div class="row">
 				<div class="col-md-8 add_top_30">
-					<div class="row">
 <%-- 
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工帳號</label>
-								<input type="text" class="form-control" placeholder="帳號" name="empAccount" readonly
+								<input type="text" class="form-control" name="empAccount" readonly
 									value="<%=empVO.getEmpId()%>"/>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工密碼</label>
-								<input type="text" class="form-control" placeholder="密碼" name="empPassword" readonly
+								<input type="text" class="form-control" name="empPassword" readonly
 									value="<%= (empVO == null)? "" : empVO.getEmpPassword()%>"/>
 							</div>
 						</div>
@@ -295,103 +292,114 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工姓名</label>
-								<input type="text" class="form-control" placeholder="Your name" name="empName" readonly
+								<input type="text" class="form-control" name="empName" readonly
 									value="<%= (empVO == null)? "" : empVO.getEmpName()%>"/>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工名稱</label>
-								<input type="text" class="form-control" placeholder="Your last name" name="empNickname" readonly
+								<input type="text" class="form-control" name="empNickname" readonly
 									value="<%= (empVO == null)? "" : empVO.getEmpNickname()%>"/>
 							</div>
 						</div>
 --%>
 					<!-- /row-->
-
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>員工姓名</label>
+								<input type="text" class="form-control" name="empName" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpName() : empVO.getEmpName()%>"/>
+							</div>
+						</div>
+					</div>
+					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工連絡電話</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empPhone" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpPhone()%>"/>
+								<input type="text" class="form-control" name="empPhone" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpPhone() : empVO.getEmpPhone()%>"/>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
+								<label>員工Email</label>
+								<input type="text" class="form-control" name="empEmail" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpEmail() : empVO.getEmpEmail()%>"/>
+							</div>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
 								<label>員工聯絡地址</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAddress" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpAddress()%>"/>
+								<input type="text" class="form-control" name="empAddress" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpAddress() : empVO.getEmpAddress()%>"/>
 								
 							</div>
 						</div>
-						
-						<div class="col-md-12">
-							<div class="form-group">
-								<label>員工Email</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empEmail" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpEmail()%>"/>
-							</div>
-						</div>
-
+					</div>
 					
-
+					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工生日</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empBirth" id="empBirth" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpBirth()%>"/>
+								<input type="text" class="form-control" name="empBirth" id="empBirth" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpBirth() : empVO.getEmpBirth()%>"/>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工性別</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empSex" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpSex()%>"/>
+								<input type="text" class="form-control" name="empSex" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpSex() : empVO.getEmpSex()%>"/>
 								
 							</div>
 						</div>
-	
+					</div>
 					
-
+					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工國籍</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empCountry" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpCountry()%>"/>
+								<input type="text" class="form-control" name="empCountry" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpCountry() : empVO.getEmpCountry()%>"/>
 								
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>員工到職日</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empHireDate" id="empHireDate" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpHireDate()%>"/>
+								<input type="text" class="form-control" name="empHireDate" id="empHireDate" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpHireDate() : empVO.getEmpHireDate()%>"/>
 							</div>
 						</div>
-
+					</div>
 					
-
+					<div class="row">
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>員工職稱</label> 
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empJob" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpJob()%>"/>
+								<input type="text" class="form-control" name="empJob" readonly
+									value="<%= (empVO == null)? loginEmp.getEmpJob() : empVO.getEmpJob()%>"/>
 								
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>員工權限</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAuth" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpAuth()%>"/>
+								<input type="text" class="form-control" name="empAuth" readonly
+									value="<%= (loginEmp == null)? "" : (loginEmp.getEmpAuth() == 1)? "員工": "主管"%>"/>
 
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>員工在職狀態</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empStatus" readonly
-									value="<%= (empVO == null)? "" : empVO.getEmpStatus()%>"/>
+								<input type="text" class="form-control" name="empStatus" readonly
+									value="<%= (loginEmp == null)? "" : (loginEmp.getEmpStatus().equals("O"))? "在職": (loginEmp.getEmpStatus().equals("P"))? "停職" : "離職"%>"/>
 								
 							</div>
 						</div>
@@ -404,12 +412,10 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
 			</div>
 			
 			
-		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/EmpServlet" style="margin-bottom: 0px;">
 			    <input type="submit" class="btn_1 medium" value="修改基本資料">
-			    <input type="hidden" name="empId"  value="<%=empVO.getEmpId()%>">
+			    <input type="hidden" name="empId"  value="<%=loginEmp.getEmpId()%>">
 			    <input type="hidden" name="action"	value="backend_SelectOneUpdate"></FORM>
-		</td>
 				
 			
 		</div>
@@ -441,15 +447,17 @@ EmpVO empVO = empSvc.selectOneEmp("EMP00001");
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="<%=request.getContextPath()%>/backend/login.jsp">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

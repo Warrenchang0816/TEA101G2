@@ -1,6 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
+
+<%
+
+	LinkedList<String> errorMsgs = (LinkedList<String>) request.getAttribute("errorMsgs");
+	String empAccount = (String)request.getAttribute("empAccount");
+	String empPassword = (String)request.getAttribute("empPassword");
+
+%>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,9 +54,12 @@
 	<div id="login">
 		<aside>
 			<figure>
-				<a href="<%=request.getContextPath()%>/backend/index.html"><img src="img/logo_sticky.png" width="155" height="36" data-retina="true" alt="" class="logo_sticky"></a>
+				<a href="index.html"><img src="<%=request.getContextPath()%>/backend/img/logo_sticky.png" width="155" height="36" data-retina="true" alt="" class="logo_sticky"></a>
 			</figure>
-			  <form>
+			
+			
+<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LoginHandler" enctype="multipart/form-data"> 
+
 				<div class="access_social">
 					<a href="#0" class="social_bt facebook">Login with Facebook</a>
 					<a href="#0" class="social_bt google">Login with Google</a>
@@ -55,13 +67,16 @@
 				</div>
 				<div class="divider"><span>Or</span></div>
 				<div class="form-group">
-					<label>Email</label>
-					<input type="email" class="form-control" name="email" id="email">
+					<label>員工帳號</label>
+					<input type="account" class="form-control" name="empAccount" id="email"
+						value="<%= (empAccount == null)? "" : empAccount%>"/>
+					<span style="color:red"><%= (errorMsgs ==null)? "" : (empAccount.equals(""))? "帳號請勿空白" : (!empAccount.equals("") && errorMsgs == null )? " " : (!empAccount.equals("") && errorMsgs != null )? "  " + errorMsgs.poll(): "" %></span>
 					<i class="icon_mail_alt"></i>
 				</div>
 				<div class="form-group">
-					<label>Password</label>
-					<input type="password" class="form-control" name="password" id="password" value="">
+					<label>員工密碼</label>
+					<input type="password" class="form-control" name="empPassword" id="password" >
+					<span style="color:red"><%=  (errorMsgs ==null)? "" : (empPassword.equals("") && empAccount.equals(""))? "密碼請勿空白" : "密碼錯誤"%></span>
 					<i class="icon_lock_alt"></i>
 				</div>
 				<div class="clearfix add_bottom_30">
@@ -73,9 +88,13 @@
 					</div>
 					<div class="float-right mt-1"><a id="forgot" href="javascript:void(0);">Forgot Password?</a></div>
 				</div>
-				<a href="#0" class="btn_1 rounded full-width">Login to Panagea</a>
-				<div class="text-center add_top_10">New to Panagea? <strong><a href="register.html">Sign up!</a></strong></div>
+				
+				<button name="login" type="submit" class="btn_1 rounded full-width" >登入</button>
+				<a class="btn_1 rounded full-width" href='<%=request.getContextPath()%>/backend/backendLogin.jsp'>取消</a>
+			
 			</form>
+			
+			
 			<div class="copy">© 2018 Panagea</div>
 		</aside>
 	</div>
@@ -84,7 +103,7 @@
 	<!-- COMMON SCRIPTS -->
     <script src="<%=request.getContextPath()%>/backend/js/common_scripts.js"></script>
     <script src="<%=request.getContextPath()%>/backend/js/main.js"></script>
-	<script src="<%=request.getContextPath()%>/backend/assets/validate.js"></script>	
+	<script src="<%=request.getContextPath()%>/backend/js/validate.js"></script>	
   
 </body>
 </html>

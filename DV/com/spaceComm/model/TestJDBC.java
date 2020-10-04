@@ -2,11 +2,13 @@ package com.spaceComm.model;
 
 import java.util.List;
 
+import com.memberComm.model.MemberCommVO;
+
 public class TestJDBC {
 	public static void main(String[] args) {
 	
-		SpaceCommDAOInterface dao = new SpaceCommDAO();
-		List<SpaceCommVO> list = dao.selectAll();
+//		SpaceCommDAOInterface dao = new SpaceCommDAO();
+//		List<SpaceCommVO> list = dao.selectAll();
 		
 //		for(SpaceCommVO spaceCommVO : list) {
 //			System.out.println(spaceCommVO.getSpaceId());
@@ -32,19 +34,26 @@ public class TestJDBC {
 //		System.out.println(selectOne.getMemberId());
 //		System.out.println(selectOne.getCommLevel());
 		
+		//selectallBySpace
+		SpaceCommService scs = new SpaceCommService();
+		List<SpaceCommVO> list = scs.selectAllSpaceCommBySpace("SPACE00002");
+		for(SpaceCommVO SpaceCommVO : list) {
+			System.out.println(SpaceCommVO.getComm());
+		}		
+		
 		//delete
 //		dao.delete("50");
 		
 		//update
-		SpaceCommVO update = new SpaceCommVO();
-		update.setSpaceCommId("SCOMMENT00005");
-		update.setSpaceId("SPACE00003");
-		update.setMemberId("MEM00002");
-		update.setComm("YAYAYYAYA");
-		update.setCommLevel(3);
-		update.setCommDate(java.sql.Date.valueOf("2020-09-01"));
-		dao.update(update);
-		System.out.println("FUCK");
+//		SpaceCommVO update = new SpaceCommVO();
+//		update.setSpaceCommId("SCOMMENT00005");
+//		update.setSpaceId("SPACE00003");
+//		update.setMemberId("MEM00002");
+//		update.setComm("YAYAYYAYA");
+//		update.setCommLevel(3);
+//		update.setCommDate(java.sql.Date.valueOf("2020-09-01"));
+//		dao.update(update);
+//		System.out.println("FUCK");
 		
 	}
 

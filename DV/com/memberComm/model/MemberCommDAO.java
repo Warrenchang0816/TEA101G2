@@ -160,7 +160,7 @@ public class MemberCommDAO implements MemberCommDAOInterface{
 			
 			rs = ptmt.executeQuery();
 			while (rs.next()) {
-				memberCommVO.setMemberCommId(rs.getString("MEMBER_COMM_ID"));
+				memberCommVO.setMemberCommId(rs.getString("MEMBER_COMMENT_ID"));
 				memberCommVO.setMemberAId(rs.getString("MEMBER_A_ID"));
 				memberCommVO.setMemberBId(rs.getString("MEMBER_B_ID"));
 				memberCommVO.setComm(rs.getString("MEMBER_COMMENT_CONTENT"));
@@ -214,7 +214,7 @@ public class MemberCommDAO implements MemberCommDAOInterface{
 			rs = ptmt.executeQuery();
 			while (rs.next()) {
 				memberCommVO = new MemberCommVO();
-				memberCommVO.setMemberCommId(rs.getString("MEMBER_COMM_ID"));
+				memberCommVO.setMemberCommId(rs.getString("MEMBER_COMMENT_ID"));
 				memberCommVO.setMemberAId(rs.getString("MEMBER_A_ID"));
 				memberCommVO.setMemberBId(rs.getString("MEMBER_B_ID"));
 				memberCommVO.setComm(rs.getString("MEMBER_COMMENT_CONTENT"));

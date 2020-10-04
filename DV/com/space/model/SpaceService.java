@@ -1,6 +1,8 @@
 package com.space.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpaceService {
 	
@@ -34,8 +36,42 @@ public class SpaceService {
 		return dao.selectAll();
 	}
 	
+//	public List<SpaceVO> selectAllSpaceByMember(String memberId) {
+//		return dao.selectAllByMember(memberId);
+//	}
+	
 	public List<SpaceVO> selectAllSpaceByMember(String memberId) {
-		return dao.selectAllByMember(memberId);
+		List<SpaceVO> all = dao.selectAll();
+		List<SpaceVO> allByMember = new ArrayList<SpaceVO>();
+		
+		allByMember = all.stream()
+				.filter(s -> memberId.equals(s.getMemberId()))
+				.collect(Collectors.toList());
+		
+		return allByMember;
+	}
+	
+	public List<SpaceVO> selectAllSpaceByStatus(String spaceStatus) {
+		List<SpaceVO> all = dao.selectAll();
+		List<SpaceVO> allByStatus = new ArrayList<SpaceVO>();
+		
+		allByStatus = all.stream()
+				.filter(s -> spaceStatus.equals(s.getSpaceStatus()))
+				.collect(Collectors.toList());
+		
+		return allByStatus;
+	}
+	
+	public List<SpaceVO> selectAllNewSpace(String spaceStatus) {
+		List<SpaceVO> all = dao.selectAll();
+		List<SpaceVO> allNew = new ArrayList<SpaceVO>();
+		
+		allNew = all.stream()
+				.filter(s -> spaceStatus.equals(s.getSpaceStatus()))
+				.filter(s -> (s.getSpaceStatusEmp() == null))
+				.collect(Collectors.toList());
+		
+		return allNew;
 	}
 	
 

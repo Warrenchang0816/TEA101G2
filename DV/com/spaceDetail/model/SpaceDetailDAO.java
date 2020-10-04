@@ -27,8 +27,8 @@ public class SpaceDetailDAO implements SpaceDetailDAOInterface{
 		"DELETE FROM SPACE_DETAIL where SPACE_DETAIL_ID = ?";
 	private static final String UPDATE = 
 		"UPDATE SPACE_DETAIL set SPACE_ID=?,SPACE_DETAIL_FREEDATE=?,SPACE_DETAIL_FREETIME_START=?,SPACE_DETAIL_FREETIME_END=?,SPACE_DETAIL_CHARGE=? where SPACE_DETAIL_ID = ?";
-	private static final String SELECT_ALL_BY_SPACEID_STMT = 
-			"SELECT * FROM SPACE_DETAIL where SPACE_ID = ? order by SPACE_DETAIL_ID";
+//	private static final String SELECT_ALL_BY_SPACEID_STMT = 
+//			"SELECT * FROM SPACE_DETAIL where SPACE_ID = ? order by SPACE_DETAIL_ID";
 
 
 	@Override
@@ -258,61 +258,61 @@ public class SpaceDetailDAO implements SpaceDetailDAOInterface{
 		return list;
 	}
 
-	@Override
-	public List<SpaceDetailVO> selectAllBySpace(String spaceId) {
-		Connection con = null;
-		PreparedStatement ptmt = null;
-		ResultSet rs = null;
-		
-		SpaceDetailVO spaceDetailVO = null;
-		List<SpaceDetailVO> list = new ArrayList<SpaceDetailVO>();;
-		
-		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
-			ptmt = con.prepareStatement(SELECT_ALL_BY_SPACEID_STMT);
-			
-			ptmt.setString(1, spaceId);
-			
-			rs = ptmt.executeQuery();
-			while (rs.next()) {
-				spaceDetailVO = new SpaceDetailVO();
-				spaceDetailVO.setSpaceDetailId(rs.getString("SPACE_DETAIL_ID"));
-				spaceDetailVO.setSpaceId(rs.getString("SPACE_ID"));
-				spaceDetailVO.setSpaceDetailFreeDate(rs.getDate("SPACE_DETAIL_FREEDATE"));
-				spaceDetailVO.setSpaceDetailFreeTimeStart(rs.getTimestamp("SPACE_DETAIL_FREETIME_START"));
-				spaceDetailVO.setSpaceDetailFreeTimeEnd(rs.getTimestamp("SPACE_DETAIL_FREETIME_END"));
-				spaceDetailVO.setSpaceDetailCharge(rs.getInt("SPACE_DETAIL_CHARGE"));
-				list.add(spaceDetailVO);
-			}
-
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (ptmt != null) {
-					try {
-						ptmt.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}if (con != null) {
-					try {
-						con.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}
-			}
-		return list;
-	}
+//	@Override
+//	public List<SpaceDetailVO> selectAllBySpace(String spaceId) {
+//		Connection con = null;
+//		PreparedStatement ptmt = null;
+//		ResultSet rs = null;
+//		
+//		SpaceDetailVO spaceDetailVO = null;
+//		List<SpaceDetailVO> list = new ArrayList<SpaceDetailVO>();;
+//		
+//		try {
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+//			ptmt = con.prepareStatement(SELECT_ALL_BY_SPACEID_STMT);
+//			
+//			ptmt.setString(1, spaceId);
+//			
+//			rs = ptmt.executeQuery();
+//			while (rs.next()) {
+//				spaceDetailVO = new SpaceDetailVO();
+//				spaceDetailVO.setSpaceDetailId(rs.getString("SPACE_DETAIL_ID"));
+//				spaceDetailVO.setSpaceId(rs.getString("SPACE_ID"));
+//				spaceDetailVO.setSpaceDetailFreeDate(rs.getDate("SPACE_DETAIL_FREEDATE"));
+//				spaceDetailVO.setSpaceDetailFreeTimeStart(rs.getTimestamp("SPACE_DETAIL_FREETIME_START"));
+//				spaceDetailVO.setSpaceDetailFreeTimeEnd(rs.getTimestamp("SPACE_DETAIL_FREETIME_END"));
+//				spaceDetailVO.setSpaceDetailCharge(rs.getInt("SPACE_DETAIL_CHARGE"));
+//				list.add(spaceDetailVO);
+//			}
+//
+//			}catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}finally {
+//				if (rs != null) {
+//					try {
+//						rs.close();
+//					} catch (SQLException se) {
+//						se.printStackTrace(System.err);
+//					}
+//				}
+//				if (ptmt != null) {
+//					try {
+//						ptmt.close();
+//					} catch (Exception e) {
+//						e.printStackTrace(System.err);
+//					}
+//				}if (con != null) {
+//					try {
+//						con.close();
+//					} catch (Exception e) {
+//						e.printStackTrace(System.err);
+//					}
+//				}
+//			}
+//		return list;
+//	}
 
 }

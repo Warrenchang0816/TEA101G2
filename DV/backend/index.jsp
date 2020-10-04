@@ -7,8 +7,7 @@
 EmpVO empVO = (EmpVO)request.getAttribute("selectOneEmp");
 Base64.Encoder encode = Base64.getEncoder();
 
-EmpService empSvc = new EmpService();
-EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
+EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 
 %>
 
@@ -66,7 +65,7 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -81,14 +80,6 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -131,7 +122,9 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
           </a>
         </li>
       </ul>
-      
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
@@ -226,7 +219,7 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -239,11 +232,9 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
     <div class="container-fluid">
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="#">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item active">My Dashboard</li>
+        <li class="breadcrumb-item active">首頁</li>
       </ol>
+      
 	  <!-- Icon Cards-->
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-3">
@@ -252,9 +243,9 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-envelope-open"></i>
               </div>
-              <div class="mr-5"><h5>26 New Messages!</h5></div>
+              <div class="mr-5"><h5>新增員工</h5></div>
             </div>
-            <a class="card-footer text-white clearfix small z-1" href="messages.jsp">
+            <a class="card-footer text-white clearfix small z-1" href="<%=request.getContextPath()%>/backend/emp/addEmp.jsp">
               <span class="float-left">View Details</span>
               <span class="float-right">
                 <i class="fa fa-angle-right"></i>
@@ -262,15 +253,18 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
             </a>
           </div>
         </div>
+		
+		
+		
         <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card dashboard text-white bg-warning o-hidden h-100">
+          <div class="card dashboard text-white bg-primary o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <i class="fa fa-fw fa-star"></i>
+                <i class="fa fa-fw fa-envelope-open"></i>
               </div>
-				<div class="mr-5"><h5>11 New Reviews!</h5></div>
+              <div class="mr-5"><h5>更改員工權限</h5></div>
             </div>
-            <a class="card-footer text-white clearfix small z-1" href="reviews.jsp">
+            <a class="card-footer text-white clearfix small z-1" href="<%=request.getContextPath()%>/backend/emp/selectEmpAuth.jsp">
               <span class="float-left">View Details</span>
               <span class="float-right">
                 <i class="fa fa-angle-right"></i>
@@ -278,52 +272,8 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
             </a>
           </div>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card dashboard text-white bg-success o-hidden h-100">
-            <div class="card-body">
-              <div class="card-body-icon">
-                <i class="fa fa-fw fa-calendar-check-o"></i>
-              </div>
-              <div class="mr-5"><h5>10 New Bookings!</h5></div>
-            </div>
-            <a class="card-footer text-white clearfix small z-1" href="bookings.jsp">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-            </a>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card dashboard text-white bg-danger o-hidden h-100">
-            <div class="card-body">
-              <div class="card-body-icon">
-                <i class="fa fa-fw fa-heart"></i>
-              </div>
-              <div class="mr-5"><h5>10 New Bookmarks!</h5></div>
-            </div>
-            <a class="card-footer text-white clearfix small z-1" href="bookmarks.jsp">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-            </a>
-          </div>
-        </div>
-		</div>
-		<!-- /cards -->
-		<h2></h2>
-		<div class="box_general padding_bottom">
-			<div class="header_box version_2">
-				<h2><i class="fa fa-bar-chart"></i>Statistic</h2>
-			</div>
-		 <canvas id="myAreaChart" width="100%" height="30" style="margin:45px 0 15px 0;"></canvas>
-		</div>
-	  </div>
-	  <!-- /.container-fluid-->
-   	</div>
-   	
-   	
+        
+	</div>
    	
     <!-- /.container-wrapper-->
     <footer class="sticky-footer">
@@ -345,15 +295,17 @@ EmpVO empVO2 = empSvc.selectOneEmp("EMP00001");
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="login.jsp">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

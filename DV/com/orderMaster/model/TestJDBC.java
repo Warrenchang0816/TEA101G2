@@ -8,7 +8,14 @@ public class TestJDBC {
 		OrderMasterDAOInterface dao = new OrderMasterDAO();
 		
 		//All
-		List<OrderMasterVO> list = dao.selectAll();
+//		List<OrderMasterVO> list = dao.selectAll();
+//		for(OrderMasterVO orderMasterVO : list) {
+//			System.out.println(orderMasterVO.getOrderMasterId());
+//		}
+		
+		//AllByMember
+		OrderMasterService oms = new OrderMasterService();
+		List<OrderMasterVO> list = oms.selectAllOrderMasterByMember("MEM00001");
 		for(OrderMasterVO orderMasterVO : list) {
 			System.out.println(orderMasterVO.getOrderMasterId());
 		}		

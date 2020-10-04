@@ -1,6 +1,8 @@
 package com.orderDetail.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderDetailService {
 	private OrderDetailDAOInterface dao;
@@ -34,7 +36,29 @@ public class OrderDetailService {
 		return dao.selectAll();
 	}
 	
+//	public List<OrderDetailVO> selectAllOrderDetailByMaster(String orderMasterId) {
+//		return dao.selectAllByMasterId(orderMasterId);
+//	}
+	
 	public List<OrderDetailVO> selectAllOrderDetailByMaster(String orderMasterId) {
-		return dao.selectAllByMasterId(orderMasterId);
+		List<OrderDetailVO> all = dao.selectAll();
+		List<OrderDetailVO> allByMaster = new ArrayList<OrderDetailVO>();
+		
+		allByMaster = all.stream()
+				.filter(od -> orderMasterId.equals(od.getOrderMasterId()))
+				.collect(Collectors.toList());
+		
+		return allByMaster;
+	}
+	
+	public List<OrderDetailVO> selectAllOrderDetailBySpaceDetail(String spaceDetailId) {
+		List<OrderDetailVO> all = dao.selectAll();
+		List<OrderDetailVO> allBySpaceDetail = new ArrayList<OrderDetailVO>();
+		
+		allBySpaceDetail = all.stream()
+				.filter(od -> spaceDetailId.equals(od.getOrderDetailId()))
+				.collect(Collectors.toList());
+		
+		return allBySpaceDetail;
 	}
 }

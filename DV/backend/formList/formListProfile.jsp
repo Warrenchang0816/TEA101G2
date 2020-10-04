@@ -2,10 +2,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.formList.model.*"%>
+<%@ page import="com.emp.model.*"%>
 
 <%
 FormListVO formListVO = (FormListVO)request.getAttribute("selectOneFormList");
 Base64.Encoder encode = Base64.getEncoder();
+
+EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 
 %>
 
@@ -73,7 +76,7 @@ Base64.Encoder encode = Base64.getEncoder();
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -88,14 +91,6 @@ Base64.Encoder encode = Base64.getEncoder();
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
         
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
@@ -139,6 +134,10 @@ Base64.Encoder encode = Base64.getEncoder();
           </a>
         </li>
       </ul>
+      
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -231,7 +230,7 @@ Base64.Encoder encode = Base64.getEncoder();
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -330,7 +329,7 @@ Base64.Encoder encode = Base64.getEncoder();
 							<div class="form-group">
 								<label>表單狀態</label>
 								<input type="text" class="form-control" placeholder="" name="formListStatus" readonly
-									value="<%= (formListVO == null)? "" : formListVO.getFormListStatus()%>"/>
+									value="<%= (formListVO == null)? "" : (formListVO.getFormListStatus().equals("new"))? "未結案" : (formListVO.getFormListStatus().equals("handle"))? "已處理" : "結案" %>"/>
 								
 							</div>
 						</div>
@@ -381,7 +380,7 @@ Base64.Encoder encode = Base64.getEncoder();
 			</div>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/FormListServlet" style="margin-bottom: 0px;">
-			    <input type="submit" class="btn_1 medium" value="結案表單">
+			    <input type="submit" class="btn_1 medium" value="更新表單">
 			    <input type="hidden" name="formListId"  value="<%=formListVO.getFormListId()%>">
 			    <input type="hidden" name="action"	value="backend_SelectOneUpdate"></FORM>
 		</td>
@@ -413,15 +412,17 @@ Base64.Encoder encode = Base64.getEncoder();
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="<%=request.getContextPath()%>/backend/login.jsp">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

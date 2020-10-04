@@ -225,6 +225,7 @@ public class FormListServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			try {
+				System.out.println("YAAAA");
 				String formListId = req.getParameter("formListId").trim();
 				
 				String empId = req.getParameter("empId").trim();
@@ -253,7 +254,7 @@ public class FormListServlet extends HttpServlet {
 					formListSoluDate = new java.sql.Date(System.currentTimeMillis());
 					errorMsgs.add("表單申請日期: 格式錯誤");
 				}
-
+				System.out.println("YAAAA222");
 				updateFormList = new FormListVO();
 				updateFormList.setFormListId(formListId);
 				updateFormList.setMemberId(memberId);
@@ -266,9 +267,9 @@ public class FormListServlet extends HttpServlet {
 				updateFormList.setFormListStatus(formListStatus);
 				updateFormList.setFormListSolu(formListSolu);
 				updateFormList.setFormListSoluDate(formListSoluDate);
-				
+				System.out.println("YAAAA3333");
 				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("selectOneFormList", updateFormList);
+					req.setAttribute("selectOneUpdate", updateFormList);
 					RequestDispatcher failureView = req.getRequestDispatcher("/backend/formList/updateFormList.jsp");
 					failureView.forward(req, res);
 					return;

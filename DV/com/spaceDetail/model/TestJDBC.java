@@ -8,10 +8,17 @@ public class TestJDBC {
 		SpaceDetailDAOInterface dao = new SpaceDetailDAO();
 		
 		//All
-		List<SpaceDetailVO> list = dao.selectAll();
+//		List<SpaceDetailVO> list = dao.selectAll();
+//		for(SpaceDetailVO spaceDetailVO : list) {
+//			System.out.println(spaceDetailVO.getSpaceDetailId());
+//		}
+		
+		//AllBySpace
+		SpaceDetailService sds = new SpaceDetailService();
+		List<SpaceDetailVO> list = sds.selectAllSpaceDetailBySpace("SPACE00001");
 		for(SpaceDetailVO spaceDetailVO : list) {
 			System.out.println(spaceDetailVO.getSpaceDetailId());
-		}		
+		}	
 		
 		//One
 //		SpaceDetailVO one = dao.selectOne("60");

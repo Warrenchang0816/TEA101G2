@@ -13,8 +13,9 @@ public class TestJDBC {
 //			System.out.println(orderDetailVO.getOrderMasterId());
 //		}		
 		
-		//All
-		List<OrderDetailVO> list = dao.selectAllByMasterId("202009190001");
+		//AllByMaster
+		OrderDetailService ods = new OrderDetailService();
+		List<OrderDetailVO> list = ods.selectAllOrderDetailByMaster("202009190001");
 		for(OrderDetailVO orderDetailVO : list) {
 			System.out.println(orderDetailVO.getOrderDetailId());
 		}		

@@ -2,6 +2,8 @@ package com.emp.model;
 
 import java.util.Arrays;
 
+import com.spaceDetail.model.SpaceDetailVO;
+
 public class EmpVO {
 	
 	private String empId;
@@ -11,7 +13,6 @@ public class EmpVO {
 	private String empNickname;
 	private String empEmail;
 	private byte[] empPhoto;
-//	private String empPhotoBase64;
 	private String empPhone;
 	private String empAddress;
 	private java.sql.Date empBirth;
@@ -21,6 +22,131 @@ public class EmpVO {
 	private String empJob;
 	private Integer empAuth;
 	private String empStatus;
+	
+	public static class Builder {
+
+		private String empId = "";
+		private String empAccount = "";
+		private String empPassword = "";
+		private String empName = "";
+		private String empNickname = "";
+		private String empEmail = "";
+		private byte[] empPhoto = null;
+		private String empPhone = "";
+		private String empAddress = "";
+		private java.sql.Date empBirth = (new java.sql.Date(System.currentTimeMillis()));
+		private String empSex = "";
+		private String empCountry = "";
+		private java.sql.Date empHireDate = (new java.sql.Date(System.currentTimeMillis()));
+		private String empJob = "";
+		private Integer empAuth = 0;
+		private String empStatus = "";
+	
+		public EmpVO.Builder empId(String empId) {
+			this.empId = empId;
+			return this;
+		}
+	
+		public EmpVO.Builder empAccount(String empAccount) {
+			this.empAccount = empAccount;
+			return this;
+		}
+	
+		public EmpVO.Builder empPassword(String empPassword) {
+			this.empPassword = empPassword;
+			return this;
+		}
+	
+		public EmpVO.Builder empName(String empName) {
+			this.empName = empName;
+			return this;
+		}
+	
+		public EmpVO.Builder empNickname(String empNickname) {
+			this.empNickname = empNickname;
+			return this;
+		}
+		
+		public EmpVO.Builder empEmail(String empEmail) {
+			this.empEmail = empEmail;
+			return this;
+		}
+		
+		public EmpVO.Builder empPhoto(byte[] empPhoto) {
+			this.empPhoto = empPhoto;
+			return this;
+		}
+		
+		public EmpVO.Builder empPhone(String empPhone) {
+			this.empPhone = empPhone;
+			return this;
+		}
+		
+		public EmpVO.Builder empAddress(String empAddress) {
+			this.empAddress = empAddress;
+			return this;
+		}
+		
+		public EmpVO.Builder empBirth(java.sql.Date empBirth) {
+			this.empBirth = empBirth;
+			return this;
+		}
+		
+		public EmpVO.Builder empSex(String empSex) {
+			this.empSex = empSex;
+			return this;
+		}
+		
+		public EmpVO.Builder empCountry(String empCountry) {
+			this.empCountry = empCountry;
+			return this;
+		}
+		
+		public EmpVO.Builder empHireDate(java.sql.Date empHireDate) {
+			this.empHireDate = empHireDate;
+			return this;
+		}
+		
+		public EmpVO.Builder empJob(String empJob) {
+			this.empJob = empJob;
+			return this;
+		}
+		
+		public EmpVO.Builder empAuth(Integer empAuth) {
+			this.empAuth = empAuth;
+			return this;
+		}
+		
+		public EmpVO.Builder empStatus(String empStatus) {
+			this.empStatus = empStatus;
+			return this;
+		}
+	
+	}
+
+	public EmpVO() {
+		super();
+	}
+	
+	private EmpVO(EmpVO.Builder builder) {
+		empId = builder.empId;
+		empAccount = builder.empAccount;
+		empPassword = builder.empPassword;
+		empName = builder.empName;
+		empNickname = builder.empNickname;
+		empEmail = builder.empEmail;
+		empPhoto = builder.empPhoto;
+		empPhone = builder.empPhone;
+		empAddress = builder.empAddress;
+		empBirth = builder.empBirth;
+		empSex = builder.empSex;
+		empCountry = builder.empCountry;
+		empHireDate = builder.empHireDate;
+		empJob = builder.empJob;
+		empAuth = builder.empAuth;
+		empStatus = builder.empStatus;
+		
+	}
 	
 	public String getEmpId() {
 		return empId;

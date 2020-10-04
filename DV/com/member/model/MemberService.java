@@ -1,6 +1,8 @@
 package com.member.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MemberService {
 	private MemberDAOInterface dao;
@@ -32,6 +34,17 @@ public class MemberService {
 	
 	public List<MemberVO> selectAllMember() {
 		return dao.selectAll();
+	}
+	
+	public List<MemberVO> selectAllMemberByStatus(String memberStatus) {
+		List<MemberVO> all = dao.selectAll();
+		List<MemberVO> allByStatus = new ArrayList<MemberVO>();
+		
+		allByStatus = all.stream()
+				.filter(m -> memberStatus.equals(m.getMemberStatus()))
+				.collect(Collectors.toList());
+		
+		return allByStatus;
 	}
 
 }

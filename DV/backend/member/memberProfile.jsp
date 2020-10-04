@@ -2,10 +2,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.member.model.*"%>
+<%@ page import="com.emp.model.*"%>
 
 <%
 	MemberVO memberVO = (MemberVO)request.getAttribute("selectOneMember");
 	Base64.Encoder encode = Base64.getEncoder();
+	
+	EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 
 %>
 
@@ -73,7 +76,7 @@
        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#Components">
             <i class="fa fa-fw fa-gear"></i>
-            <span class="nav-link-text">登入員工</span>
+            <span class="nav-link-text">[<%=loginEmp.getEmpId()%>]<%=loginEmp.getEmpName()%></span>
           </a>
           <ul class="sidenav-second-level collapse" id="collapseComponents">
             <li>
@@ -88,15 +91,7 @@
 
           </ul>
         </li>
-      
-		<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Messages">
-          <a class="nav-link" href="messages.jsp">
-            <i class="fa fa-fw fa-envelope-open"></i>
-            <span class="nav-link-text">信件</span>
-          </a>
-        </li>
-        
-        
+
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My profile">
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/member/member.jsp">
             <i class="fa fa-fw fa-user"></i>
@@ -139,6 +134,9 @@
           </a>
         </li>
       </ul>
+            <div class="col-md-3">
+				<button class="btn btn-outline-warning" type="button" onclick = "history.back()">回上一頁</button>
+			</div>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -231,7 +229,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+            <i class="fa fa-fw fa-sign-out"></i>登出</a>
         </li>
       </ul>
     </div>
@@ -281,7 +279,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員帳號</label>
-								<input type="text" class="form-control" placeholder="帳號" name="empAccount" readonly
+								<input type="text" class="form-control" name="memberAccount" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberAccount()%>"/>
 							</div>
 						</div>
@@ -305,7 +303,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員暱稱</label>
-								<input type="text" class="form-control" placeholder="Your last name" name="empNickname" readonly
+								<input type="text" class="form-control" name="memberNickname" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberNickname()%>"/>
 							</div>
 						</div>
@@ -315,14 +313,14 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員連絡電話</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empPhone" readonly
+								<input type="text" class="form-control" name="memberPhone" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberPhone()%>"/>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員聯絡地址</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAddress" readonly
+								<input type="text" class="form-control" name="empAddress" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberAddress()%>"/>
 								
 							</div>
@@ -331,7 +329,7 @@
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>會員Email</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empEmail" readonly
+								<input type="text" class="form-control" name="memberEmail" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberEmail()%>"/>
 							</div>
 						</div>
@@ -341,14 +339,14 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員生日</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empBirth" id="empBirth" readonly
+								<input type="text" class="form-control" name="memberBirth" id="empBirth" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberBirth()%>"/>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員性別</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empSex" readonly
+								<input type="text" class="form-control" name="memberSex" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberSex()%>"/>
 								
 							</div>
@@ -359,7 +357,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員國籍</label>
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empCountry" readonly
+								<input type="text" class="form-control" name="memberCountry" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberCountry()%>"/>
 								
 							</div>
@@ -367,7 +365,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員註冊日</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empHireDate" id="empHireDate" readonly
+								<input type="text" class="form-control" name="memberSignupDate" id="empHireDate" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberSignupDate()%>"/>
 							</div>
 						</div>
@@ -377,20 +375,24 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>會員權限</label> 
-								<input type="text" class="form-control" placeholder="Your telephone number" name="empJob" readonly
-									value="<%= (memberVO == null)? "" : memberVO.getMemberAuth()%>"/>
+								<input type="text" class="form-control" name="memberAuth" readonly
+									value="<%= (memberVO == null)? "" : (memberVO.getMemberAuth() == 1)? "一般會員" : "VIP會員"%>"/>
 								
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>會員帳號狀態</label>
-								<input type="text" class="form-control" placeholder="Your email" name="empAuth" readonly
-									value="<%= (memberVO == null)? "" : memberVO.getMemberStatus()%>"/>
-
+								<input type="text" class="form-control" name="memberStatus" readonly
+									value="<%= (memberVO == null)? "" : (memberVO.getMemberStatus().equals("O"))? "在線" : (memberVO.getMemberStatus().equals("P"))? "暫時停權" : "永久停權"%>"/>
+									<span style="color:red"><%= (!memberVO.getMemberStatus().equals("O"))?  "停權原因: " + memberVO.getMemberStatusComm() : "" %></span>
 							</div>
 						</div>
-
+						<div class="col-md-4">
+							<div class="form-group">
+								<span style="color:red"><%= (!memberVO.getMemberStatus().equals("O"))? "更改員工 " + memberVO.getMemberStatusEmp() : "" %></span>
+							</div>
+						</div>
 					</div>
 					
 					<!-- /row-->
@@ -407,11 +409,11 @@
 				    <input type="hidden" name="action"	value="backend_SelectOneUpdate"></FORM>
 			</div>
 			<div class="col-md-3">
-				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServlet" style="margin-bottom: 0px;">
+				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServlet" style="margin-bottom: 0px;" >
 					<input type="submit" class="btn_1 medium" value="訂單紀錄">
 					<input type="hidden" name="memberId"  value="<%=memberVO.getMemberId()%>">
 					<input type="hidden" name="memberName"  value="<%=memberVO.getMemberName()%>">
-				 	<input type="hidden" name="action"	value="backend_SelectOneOrderMasterByMember"></FORM>
+				 	<input type="hidden" name="action"	value="backend_SelectOrderMasterByMember"></FORM>
 			</div>
 			<div class="col-md-3">
 				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/SpaceServlet" style="margin-bottom: 0px;">
@@ -421,10 +423,11 @@
 				    <input type="hidden" name="action"	value="backend_SelectSpaceByMember"></FORM>
 			</div>
 			<div class="col-md-3">
-				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">
+				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberCommServlet" style="margin-bottom: 0px;">
 				    <input type="submit" class="btn_1 medium" value="評價紀錄">
 				    <input type="hidden" name="memberId"  value="<%=memberVO.getMemberId()%>">
-				    <input type="hidden" name="action"	value="backend_SelectOneUpdate"></FORM>
+				    <input type="hidden" name="memberName"  value="<%=memberVO.getMemberName()%>">
+				    <input type="hidden" name="action"	value="backend_SelectMemberCommByMember"></FORM>
 			</div>
 		</div>
 			
@@ -458,15 +461,17 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <h5 class="modal-title" id="exampleModalLabel">離開後台?</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
-          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="<%=request.getContextPath()%>/backend/login.jsp">Logout</a>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+			    <input type="submit" class="btn btn-primary" value="確認登出">
+			</FORM>
           </div>
         </div>
       </div>

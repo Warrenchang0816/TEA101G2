@@ -1,11 +1,61 @@
 package com.orderDetail.model;
 
+import com.emp.model.EmpVO;
+
 public class OrderDetailVO {
 	private String orderDetailId;
 	private String orderMasterId;
 	private String spaceDetailId;
 	private java.sql.Timestamp rentStartTime;
 	private java.sql.Timestamp rentEndTime;
+	
+	public static class Builder {
+
+		private String orderDetailId = "";
+		private String orderMasterId = "";
+		private String spaceDetailId = "";
+		private java.sql.Timestamp rentStartTime = new java.sql.Timestamp(System.currentTimeMillis());
+		private java.sql.Timestamp rentEndTime = new java.sql.Timestamp(System.currentTimeMillis());
+	
+		public OrderDetailVO.Builder orderDetailId(String orderDetailId) {
+			this.orderDetailId = orderDetailId;
+			return this;
+		}
+	
+		public OrderDetailVO.Builder orderMasterId(String orderMasterId) {
+			this.orderMasterId = orderMasterId;
+			return this;
+		}
+	
+		public OrderDetailVO.Builder spaceDetailId(String spaceDetailId) {
+			this.spaceDetailId = spaceDetailId;
+			return this;
+		}
+	
+		public OrderDetailVO.Builder rentStartTime(java.sql.Timestamp rentStartTime) {
+			this.rentStartTime = rentStartTime;
+			return this;
+		}
+	
+		public OrderDetailVO.Builder rentEndTime(java.sql.Timestamp rentEndTime) {
+			this.rentEndTime = rentEndTime;
+			return this;
+		}
+		
+	}
+
+	public OrderDetailVO() {
+		super();
+	}
+	
+	private OrderDetailVO(OrderDetailVO.Builder builder) {
+		orderDetailId = builder.orderDetailId;
+		orderMasterId = builder.orderMasterId;
+		spaceDetailId = builder.spaceDetailId;
+		rentStartTime = builder.rentStartTime;
+		rentEndTime = builder.rentEndTime;
+	}
+	
 	
 	public String getOrderDetailId() {
 		return orderDetailId;

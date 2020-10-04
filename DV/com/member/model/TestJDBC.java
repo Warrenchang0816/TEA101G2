@@ -62,7 +62,7 @@ public class TestJDBC {
 //		add.setMemberCountry("MEMBER_COUNTRY");
 //		add.setMemberSignupDate(java.sql.Date.valueOf("2020-09-01"));
 //		add.setMemberAuth(5);
-//		add.setMemberStatus("Y");
+//		add.setMemberStatus("T");
 //		dao.insert(add);
 //		System.out.println("FUCK");
 		
@@ -72,7 +72,7 @@ public class TestJDBC {
 		
 		//update
 //		MemberVO update = new MemberVO();
-//		update.setMemberId("MEM00006");
+//		update.setMemberId("MEM00007");
 //		update.setMemberAccount("MEMBER_ACCOUNT");
 //		update.setMemberPassword("MEMBER_PASSWORD");
 //		update.setMemberName("MEMBER_NAME");
@@ -86,7 +86,9 @@ public class TestJDBC {
 //		update.setMemberCountry("MEMBER_COUNTRY");
 //		update.setMemberSignupDate(java.sql.Date.valueOf("2020-09-01"));
 //		update.setMemberAuth(5);
-//		update.setMemberStatus("Y");
+//		update.setMemberStatus("T");
+//		update.setMemberStatusEmp("");
+//		update.setMemberStatusComm("");
 //		dao.update(update);
 //		System.out.println("FUCK");
 		

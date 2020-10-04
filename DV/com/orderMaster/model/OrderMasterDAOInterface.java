@@ -8,5 +8,6 @@ public interface OrderMasterDAOInterface {
 	public void update(OrderMasterVO orderMasterVO);
 	public OrderMasterVO selectOne(String orderMasterId);
 	public List<OrderMasterVO> selectAll();
-	public List<OrderMasterVO> selectAllByMember(String memberId);
+//	public List<OrderMasterVO> selectAllByMember(String memberId);
+	
 }
