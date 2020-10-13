@@ -7,29 +7,31 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.Part;
+
 public class TestJDBC {
 	public static void main(String[] args) {
 	
 		EmpDAOInterface dao = new EmpDAO();
 		
-		ByteArrayOutputStream baos = null;
-		try {
-//			File file = new File("C:\\Users\\CJ01007\\Desktop\\TEA101G2\\BlobTest1.jpg");
-			File file = new File("C:\\Users\\CJ01007\\Desktop\\TEA101G2\\BlobTest2.jpg");
-			FileInputStream fis = new FileInputStream(file);
-			baos = new ByteArrayOutputStream();
-			byte[] buffer = new byte[8192];
-			int i;
-			while ((i = fis.read(buffer)) != -1) {
-				baos.write(buffer, 0, i);
-			}
-			baos.close();
-			fis.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		ByteArrayOutputStream baos = null;
+//		try {
+////			File file = new File("C:\\Users\\CJ01007\\Desktop\\TEA101G2\\BlobTest1.jpg");
+//			File file = new File("C:\\Users\\CJ01007\\Desktop\\TEA101G2\\BlobTest2.jpg");
+//			FileInputStream fis = new FileInputStream(file);
+//			baos = new ByteArrayOutputStream();
+//			byte[] buffer = new byte[8192];
+//			int i;
+//			while ((i = fis.read(buffer)) != -1) {
+//				baos.write(buffer, 0, i);
+//			}
+//			baos.close();
+//			fis.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
 		//All
 //		List<EmpVO> list = dao.selectAll();
@@ -63,12 +65,12 @@ public class TestJDBC {
 //		System.out.println(emp.getEmpPassword());
 		
 		//empAccount
-		EmpService es = new EmpService();
-		if(es.isEmpAccountLogin("123213")) {
-			System.out.println("FUCKLogin");
-		}else {
-			System.out.println("NOTLogin");
-		}
+//		EmpService es = new EmpService();
+//		if(es.isEmpAccountLogin("123213")) {
+//			System.out.println("FUCKLogin");
+//		}else {
+//			System.out.println("NOTLogin");
+//		}
 		
 		//insert
 //		EmpVO add = new EmpVO();
@@ -115,7 +117,33 @@ public class TestJDBC {
 //		dao.update(update);
 //		System.out.println("FUCK");
 		
+		TestJDBC test = new TestJDBC();
+		String allname = "A;B;C;D;";
+		String allname2 = "A";
+		
+//		if(allname.contentEquals("A")) {
+//			System.out.println("FUCK");
+//		}else {
+//			System.out.println("SH\nIT");
+//		}
+//		if(allname.contains("A;")) {
+//			System.out.println("FUCK");
+//		}else {
+//			System.out.println("SHIT");
+//		}
+//		
+//		if(allname.contains(";")) {
+//			String[] nameArray = allname.split(";");
+//			for(String namename: nameArray) {
+//				System.out.println(namename);
+//			}
+//		}else {
+//			System.out.println(allname2);
+//		}
+		
+		System.out.println(allname.indexOf(";", 2));
 	}
+	
 	
 
 }

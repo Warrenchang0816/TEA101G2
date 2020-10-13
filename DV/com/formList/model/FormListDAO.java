@@ -17,7 +17,7 @@ public class FormListDAO implements FormListDAOInterface{
 	
 
 	private static final String INSERT_STMT = 
-	    "INSERT INTO FORM_LIST (FORM_LIST_ID, MEMBER_ID, EMP_ID, FORM_CREATE_DATE, FORM_LIST_TYPE, FORM_TITLE, FORM_CONTENT, FORM_FILE, FORM_STATUS) VALUES ('FORMS' || lpad(FORM_LIST_ID_SEQ.NEXTVAL, 7, '0'),?,?,?,?,?,?,?,?)";
+	    "INSERT INTO FORM_LIST (FORM_LIST_ID, MEMBER_ID, EMP_ID, FORM_CREATE_DATE, FORM_LIST_TYPE, FORM_TITLE, FORM_CONTENT, FORM_FILE, FORM_STATUS, FORM_SOLU) VALUES ('FORMS' || lpad(FORM_LIST_ID_SEQ.NEXTVAL, 7, '0'),?,?,?,?,?,?,?,?,?)";
 	private static final String SELECT_ALL_STMT = 
 		"SELECT * FROM FORM_LIST order by FORM_LIST_ID";
 	private static final String SELECT_ONE_STMT = 
@@ -45,6 +45,8 @@ public class FormListDAO implements FormListDAOInterface{
 			ptmt.setString(6, supplyListVO.getFormListContext());
 			ptmt.setBytes(7, supplyListVO.getFormListFile());
 			ptmt.setString(8, supplyListVO.getFormListStatus());
+			if(supplyListVO.getFormListSolu() == null) ptmt.setString(9, "");
+			else ptmt.setString(9, supplyListVO.getFormListSolu());
 
 			ptmt.executeUpdate();
 			

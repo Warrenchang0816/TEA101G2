@@ -68,14 +68,14 @@
 				<div class="divider"><span>Or</span></div>
 				<div class="form-group">
 					<label>員工帳號</label>
-					<input type="account" class="form-control" name="empAccount" id="email"
+					<input type="account" class="form-control" name="empAccount" id="empAccount"
 						value="<%= (empAccount == null)? "" : empAccount%>"/>
 					<span style="color:red"><%= (errorMsgs ==null)? "" : (empAccount.equals(""))? "帳號請勿空白" : (!empAccount.equals("") && errorMsgs == null )? " " : (!empAccount.equals("") && errorMsgs != null )? "  " + errorMsgs.poll(): "" %></span>
 					<i class="icon_mail_alt"></i>
 				</div>
 				<div class="form-group">
 					<label>員工密碼</label>
-					<input type="password" class="form-control" name="empPassword" id="password" >
+					<input type="password" class="form-control" name="empPassword" id="empPassword" >
 					<span style="color:red"><%=  (errorMsgs ==null)? "" : (empPassword.equals("") && empAccount.equals(""))? "密碼請勿空白" : "密碼錯誤"%></span>
 					<i class="icon_lock_alt"></i>
 				</div>
@@ -89,7 +89,7 @@
 					<div class="float-right mt-1"><a id="forgot" href="javascript:void(0);">Forgot Password?</a></div>
 				</div>
 				
-				<button name="login" type="submit" class="btn_1 rounded full-width" >登入</button>
+				<button name="login" type="submit" class="btn_1 rounded full-width">登入</button>
 				<a class="btn_1 rounded full-width" href='<%=request.getContextPath()%>/backend/backendLogin.jsp'>取消</a>
 			
 			</form>
@@ -106,4 +106,31 @@
 	<script src="<%=request.getContextPath()%>/backend/js/validate.js"></script>	
   
 </body>
+
+<script>
+
+var empAccount = document.getElementById('empAccount');
+empAccount.addEventListener("change", function() {
+	var empAccount = document.getElementById('empAccount').value;
+	var MyPoint2 = "/OnlineWS/" + empAccount;
+	var host2 = window.location.host;
+	var path2 = window.location.pathname;
+	var webCtx2 = path2.substring(0, path2.indexOf('/', 1));
+	var endPointURL2 = "ws://" + host2 + webCtx2 + MyPoint2;
+	//websocket 有專屬的通訊協定 ws://
+	
+	var webSocket;
+
+		console.log("endPointURL2:" + endPointURL2);
+		// create a websocket
+		webSocket = new WebSocket(endPointURL2);
+		
+		webSocket.onopen = function(event) {
+			console.log(empAccount + "online");
+		};
+		
+});
+
+</script>
+
 </html>

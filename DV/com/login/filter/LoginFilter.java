@@ -31,20 +31,16 @@ public class LoginFilter implements Filter{
 		
 		Object loginEmp = session.getAttribute("loginEmp");
 		String servletPath = req.getServletPath();
-		System.out.println(servletPath);
 		
 		if(isBackendLoginPage(servletPath)) {
 			if(loginEmp == null) {
-				System.out.println("YOOO");
 				session.setAttribute("location", req.getRequestURI());
 				res.sendRedirect(req.getContextPath() + "/backend/backendLogin.jsp");
 				return;
 			}else {
-				System.out.println("YOOO2");
 				chain.doFilter(req, res);
 			}
 		}else {
-			System.out.println("YOOO3");
 			chain.doFilter(req, res);
 		}
 		
