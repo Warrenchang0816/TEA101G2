@@ -83,7 +83,7 @@ CONSTRAINT SPACE_EMP_FK FOREIGN KEY (EMP_ID) REFERENCES EMP (EMP_ID)
 );
 
 ------------------------------------------------------------------------------
-SPACE_STATUS----'T':上架,'F':下架
+SPACE_STATUS----'T':上架,'F':下架,'N':新申請,'B':觀察名單
 ------------------------------------------------------------------------------
 
 CREATE TABLE ORDER_MASTER (
@@ -226,6 +226,14 @@ CONSTRAINT FORM_LIST_EMP_FK FOREIGN KEY (EMP_ID) REFERENCES EMP (EMP_ID)
 
 ---------------------------------------------------------------------------------------------------------
 FORM_STATUS----'undo':未處理,'done':結案,'handle':已處理
+*MAIL
+MEMBER_ID----MEM00001
+FORM_LIST_TYPE----mail
+FORM_SOLU----寄件者
+EMP_ID----收件者
+FORM_STATUS----'R':已讀,'M':未讀
+FORM_CREATE_DATE----寄件日期
+
 ---------------------------------------------------------------------------------------------------------
 
 COMMIT;
