@@ -79,10 +79,10 @@
 					<th>會員圖片</th>
 					<th>會員帳號</th>
 					<th>會員姓名</th>
-					<th>會員email</th>
 					<th>帳號狀態</th>
 					<th>訂單紀錄</th>
 					<th>場地清單</th>
+					<th>評價紀錄</th>
 				</tr>
               </thead>
               <tfoot>
@@ -90,10 +90,10 @@
 					<th>會員圖片</th>
 					<th>會員帳號</th>
 					<th>會員姓名</th>
-					<th>會員email</th>
 					<th>帳號狀態</th>
 					<th>訂單紀錄</th>
 					<th>場地清單</th>
+					<th>評價紀錄</th>
 				</tr>
               </tfoot>
 
@@ -113,7 +113,6 @@
 			    <input type="hidden" name="action"	value="backend_SelectOneMember"></FORM>
 		</td>
 		<td>${memberVO.memberName}</td>
-		<td>${memberVO.memberEmail}</td>
 		<td>${(memberVO.memberStatus == "O")? "在線" : (memberVO.memberStatus == "P")? "暫時停權" : "永久停權"}</td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServletB" style="margin-bottom: 0px;">
@@ -138,6 +137,18 @@
 			 	<input type="hidden" name="memberId"  value="${memberVO.memberId}">
 			 	<input type="hidden" name="memberName"  value="${memberVO.memberName}">
 			 	<input type="hidden" name="action"	value="backend_SelectSpaceByMember"></FORM>
+		</td>
+		<td>
+			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberCommServlet" style="margin-bottom: 0px;">
+				<button type="submit" class="btn btn-link">
+					<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-layout-text-sidebar-reverse" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					  <path fill-rule="evenodd" d="M2 1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm12-1a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
+					  <path fill-rule="evenodd" d="M5 15V1H4v14h1zm8-11.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5zm0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5zm0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5zm0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5z"/>
+					</svg>
+				</button>
+				    <input type="hidden" name="memberId"  value="${memberVO.memberId}">
+				    <input type="hidden" name="memberName"  value="${memberVO.memberName}">
+				    <input type="hidden" name="action"	value="backend_SelectMemberCommByMember"></FORM>
 		</td>
 	
 </c:forEach>

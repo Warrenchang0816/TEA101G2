@@ -19,6 +19,9 @@ import javax.servlet.http.Part;
 
 import com.formList.model.FormListService;
 import com.formList.model.FormListVO;
+import com.member.model.MemberService;
+import com.member.model.MemberServiceB;
+import com.member.model.MemberVO;
 
 
 @WebServlet("/FormListServlet")
@@ -109,6 +112,7 @@ public class FormListServlet extends HttpServlet {
 				addFormList.setFormListContext(formListContext);
 				addFormList.setFormListFile(formListFile);
 				addFormList.setFormListStatus(formListStatus);
+				
 				
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("addFormList", addFormList);
@@ -265,6 +269,28 @@ public class FormListServlet extends HttpServlet {
 				updateFormList.setFormListSolu(formListSolu);
 				updateFormList.setFormListSoluDate(formListSoluDate);
 				
+				MemberServiceB msb = new MemberServiceB();
+				MemberVO m = msb.selectOneMember(memberId);
+				String mName = m.getMemberName();
+				FormListVO addMessage = new FormListVO();
+				//*MESSAGE
+//				MEMBER_ID----MEM00001
+//				EMP_ID----EMP00001
+//				FORM_LIST_TYPE----message
+//				FORM_SOLU----收件會員
+//				FORM_STATUS----'R':已讀,'M':未讀
+				if("done".equals(formListStatus)) {
+					addMessage.setMemberId("MEM00001");
+					addMessage.setEmpId("EMP00001");
+					addMessage.setFormListCreateDate(new java.sql.Date(System.currentTimeMillis()));
+					addMessage.setFormListType("message");
+					addMessage.setFormListTitle("客服表單["+formListType+"]: "+formListTitle+"結案通知");
+					addMessage.setFormListContext("親愛的會員"+mName+"，您好<br />您日前申請的客服表單已由客服人員處理結案，感謝您的耐心等候，有任何問題都可以聯絡我們，感謝。<br />處理流程: " + formListSolu);
+					addMessage.setFormListFile(formListFile);
+					addMessage.setFormListStatus("M");
+					addMessage.setFormListSolu(memberId);
+				}
+				
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("selectOneUpdate", updateFormList);
 					RequestDispatcher failureView = req.getRequestDispatcher("/backend/formList/updateFormList.jsp");
@@ -275,6 +301,7 @@ public class FormListServlet extends HttpServlet {
 				formListServ = new FormListService();
 				updateFormList = formListServ.updateFormList(updateFormList);
 				req.setAttribute("selectOneFormList", updateFormList);
+				formListServ.addFormList(addMessage);
 
 				String url = "/backend/formList/formListProfile.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
@@ -295,6 +322,7 @@ public class FormListServlet extends HttpServlet {
 			
 			try {
 				String formListId = req.getParameter("formListId").trim();
+				String loginEmpId = req.getParameter("loginEmpId").trim();
 				
 				if (!errorMsgs.isEmpty()) {
 					RequestDispatcher failureView = req.getRequestDispatcher("/backend/mail/mailBox.jsp");
@@ -305,10 +333,10 @@ public class FormListServlet extends HttpServlet {
 				FormListService formListServ = new FormListService();
 				FormListVO selectOneMail = new FormListVO();
 				selectOneMail = formListServ.selectOneFormList(formListId);
-				
-				if (selectOneMail == null) {
-					errorMsgs.add("查無資料");
+				if(selectOneMail.getEmpId().equals(loginEmpId)) {
+					formListServ.readMail(formListId);
 				}
+				
 				if (!errorMsgs.isEmpty()) {
 					RequestDispatcher failureView = req.getRequestDispatcher("/backend/mail/mailBox.jsp");
 					failureView.forward(req, res);
@@ -431,9 +459,6 @@ public class FormListServlet extends HttpServlet {
 		
 		
 		if ("backend_MailToTrash".equals(action)) {
-			Queue<String> errorMsgs = new LinkedList<String>();
-			req.setAttribute("errorMsgs", errorMsgs);
-			
 			try {
 				//String formListStatus = req.getParameter("formListStatus").trim(); //M:會員, E:員工
 				
@@ -465,7 +490,6 @@ public class FormListServlet extends HttpServlet {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-				errorMsgs.add(e.getMessage());
 				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
 				exceptionView.forward(req, res);
 			}
@@ -473,9 +497,6 @@ public class FormListServlet extends HttpServlet {
 		
 		
 		if ("backend_DeleteMail".equals(action)) {
-			Queue<String> errorMsgs = new LinkedList<String>();
-			req.setAttribute("errorMsgs", errorMsgs);
-			
 			try {
 				String[] checked = req.getParameterValues("checked");
 				for(String formListId: checked) {
@@ -489,7 +510,20 @@ public class FormListServlet extends HttpServlet {
 				
 			} catch (Exception e) {
 				e.printStackTrace();
-				errorMsgs.add(e.getMessage());
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}
+		
+		if ("backend_ReadMail".equals(action)) {
+			try {
+				String formListId = req.getParameter("formListId");
+				
+				FormListService fls = new FormListService();
+				fls.readMail(formListId);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
 				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
 				exceptionView.forward(req, res);
 			}
@@ -505,7 +539,7 @@ public class FormListServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			try {
-				String membrId = req.getParameter("membrId").trim();
+				String memberId = req.getParameter("memberId").trim();
 				
 				String formListType = req.getParameter("formListType").trim();
 				
@@ -534,6 +568,7 @@ public class FormListServlet extends HttpServlet {
 				String formListTitle = req.getParameter("formListTitle").trim();
 				if(formListTitle == null || formListTitle.isEmpty()) errorMsgs.add("客服表單主旨: 請勿空白");
 				
+				String formListContextforMessage = req.getParameter("formListContext").trim();
 				String formListContext = req.getParameter("formListContext").trim();
 				if(formListContext == null || formListContext.isEmpty()) errorMsgs.add("客服表單內容: 請勿空白");
 				 else formListContext = contactPhone + ";" + contactEmail + ";" + req.getParameter("formListContext").trim(); 
@@ -571,7 +606,7 @@ public class FormListServlet extends HttpServlet {
 				}
 
 				FormListVO addFormList = new FormListVO();
-				addFormList.setMemberId(membrId);
+				addFormList.setMemberId(memberId);
 				addFormList.setEmpId("");
 				addFormList.setFormListCreateDate(new java.sql.Date(System.currentTimeMillis()));
 				addFormList.setFormListType(formListType);
@@ -579,6 +614,29 @@ public class FormListServlet extends HttpServlet {
 				addFormList.setFormListContext(formListContext);
 				addFormList.setFormListStatus("undo");
 				addFormList.setFormListFile(formListFile);
+				
+				MemberServiceB msb = new MemberServiceB();
+				MemberVO m = msb.selectOneMember(memberId);
+				String mName = m.getMemberName();
+				
+				//*MESSAGE
+//				MEMBER_ID----MEM00001
+//				EMP_ID----EMP00001
+//				FORM_LIST_TYPE----message
+//				FORM_SOLU----收件會員
+//				FORM_STATUS----'R':已讀,'M':未讀
+				
+				FormListVO addMessage = new FormListVO();
+				addMessage.setMemberId("MEM00001");
+				addMessage.setEmpId("EMP00001");
+				addMessage.setFormListCreateDate(new java.sql.Date(System.currentTimeMillis()));
+				addMessage.setFormListType("message");
+				addMessage.setFormListTitle("客服表單["+formListType+"]: "+formListTitle+"提交成功");
+				addMessage.setFormListContext("親愛的會員"+mName+"，您好<br />您申請的客服表單已成功提交，目前客服人員處理中，請耐心等候回覆，感謝。<br />表單內容: " + formListContextforMessage);
+				addMessage.setFormListFile(formListFile);
+				addMessage.setFormListStatus("M");
+				addMessage.setFormListSolu(memberId);
+				
 				
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("addFormList", addFormList);
@@ -589,7 +647,8 @@ public class FormListServlet extends HttpServlet {
 
 				FormListService formListServ = new FormListService();
 				addFormList = formListServ.addFormList(addFormList);
-
+				formListServ.addFormList(addMessage);
+				
 				String url = "/frontend/formList/faq.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);

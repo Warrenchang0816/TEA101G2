@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.member.model.MemberService;
-import com.memberComment.model.MemberCommentServiceB;
+import com.memberComment.model.MemberCommentService;
 import com.memberComment.model.MemberCommentVO;
 
 @WebServlet("/MemberCommentServlet.do")
@@ -80,7 +80,7 @@ public class MemberCommentServlet extends HttpServlet {
 				memberCommentVO.setMemberCommentLevel(memberCommentLevel);
 				memberCommentVO.setMemberCommentDate(memberCommentDate);
 				
-				MemberCommentServiceB memberCommentSvc = new MemberCommentServiceB();
+				MemberCommentService memberCommentSvc = new MemberCommentService();
 				memberCommentSvc.addMemberComment(memberCommentVO);
 				
 				Gson gson = new Gson();
@@ -104,7 +104,7 @@ public class MemberCommentServlet extends HttpServlet {
 			try {
 				String memberCommentId = req.getParameter("memberCommentId").trim();
 
-				MemberCommentServiceB memCommentSvc = new MemberCommentServiceB();
+				MemberCommentService memCommentSvc = new MemberCommentService();
 				MemberCommentVO memberCommentVO = memCommentSvc.getOneMemberComment(memberCommentId);
 
 				req.setAttribute("memberCommentVO", memberCommentVO);
@@ -177,7 +177,7 @@ public class MemberCommentServlet extends HttpServlet {
 					return;
 				}
 
-				MemberCommentServiceB memberCommentSvc = new MemberCommentServiceB();
+				MemberCommentService memberCommentSvc = new MemberCommentService();
 				memberCommentVO = memberCommentSvc.updateMemberComment(memberCommentVO);
 				req.setAttribute("memberCommentVO", memberCommentVO);
 
@@ -200,7 +200,7 @@ public class MemberCommentServlet extends HttpServlet {
 			try {
 				String memberCommentId = req.getParameter("memberCommentId").trim();
 
-				MemberCommentServiceB memberCommentSvc = new MemberCommentServiceB();
+				MemberCommentService memberCommentSvc = new MemberCommentService();
 				memberCommentSvc.deleteMemberComment(memberCommentId);
 				
 				String url = "/frontend/memberComment/getAllMemberComment.jsp";
@@ -231,7 +231,7 @@ public class MemberCommentServlet extends HttpServlet {
 					return;
 				}
 
-				MemberCommentServiceB memCommentSvc = new MemberCommentServiceB();
+				MemberCommentService memCommentSvc = new MemberCommentService();
 				MemberCommentVO memberCommentVO = memCommentSvc.getOneMemberComment(memberCommentId);
 
 				if (memberCommentVO == null) {

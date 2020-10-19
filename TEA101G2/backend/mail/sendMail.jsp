@@ -93,11 +93,7 @@
                 </div>
                 <div class="form-group">
                 <label>內容:</label>
-                    <textarea id="compose-textarea" class="form-control" style="height: 300px" name="formListContext" value="<%= (mail == null)? "" : mail.getFormListContext()%>">
-                    
-                    
-                    
-                    </textarea>
+                    <textarea id="compose-textarea" class="form-control" style="height: 300px" name="formListContext" value="<%= (mail == null)? "" : mail.getFormListContext()%>"></textarea>
                 </div>
                 <div class="form-group">
                   <div class="btn btn-default btn-file">
@@ -111,17 +107,17 @@
               <div class="card-footer">
                 <div class="float-right">
                	 <input type="hidden" name="formListSolu" value="<%= loginEmp.getEmpId()%>">
-                  <button type="submit" class="btn btn-primary" name="action" value="backend_SendMail" onclick="sendMail()"><i class="far fa-envelope"></i> 寄送</button>
                 </div>
                 <button type="reset" class="btn btn-default" onclick ="history.back()"><i class="fas fa-times"></i> 取消</button>
               </div>
               <!-- /.card-footer -->
-              
+                
+           
+
+               <button type="submit" style="width:100%;" class="btn btn-primary" name="action" value="backend_SendMail"><i class="far fa-envelope"></i> 寄送</button>
 </FORM>
-               <button type="button" class="btn btn-primary" name="action" value="backend_SendMail" onclick="sendMail()"><i class="far fa-envelope"></i> 寄送</button>
-                </div>
-                <button type="reset" class="btn btn-default" onclick ="history.back()"><i class="fas fa-times"></i> 取消</button>
-            </div>
+				</div>
+ 			</div>
             <!-- /.card -->
           </div>
           

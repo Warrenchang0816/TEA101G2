@@ -14,11 +14,16 @@ public class TestJDBC {
 //		}		
 		
 		//All
-		MemberCommServiceB mcs = new MemberCommServiceB();
-		List<MemberCommentVO> list = mcs.selectAllMemberCommByMember("MEM00001");
-		for(MemberCommentVO memberCommVO : list) {
-			System.out.println(memberCommVO.getMemberCommentContent());
-		}		
+//		MemberCommServiceB mcs = new MemberCommServiceB();
+//		List<MemberCommentVO> list = mcs.selectAllMemberCommByMember("MEM00001");
+//		for(MemberCommentVO memberCommVO : list) {
+//			System.out.println(memberCommVO.getMemberCommentContent());
+//		}
+		
+		MemberCommentServiceB mcs = new MemberCommentServiceB();
+		mcs.updateMemberCommStatus("MCOMMENT00001", "F");
+		System.out.println("FUCKKKKKKKKK");
+		
 		
 		//One
 //		MemberCommVO one = dao.selectOne("20");

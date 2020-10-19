@@ -74,13 +74,7 @@
     <div class="container-fluid">
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/space/space.jsp">管理場地</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/space/selectSpaceStatus.jsp">場地上/下架</a>
-        </li>
-        <li class="breadcrumb-item active">場地[<%=spaceVO.getSpaceName()%>]</li>
+        <li class="breadcrumb-item active">管理頁面</li>
       </ol>
       
 		<div class="box_general padding_bottom">
@@ -101,6 +95,7 @@
 									<select  size="1" name="spaceStatus">
 										<option value = "T" ${spaceVO == null ? "" : spaceVO.spaceStatus.equals("T") ? "selected" : ""}>上架</option>
 										<option value = "F" ${spaceVO == null ? "" : spaceVO.spaceStatus.equals("F") ? "selected" : ""}>下架</option>
+										<option value = "B" ${spaceVO == null ? "" : spaceVO.spaceStatus.equals("B") ? "selected" : ""}>觀察</option>
 									</select>
 								</div>
 							</div>
@@ -109,7 +104,7 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>場地上架日期</label>
-								<input type="text" class="form-control" name="spaceOnsaleDate" id="spaceOnsaleDate" ${spaceStatus.equals("T") ? "readonly" : ""}
+								<input type="text" class="form-control" name="spaceOnsaleDate" id="spaceOnsaleDate" ${spaceStatus.equals("T")? "readonly" : spaceStatus.equals("N")? "readonly" : spaceStatus.equals("B")? "readonly" : ""}
 									value="<%= (spaceVO == null)? "" : spaceVO.getSpaceOnsaleDate()%>"/>
 							</div>
 							<span style="color:red"><%= (errorMsgs == null)? "" : (errorMsgs.peek() == null)? "" : (errorMsgs.peek().contains("上架"))? errorMsgs.poll() : ""%></span>
@@ -117,7 +112,7 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<label>場地下架日期</label>
-								<input type="text" class="form-control" name="spaceOffsaleDate" id="spaceOffsaleDate" ${spaceStatus.equals("F") ? "readonly" : ""}
+								<input type="text" class="form-control" name="spaceOffsaleDate" id="spaceOffsaleDate" ${spaceStatus.equals("F")? "readonly" : spaceStatus.equals("N")? "readonly" : spaceStatus.equals("B")? "readonly" : ""}
 									value="<%= (spaceVO == null)? "" : (spaceVO.getSpaceOffsaleDate() == null)? "" : spaceVO.getSpaceOffsaleDate()%>"/>
 							</div>
 							<span style="color:red"><%= (errorMsgs == null)? "" : (errorMsgs.peek() == null)? "" : (errorMsgs.peek().contains("下架"))? errorMsgs.poll() : ""%></span>
@@ -133,7 +128,7 @@
 						
 						<div class="col-md-6">
 							<div class="form-group">
-								<label>上下架原因</label>
+								<label>變更原因</label>
 								<input type="text" class="form-control" name="spaceStatusComm" 
 									value="<%=(spaceVO.getSpaceStatusComm() == null)? "" : spaceVO.getSpaceStatusComm() %>"/>
 							</div>

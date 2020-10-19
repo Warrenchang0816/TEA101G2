@@ -155,6 +155,9 @@
 		<%
 			String empId = ((FormListVO)pageContext.getAttribute("formListVO")).getEmpId();
 			String empName = empServ.selectOneEmp(empId).getEmpName();
+			EmpVO mailBoxLoginEmpVO = (EmpVO)session.getAttribute("loginEmp");
+			String mailBoxLoginEmpId = loginEmpVO.getEmpId();
+			pageContext.setAttribute("mailBoxLoginEmpId",mailBoxLoginEmpId);
 		%>
 
 		           <tr>
@@ -164,7 +167,7 @@
                     </td>
                     
                     <td class="mailbox-subject">
-                    	<a href="<%=request.getContextPath()%>/FormListServlet?action=backend_SelectOneMail&formListId=${formListVO.formListId}">${formListVO.formListTitle}</a>
+                    	<a href="<%=request.getContextPath()%>/FormListServlet?action=backend_SelectOneMail&formListId=${formListVO.formListId}&loginEmpId=${mailBoxLoginEmpId}">${formListVO.formListTitle}</a>
                     	<%-- 
 			             <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/FormListServlet" >
 							<button type="submit" class="btn btn-link"><b>${formListVO.formListTitle}</button>

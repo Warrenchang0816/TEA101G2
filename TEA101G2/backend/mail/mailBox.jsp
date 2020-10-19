@@ -115,12 +115,15 @@
 				  <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
 				</svg>
 				</button>
+				<%--
                 <div class="float-right">
                   1-50/200
                   <div class="btn-group">
                     <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-left"></i></button>
                     <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-right"></i></button>
                   </div>
+                  --%>
+                 
                   <!-- /.btn-group -->
                 </div>
                 <!-- /.float-right -->
@@ -152,6 +155,9 @@
 		<%
 			String formListSolu = ((FormListVO)pageContext.getAttribute("formListVO")).getFormListSolu();
 			String empName = empServ.selectOneEmp(formListSolu).getEmpName();
+			EmpVO mailBoxLoginEmpVO = (EmpVO)session.getAttribute("loginEmp");
+			String mailBoxLoginEmpId = loginEmpVO.getEmpId();
+			pageContext.setAttribute("mailBoxLoginEmpId",mailBoxLoginEmpId);
 		%>
 					<%--
                     <td>
@@ -165,12 +171,12 @@
                     
                  <tr>
                     <td class="mailbox-name">
-                    <span style="color:red">${formListVO.formListStatus.equals("M")? "NEW" : ""}</span>
                     <a href="<%=request.getContextPath()%>/backend/mail/sendMail.jsp?to=<%= formListSolu%>"><%=empName%></a>
                     </td>
                     
                     <td class="mailbox-subject">
-                    	<a href="<%=request.getContextPath()%>/FormListServlet?action=backend_SelectOneMail&formListId=${formListVO.formListId}">${formListVO.formListTitle}</a>
+                    <span style="color:red">${formListVO.formListStatus.equals("M")? "NEW" : ""}</span>
+                    	<a href="<%=request.getContextPath()%>/FormListServlet?action=backend_SelectOneMail&formListId=${formListVO.formListId}&loginEmpId=${mailBoxLoginEmpId}" >${formListVO.formListTitle}</a>
                     	<%-- 
 			             <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/FormListServlet" >
 							<button type="submit" class="btn btn-link"><b>${formListVO.formListTitle}</button>
@@ -228,12 +234,12 @@
             <!-- /.card-body -->
 
             
-            
+             <%--
             <div class="card-footer p-0">
               <div class="mailbox-controls">
               <!-- Check all button -->
               
-            <%--  
+             
                 <button type="button" class="btn btn-default checkbox">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 				  <path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -241,7 +247,7 @@
 				</svg>
                 </button>
             --%>
-                
+                <%-- 
                 <div class="btn-group">
 					<button type="button" class="btn btn-default sendMail" onclick="location.href='<%=request.getContextPath()%>/backend/mail/sendMail.jsp'">
 					<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -249,7 +255,7 @@
 					</svg>
 					</button>
                 </div>
-            <%-- 
+            
                 <div class="btn-group">
 					<button type="submit" class="btn btn-default trash">
 					<input type="hidden" name="action"	value="backend_MailToTrash">
@@ -260,6 +266,7 @@
 					</button>
                 </div>
             --%>
+            <%--
                 <!-- /.btn-group -->
                 <button type="button" class="btn btn-default refresh">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -267,6 +274,8 @@
 				  <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
 				</svg>
 				</button>
+				
+				 
                 <div class="float-right">
                   1-50/200
                   <div class="btn-group">
@@ -275,12 +284,13 @@
                   </div>
                   <!-- /.btn-group -->
                 </div>
+                
                 <!-- /.float-right -->
               </div>
             </div>
           </div>
           <!-- /.card -->
-          
+          --%>
        </FORM>
         </div>
         <!-- /.col -->

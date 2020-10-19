@@ -7,6 +7,7 @@
 
 <%
 FormListVO formListVO = (FormListVO)request.getAttribute("selectOneUpdate");
+pageContext.setAttribute("formListVO", formListVO);
 Base64.Encoder encode = Base64.getEncoder();
 
 java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
@@ -153,9 +154,9 @@ java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 								<label>表單狀態</label>
 									<div class="styled-select">
 										<select  size="1" name="formListStatus">
-											<option value = "new" ${formListVO == null ? "selected" : formListVO.formListStatus.equals("new") ? "selected" : ""}>未結案</option>
-											<option value = "handle" ${formListVO == null ? "" : formListVO.formListStatus.equals("handle") ? "selected" : ""}>已處理</option>
-											<option value = "done" ${formListVO == null ? "" : formListVO.formListStatus.equals("done") ? "selected" : ""}>結案</option>
+											<option value = "new" ${formListVO.formListStatus.equals("new")? "selected" : ""}>未結案</option>
+											<option value = "handle" ${formListVO.formListStatus.equals("handle")? "selected" : ""}>已處理</option>
+											<option value = "done" ${formListVO.formListStatus.equals("done")? "selected" : ""}>結案</option>
 										</select>
 									</div>						
 							</div>
@@ -174,7 +175,7 @@ java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label>表單新更日期</label>
+								<label>表單更新日期</label>
 								<input type="text" class="form-control" placeholder="" name="formListSoluDate" readonly
 									value="<%= (formListVO == null)? date : formListVO.getFormListSoluDate()%>"/>
 							</div>
@@ -218,8 +219,8 @@ java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>表單處理</label>
-								<input style="height:200px;" type="text" class="form-control" placeholder="" name="formListSolu" 
-									value="<%= (formListVO == null)? "" : formListVO.getFormListSolu()%>"/>
+								<textarea style="height:200px;" type="text" class="form-control" id="textarea" placeholder="" name="formListSolu" 
+									value="<%= (formListVO == null)? "" : formListVO.getFormListSolu()%>"><%= (formListVO == null)? "" : formListVO.getFormListSolu()%></textarea>
 							</div>
 						</div>
 					</div>
@@ -293,6 +294,18 @@ java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
            //maxDate:               '+1970-01-01'  // 去除今日(不含)之後
         });
         
+   </script>
+   
+   <script>
+   
+   $(document).keypress(
+		   function(event){
+		     if (event.which == '13') {
+		       document.getElementById("txtArea").value = document.getElementById("txtArea").value + "\n";
+		     }
+		 });
+   
+   
    </script>
 
 

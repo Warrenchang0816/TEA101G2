@@ -61,12 +61,6 @@
     <div class="container-fluid">
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/member/member.jsp">管理會員</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/member/selectMember.jsp">搜尋會員</a>
-        </li>
         <li class="breadcrumb-item active">會員[<%=memberVO.getMemberName()%>]</li>
       </ol>
       
@@ -95,7 +89,8 @@
 									value="<%= (memberVO == null)? "" : memberVO.getMemberNickName()%>"/>
 							</div>
 						</div>
-
+					</div>
+<%-- 
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員連絡電話</label>
@@ -111,7 +106,7 @@
 								
 							</div>
 						</div>
-						
+--%>					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>會員Email</label>
@@ -119,9 +114,9 @@
 									value="<%= (memberVO == null)? "" : memberVO.getMemberEmail()%>"/>
 							</div>
 						</div>
-
+						</div>
 					
-
+<%-- 
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>會員生日</label>
@@ -145,10 +140,11 @@
 								<label>會員國籍</label>
 								<input type="text" class="form-control" name="memberCountry" readonly
 									value="<%= (memberVO == null)? "" : memberVO.getMemberCountry()%>"/>
-								
-							</div>
-						</div>
-						<div class="col-md-6">
+									</div>
+--%>								
+					<div class="row">
+						
+						<div class="col-md-4">
 							<div class="form-group">
 								<label>會員註冊日</label>
 								<input type="text" class="form-control" name="memberSignupDate" id="empHireDate" readonly

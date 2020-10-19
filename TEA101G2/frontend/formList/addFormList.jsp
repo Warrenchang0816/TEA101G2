@@ -304,7 +304,7 @@ Base64.Encoder encode = Base64.getEncoder();
 							<input class="form-control" type="file" id="name_contact" name="formListFile" id="formListFile">
 							
 							<input type="hidden" name="action" value="addFormList">
-							<input type="hidden" name="membrId" value="<%= loginMember.getMemberId()%>">
+							<input type="hidden" name="memberId" value="<%= loginMember.getMemberId()%>">
 							<input type="hidden" name="formListType" value="<%=request.getParameter("formListType") %>">
 							<button type="submit" value="submit" class="btn_1 rounded" id="submit-contact">送出</button>
 </form>
@@ -318,6 +318,8 @@ Base64.Encoder encode = Base64.getEncoder();
 		<!-- /bg_color_1 -->
 	</main>
 	<!--/main-->
+	
+	
 	
 	<footer>
 		<div class="container margin_60_35">

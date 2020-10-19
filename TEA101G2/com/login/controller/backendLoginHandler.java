@@ -58,7 +58,7 @@ public class backendLoginHandler extends HttpServlet {
 						empService.updateEmpOnline(loginEmp, "Y");
 						session.setAttribute("loginEmp", loginEmp);
 							try {
-								String location = (String)session.getAttribute("location");
+								String location = (String)session.getAttribute("backendLocation");
 								if(location != null)
 									res.sendRedirect(location);
 								else

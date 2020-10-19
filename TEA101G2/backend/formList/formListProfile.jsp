@@ -164,7 +164,7 @@ Base64.Encoder encode = Base64.getEncoder();
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label>表單結案日期</label>
+								<label>表單更新日期</label>
 								<input type="text" class="form-control"  name="formListSoluDate" readonly
 									value="<%= (formListVO == null)? "" : formListVO.getFormListSoluDate()%>"/>
 							</div>
@@ -199,8 +199,8 @@ Base64.Encoder encode = Base64.getEncoder();
 						<div class="col-md-12">
 							<div class="form-group">
 								<label>表單結案</label>
-								<input style="height:200px;" type="text" class="form-control" placeholder="" name="formListSolu" readonly
-									value="<%= (formListVO == null)? "" : formListVO.getFormListSolu()%>"/>
+								<textarea style="height:200px;" type="text" class="form-control" placeholder="" name="formListSolu" readonly
+									value="<%= (formListVO == null)? "" : formListVO.getFormListSolu()%>"><%= (formListVO == null)? "" : formListVO.getFormListSolu()%></textarea>
 							</div>
 						</div>
 						

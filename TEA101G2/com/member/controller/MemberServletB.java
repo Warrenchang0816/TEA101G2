@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import com.mail.service.MailService;
 import com.member.model.MemberServiceB;
 import com.member.model.MemberVO;
 
@@ -358,6 +359,16 @@ public class MemberServletB extends HttpServlet {
 				memberService = new MemberServiceB();
 				updateMember = memberService.updateMember(updateMember);
 				req.setAttribute("selectOneMember", updateMember);
+				
+				if(memberStatus.equals("O")) {
+					MailService mailService = new MailService();
+					String messageText = "親愛的會員: "+ memberName + "您好，" + "\n" + "經由管理員審查後，回復您的帳號權限。";
+					mailService.sendMail(memberEmail, "會員帳號權限通知", messageText);
+				}else {
+					MailService mailService = new MailService();
+					String messageText = "親愛的會員: "+ memberName + "您好，" + "\n" + "經由管理員審查後，將您的帳號停權。" + "\n" + "停權原因:" + memberStatusComm;
+					mailService.sendMail(memberEmail, "會員帳號停權通知", messageText);
+				}
 
 				String url = "/backend/member/memberProfile.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);

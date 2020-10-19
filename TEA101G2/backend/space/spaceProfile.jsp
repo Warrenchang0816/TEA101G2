@@ -76,12 +76,6 @@
     <div class="container-fluid">
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/space/space.jsp">管理場地</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/space/selectSpace.jsp">搜尋場地</a>
-        </li>
         <li class="breadcrumb-item active">場地[<%=spaceVO.getSpaceName()%>]</li>
       </ol>
       
@@ -202,7 +196,7 @@
 							<div class="form-group">
 								<label>場地狀態</label>
 								<input type="text" class="form-control" name="spaceStatus" readonly
-									value="<%= (spaceVO == null)? "" : (spaceVO.getSpaceStatus().equals("T"))? "上架" : "下架"%>"/>
+									value="<%= (spaceVO == null)? "" : (spaceVO.getSpaceStatus().equals("T"))? "上架" : (spaceVO.getSpaceStatus().equals("F"))? "下架" : (spaceVO.getSpaceStatus().equals("B"))? "觀察" : "新申請"%>"/>
 							</div>
 						</div>
 						<%-- 
@@ -331,30 +325,18 @@
 				<tr>
 					<tr>
 						<th>場地照片</th>
-						<th>刪除</th>
 					</tr>
 				</tr>
               </thead>
               <tfoot>
 				<tr>
 					<th>場地照片</th>
-					<th>刪除</th>
 				</tr>
               </tfoot>
 			<tbody>
 <c:forEach var="spacePhotoVO" items="${photoList}" begin="0" end="<%=photoList.size()%>">
 	<tr>
 		<td><img src="data:image/png;base64,<%=encode.encodeToString(((SpacePhotoVO)pageContext.getAttribute("spacePhotoVO")).getSpacePhoto())%>" id="perview"/></td>
-		<td>
-			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/SpacePhotoServlet" style="margin-bottom: 0px;">
-			    <button name="delete" type="submit" class="btn btn-link" onclick="javascript:return confirm('確認刪除?');">
-				    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-					  <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-					</svg>
-			    </button>
-			    <input type="hidden" name="spacePhotoId"  value="${spacePhotoVO.spacePhotoId}">
-			    <input type="hidden" name="action" value="backend_DeleteSpacePhoto"></FORM>
-		</td>
 	</tr>
 </c:forEach>
 			</tbody>

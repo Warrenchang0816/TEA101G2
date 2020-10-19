@@ -2,8 +2,19 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.member.model.*"%>
 <%@ page import="com.memberComment.model.*"%>
+<%@ page import="com.formList.model.*"%>
 <%@ page import="java.util.*"%>
 <% Base64.Encoder encode = Base64.getEncoder();%>
+
+<%
+
+	MemberVO formlistUserVO = (MemberVO) session.getAttribute("userVO");
+	String formlistUserId = formlistUserVO.getMemberId();
+	FormListService formListSvc = new FormListService();
+	List<FormListVO> messageListNew = formListSvc.selectAllMessagesByGet(formlistUserId);
+	pageContext.setAttribute("messageListNew",messageListNew);
+
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,6 +46,25 @@
             background-color:#272727;
             background-color: white;
         }
+        #unread {
+		    background-color: #dc3545;
+		}
+		#unread {
+		    background-color: #dc3545;
+		    -webkit-border-radius: 50px;
+		    -moz-border-radius: 50px;
+		    -ms-border-radius: 50px;
+		    border-radius: 50px;
+		    font-size: 12px;
+		    font-size: 0.75rem;
+		    color: #fff;
+		    font-style: normal;
+		    padding: 3px 12px 2px 12px;
+		    margin-left: 3px;
+		    position: relative;
+		    top: -3px;
+		    line-height: 1;
+		}
     </style>
 
 </head>
@@ -74,8 +104,8 @@
                 </div>
                 <!-- RENT ROOM-->
                 <div class="col-lg-4 col-md-6">
-                    <a class="box_topic" href="#0" style="border-radius: 30px">
-                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                    <a class="box_topic" href="<%=request.getContextPath()%>/frontend/formList/messageBox.jsp" style="border-radius: 30px">
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i>${messageListNew.size() == 0? "" : "<i id='unread'>NEW</i>"}
                         <h3><strong style="color:#6C6C6C">訊息</strong></h3>
                         <p>查看訊息</p>
                     </a>

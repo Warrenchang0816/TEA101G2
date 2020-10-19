@@ -47,16 +47,16 @@ public class TestJDBC {
 //		System.out.println(one.getFormListContext());
 		
 		//insert
-		FormListVO add = new FormListVO();
-		add.setMemberId("MEM00002");
-		add.setEmpId("EMP00002");
-		add.setFormListCreateDate(java.sql.Date.valueOf("2020-09-06"));
-		add.setFormListType("檢舉");
-		add.setFormListTitle("長相問題");
-		add.setFormListContext("太醜");
-		add.setFormListFile(baos.toByteArray());
-		dao.insert(add);
-		System.out.println("FUCK");
+//		FormListVO add = new FormListVO();
+//		add.setMemberId("MEM00002");
+//		add.setEmpId("EMP00002");
+//		add.setFormListCreateDate(java.sql.Date.valueOf("2020-09-06"));
+//		add.setFormListType("檢舉");
+//		add.setFormListTitle("長相問題");
+//		add.setFormListContext("太醜");
+//		add.setFormListFile(baos.toByteArray());
+//		dao.insert(add);
+//		System.out.println("FUCK");
 		
 		//delete
 //		dao.delete("10");
@@ -74,6 +74,12 @@ public class TestJDBC {
 //		update.setFormListFile(baos.toByteArray());
 //		dao.insert(add);
 //		System.out.println("FUCK");
+		
+//		FormListService fls = new FormListService();
+//		List<FormListVO> newMessage = fls.selectAllNewMessagesByGet("MEM00003");
+//		for(FormListVO fl : newMessage) {
+//			System.out.println(fl.getFormListTitle());
+//		}
 		
 	}
 	

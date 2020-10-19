@@ -14,6 +14,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.formList.model.FormListService;
+import com.formList.model.FormListVO;
+import com.member.model.MemberService;
+import com.member.model.MemberServiceB;
 import com.orderMaster.model.OrderMasterServiceB;
 import com.orderMaster.model.OrderMasterVO;
 
@@ -237,13 +241,48 @@ public class OrderMasterServletB extends HttpServlet {
 				String orderStatusEmp = req.getParameter("orderStatusEmp").trim();
 				
 				OrderMasterVO updateOrderMaster = new OrderMasterVO();
-				updateOrderMaster.setOrderMasterId(orderMasterId);
-				updateOrderMaster.setMemberId(OrderMaster.getMemberId());
-				updateOrderMaster.setOrderCreateDate(OrderMaster.getOrderCreateDate());
-				updateOrderMaster.setOrderAmount(OrderMaster.getOrderAmount());
-				updateOrderMaster.setOrderStatus("R");
-				updateOrderMaster.setOrderStatusComm(OrderMaster.getOrderStatusComm());
-				updateOrderMaster.setOrderStatusEmp(orderStatusEmp);
+				FormListVO addMessage = new FormListVO();
+				MemberServiceB msb = new MemberServiceB();
+				String memberId = msb.selectOneMember(OrderMaster.getMemberId()).getMemberId();
+				String memberName = msb.selectOneMember(OrderMaster.getMemberId()).getMemberName();
+				byte[] formListFile = null;
+				if("P".equals(OrderMaster.getOrderStatus())) {
+					updateOrderMaster.setOrderMasterId(orderMasterId);
+					updateOrderMaster.setMemberId(OrderMaster.getMemberId());
+					updateOrderMaster.setOrderCreateDate(OrderMaster.getOrderCreateDate());
+					updateOrderMaster.setOrderAmount(OrderMaster.getOrderAmount());
+					updateOrderMaster.setOrderStatus("R");
+					updateOrderMaster.setOrderStatusComm(OrderMaster.getOrderStatusComm());
+					updateOrderMaster.setOrderStatusEmp(orderStatusEmp);
+					
+					addMessage.setMemberId("MEM00001");
+					addMessage.setEmpId("EMP00001");
+					addMessage.setFormListCreateDate(new java.sql.Date(System.currentTimeMillis()));
+					addMessage.setFormListType("message");
+					addMessage.setFormListTitle("訂單["+orderMasterId+"] 退費完成");
+					addMessage.setFormListContext("親愛的會員"+memberName+"，您好<br />您日前申請的退費已完成，感謝您的耐心等候，有任何問題都可以聯絡我們。<br />訂單編號: " + orderMasterId + "，預訂日期: " + OrderMaster.getOrderCreateDate());
+					addMessage.setFormListFile(formListFile);
+					addMessage.setFormListStatus("M");
+					addMessage.setFormListSolu(memberId);
+				}else if ("T".equals(OrderMaster.getOrderStatus())) {
+					updateOrderMaster.setOrderMasterId(orderMasterId);
+					updateOrderMaster.setMemberId(OrderMaster.getMemberId());
+					updateOrderMaster.setOrderCreateDate(OrderMaster.getOrderCreateDate());
+					updateOrderMaster.setOrderAmount(OrderMaster.getOrderAmount());
+					updateOrderMaster.setOrderStatus("P");
+					updateOrderMaster.setOrderStatusComm(OrderMaster.getOrderStatusComm());
+					updateOrderMaster.setOrderStatusEmp(orderStatusEmp);
+					
+					addMessage.setMemberId("MEM00001");
+					addMessage.setEmpId("EMP00001");
+					addMessage.setFormListCreateDate(new java.sql.Date(System.currentTimeMillis()));
+					addMessage.setFormListType("message");
+					addMessage.setFormListTitle("訂單["+orderMasterId+"] 交易取消通知");
+					addMessage.setFormListContext("親愛的會員"+memberName+"，您好<br />您日前成立的訂單已超過付款期限，有任何問題都可以聯絡我們，感謝。<br />訂單編號: " + orderMasterId + "，預訂日期: " + OrderMaster.getOrderCreateDate());
+					addMessage.setFormListFile(formListFile);
+					addMessage.setFormListStatus("M");
+					addMessage.setFormListSolu(memberId);
+				}
 				
 				if (!errorMsgs.isEmpty()) {
 					RequestDispatcher failureView = req.getRequestDispatcher("/backend/orderMaster/selectOrderMasterStatusR.jsp");
@@ -253,6 +292,8 @@ public class OrderMasterServletB extends HttpServlet {
 
 				orderMasterServ = new OrderMasterServiceB();
 				updateOrderMaster = orderMasterServ.updateOrderMaster(updateOrderMaster);
+				FormListService formListServ = new FormListService();
+				formListServ.addFormList(addMessage);
 
 				String url = "/backend/orderMaster/selectOrderMasterStatusR.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);

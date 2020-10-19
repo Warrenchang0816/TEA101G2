@@ -38,6 +38,7 @@ private FormListDAOInterface dao;
 		allByType = all.stream()
 				.filter(fl -> !fl.getFormListType().equals("mail"))
 				.filter(fl -> !fl.getFormListType().equals("trash"))
+				.filter(fl -> !fl.getFormListType().equals("message"))
 				.collect(Collectors.toList());
 		
 		return allByType;
@@ -107,6 +108,41 @@ private FormListDAOInterface dao;
 				.collect(Collectors.toList());
 		
 		return allByStatus;
+	}
+	
+	public void readMail(String formListId) {
+		FormListVO formList = dao.selectOne(formListId);
+		formList.setFormListStatus("R");
+		dao.update(formList);
+	}
+	
+	//message角度
+	//formListSolu(收件會員)
+	//formListStatus-'R':已讀,'M':未讀
+	
+	public List<FormListVO> selectAllMessagesByGet(String formListSolu) {
+		List<FormListVO> all = dao.selectAll();
+		List<FormListVO> allByGet = new ArrayList<FormListVO>();
+		
+		allByGet = all.stream()
+				.filter(fl -> "message".equals(fl.getFormListType()))
+				.filter(fl -> formListSolu.equals(fl.getFormListSolu()))
+				.collect(Collectors.toList());
+		
+		return allByGet;
+	}
+	
+	public List<FormListVO> selectAllNewMessagesByGet(String formListSolu) {
+		List<FormListVO> all = dao.selectAll();
+		List<FormListVO> allByGet = new ArrayList<FormListVO>();
+		
+		allByGet = all.stream()
+				.filter(fl -> "message".equals(fl.getFormListType()))
+				.filter(fl -> "M".equals(fl.getFormListStatus()))
+				.filter(fl -> formListSolu.equals(fl.getFormListSolu()))
+				.collect(Collectors.toList());
+		
+		return allByGet;
 	}
 
 }

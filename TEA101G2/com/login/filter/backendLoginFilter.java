@@ -34,7 +34,7 @@ public class backendLoginFilter implements Filter{
 		
 		if(isBackendLoginPage(servletPath)) {
 			if(loginEmp == null) {
-				session.setAttribute("location", req.getRequestURI());
+				session.setAttribute("backendLocation", req.getRequestURI());
 				res.sendRedirect(req.getContextPath() + "/backend/backendLogin.jsp");
 				return;
 			}else {

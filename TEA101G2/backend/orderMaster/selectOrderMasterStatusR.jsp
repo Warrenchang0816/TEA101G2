@@ -7,8 +7,8 @@
 
 <%
 	OrderMasterServiceB orderMasterSvc = new OrderMasterServiceB();
-	List<OrderMasterVO> listC = orderMasterSvc.selectAllOrderMasterByStatus("C");
-	pageContext.setAttribute("listC",listC);
+	List<OrderMasterVO> listP = orderMasterSvc.selectAllOrderMasterByStatus("P");
+	pageContext.setAttribute("listP",listP);
 	
 	List<OrderMasterVO> listR = orderMasterSvc.selectAllOrderMasterByStatus("R");
 	pageContext.setAttribute("listR",listR);
@@ -78,7 +78,6 @@
 					<th>會員編號</th>
 					<th>訂單金額</th>
 					<th>訂單狀態</th>
-					<th>取消原因</th>
 					<th>退費完成</th>
 				</tr>
               </thead>
@@ -88,12 +87,11 @@
 					<th>會員編號</th>
 					<th>訂單金額</th>
 					<th>訂單狀態</th>
-					<th>取消原因</th>
 					<th>退費完成</th>
 				</tr>
               </tfoot>
 
-<c:forEach var="orderMasterVO" items="${listC}" begin="0" end="<%=listC.size()%>">
+<c:forEach var="orderMasterVO" items="${listP}" begin="0" end="<%=listP.size()%>">
 
 <%
 	MemberServiceB memberSer = new MemberServiceB();
@@ -124,7 +122,6 @@
 		</td>
 		<td>${orderMasterVO.orderAmount}</td>
 		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "交易暫停" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費"}</td>
-		<td>${orderMasterVO.orderStatusComm}</td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServletB" style="margin-bottom: 0px;">
 			    <button type="submit" class="btn btn-link" onclick="javascript:return confirm('確認完成?');">
@@ -171,7 +168,6 @@
 					<th>會員編號</th>
 					<th>訂單金額</th>
 					<th>訂單狀態</th>
-					<th>取消原因</th>
 					<th>處理員工</th>
 				</tr>
               </thead>
@@ -181,7 +177,6 @@
 					<th>會員編號</th>
 					<th>訂單金額</th>
 					<th>訂單狀態</th>
-					<th>取消原因</th>
 					<th>處理員工</th>
 				</tr>
               </tfoot>
@@ -217,7 +212,6 @@
 		</td>
 		<td>${orderMasterVO.orderAmount}</td>
 		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "交易暫停" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費"}</td>
-		<td>${orderMasterVO.orderStatusComm}</td>
 		<td>${orderMasterVO.orderStatusEmp}</td>
 	
 </c:forEach>

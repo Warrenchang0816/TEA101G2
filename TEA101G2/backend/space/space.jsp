@@ -77,13 +77,30 @@ Base64.Encoder encode = Base64.getEncoder();
           </div>
         </div>
         
+         <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card dashboard text-white bg-primary o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-envelope-open"></i>
+              </div>
+              <div class="mr-5"><h5>上架的場地</h5></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="<%=request.getContextPath()%>/backend/space/selectOnsaleSpace.jsp">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        
         <div class="col-xl-3 col-sm-6 mb-3">
           <div class="card dashboard text-white bg-primary o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
                 <i class="fa fa-fw fa-envelope-open"></i>
               </div>
-              <div class="mr-5"><h5>場地上/下架</h5></div>
+              <div class="mr-5"><h5>未上架場地</h5></div>
             </div>
             <a class="card-footer text-white clearfix small z-1" href="<%=request.getContextPath()%>/backend/space/selectSpaceStatus.jsp">
               <span class="float-left">View Details</span>

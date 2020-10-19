@@ -7,8 +7,8 @@
 <%
 	SpaceServiceB spaceSvc = new SpaceServiceB();
 
-	List<SpaceVO> listT = spaceSvc.selectAllSpaceByStatus("T");
-	pageContext.setAttribute("listT",listT);
+	List<SpaceVO> listB = spaceSvc.selectAllSpaceByStatus("B");
+	pageContext.setAttribute("listB",listB);
 	
 	List<SpaceVO> listF = spaceSvc.selectAllSpaceByStatus("F");
 	pageContext.setAttribute("listF",listF);
@@ -62,14 +62,14 @@
         <li class="breadcrumb-item">
           <a href="<%=request.getContextPath()%>/backend/space/space.jsp">管理場地</a>
         </li>
-        <li class="breadcrumb-item active">場地上/下架</li>
+        <li class="breadcrumb-item active">未上架場地</li>
       </ol>
       
       
 		<!-- Example DataTables Card-->
       <div class="card mb-3">
         <div class="card-header">
-          <i class="fa fa-table"></i> 上架清單</div>
+          <i class="fa fa-table"></i> 觀察清單</div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -79,7 +79,7 @@
 					<tr>
 						<th>場地</th>
 						<th>場地狀態</th>
-						<th>上架日期</th>
+						<th>觀察日期</th>
 						<th>原因</th>
 						<th>管理</th>
 					</tr>
@@ -91,14 +91,14 @@
 					<tr>
 						<th>場地</th>
 						<th>場地狀態</th>
-						<th>上架日期</th>
+						<th>觀察日期</th>
 						<th>原因</th>
 						<th>管理</th>
 					</tr>
 					</tr>
               </tfoot>
 			<tbody>
-<c:forEach var="spaceVO" items="${listT}" begin="0" end="<%=listT.size()%>">
+<c:forEach var="spaceVO" items="${listB}" begin="0" end="<%=listB.size()%>">
 
 	<tr>
 		<td>
@@ -112,7 +112,7 @@
 			    <input type="hidden" name="spaceId"  value="${spaceVO.spaceId}">
 			    <input type="hidden" name="action"	value="backend_SelectOneSpace"></FORM>
 		</td>
-		<td>${spaceVO.spaceStatus.equals("T")? "上架" : "下架"}</td>
+		<td>${spaceVO.spaceStatus.equals("T")? "上架" : spaceVO.spaceStatus.equals("F")? "下架" : spaceVO.spaceStatus.equals("B")? "觀察" : "新申請"}</td>
 		<td>${spaceVO.spaceOnsaleDate}</td>
 		<td>${spaceVO.spaceStatusComm}</td>
 		<td>

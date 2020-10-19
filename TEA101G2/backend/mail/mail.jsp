@@ -8,6 +8,7 @@
 
 	FormListVO formListVO = (FormListVO)request.getAttribute("selectOneMail");
 	pageContext.setAttribute("formListVO", formListVO);
+	Base64.Encoder encode = Base64.getEncoder();
 	
 %>
 
@@ -38,6 +39,16 @@
   <link rel="stylesheet" href="<%=request.getContextPath()%>/backend/mail/dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  
+  <style>
+  #card-title{
+  	font-size: 1.5rem;
+  }
+  #mailImag{
+  	height: 100px;
+  }
+  
+  </style>
 
 </head>
 
@@ -54,63 +65,54 @@
       <div class="container-fluid">
         <div class="row">
         
-        <%-- include file="/backend/mail/mailSide.jsp" --%> 
+        <%@ include file="/backend/mail/mailSide.jsp"%> 
         <%@ include file="/backend/backendHF.jsp" %> 
-        <jsp:include page="/backend/mail/mailSide.jsp"></jsp:include>
+        <%-- <jsp:include page="/backend/mail/mailSide.jsp"></jsp:include> --%> 
         <%-- <jsp:include page="/backend/backendHF.jsp"></jsp:include> --%> 
         
-        <div class="col-md-9">
-          <div class="card card-primary card-outline">
-            <div class="card-header">
-              <h3 class="card-title">Read Mail</h3>
-
-              <div class="card-tools">
-                <a href="#" class="btn btn-tool" data-toggle="tooltip" title="Previous"><i class="fas fa-chevron-left"></i></a>
-                <a href="#" class="btn btn-tool" data-toggle="tooltip" title="Next"><i class="fas fa-chevron-right"></i></a>
-              </div>
-            </div>
-            
-        <jsp:useBean id="memberServ" scope="page" class="com.member.model.MemberServiceB" />
-		<%
-			String empId = ((FormListVO)pageContext.getAttribute("formListVO")).getEmpId();
-			String empName = empServ.selectOneEmp(empId).getEmpName();
-		%>
-            
-            
-            <!-- /.card-header -->
-            <div class="card-body p-0">
-              <div class="mailbox-read-info">
-                <h5>${formListVO.formListTitle}</h5>
-                
-                <h6>From:
-		             <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">
-							<button type="submit" class="btn btn-link"><%=empName%></button>
-							<input type="hidden" name="empId"  value="<%=empId%>">
-						 	<input type="hidden" name="action"	value="backend_SelectOneMember">
-						 </FORM>
-                  <span class="mailbox-read-time float-right">${formListVO.formListCreateDate}</span></h6>
+          <div class="col-md-9">
+            <div class="card card-primary card-outline">
+              <div class="card-header">
+                <h3 class="card-title" id="card-title">主旨: ${formListVO.formListTitle}</h3>
+				<span class="mailbox-read-time float-right">${formListVO.formListCreateDate}</span>
               </div>
               
-              <!-- /.mailbox-controls -->
-              <div class="mailbox-read-message">
-				<p>
-					${formListVO.formListContext}
-				</p>
+        <jsp:useBean id="memberServ" scope="page" class="com.member.model.MemberServiceB" />
+		<%
+			String formListSolu = ((FormListVO)pageContext.getAttribute("formListVO")).getFormListSolu();
+			String empName = empServ.selectOneEmp(formListSolu).getEmpName();
+		%>
+              
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="form-group">
+	                <label>寄件者:</label>
+	                <a href="<%=request.getContextPath()%>/backend/mail/sendMail.jsp?to=<%= formListSolu%>"><%=empName%></a>
+                </div>
+                <div class="form-group">
+                <label>內容:</label>
+                    <div id="compose-textarea" class="form-control" style="height: 300px" name="formListContext">
+                    ${formListVO.formListContext}
+                    
+                    
+                    </div>
+                </div>
+                <div class="form-group">
+	                <div class="btn btn-default btn-file">
+	                    <i class="fas fa-paperclip"></i> 附件1
+	                    <a href="data:image/png;base64,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>" download>
+							<img id="mailImag" src="data:image/png;base64,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>" alt="W3Schools">
+						</a>
+	                </div>
+                </div>
+				
+				<a download="file.txt" href="data:application/octet-stream,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>">download</a>
+				
+				
               </div>
-              <!-- /.mailbox-read-message -->
+              <!-- /.card-body -->
+                </div>
             </div>
-            <!-- /.card-footer -->
-            <div class="card-footer">
-              <div class="float-right">
-                <button type="button" class="btn btn-default"><i class="fas fa-reply"></i> Reply</button>
-                <button type="button" class="btn btn-default"><i class="fas fa-share"></i> Forward</button>
-              </div>
-            </div>
-            <!-- /.card-footer -->
-          </div>
-          <!-- /.card -->
-        </div>
-        <!-- /.col -->
       </div>
       <!-- /.row -->
     </section>
@@ -124,42 +126,7 @@
     <script src="<%=request.getContextPath()%>/backend/js/adminlte.min.js"></script>
 <!-- Page Script -->
 <script>
-  $(function () {
-    //Enable check and uncheck all functionality
-    $('.checkbox-toggle').click(function () {
-      var clicks = $(this).data('clicks')
-      if (clicks) {
-        //Uncheck all checkboxes
-        $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false)
-        $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square')
-      } else {
-        //Check all checkboxes
-        $('.mailbox-messages input[type=\'checkbox\']').prop('checked', true)
-        $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square')
-      }
-      $(this).data('clicks', !clicks)
-    })
 
-    //Handle starring for glyphicon and font awesome
-    $('.mailbox-star').click(function (e) {
-      e.preventDefault()
-      //detect type
-      var $this = $(this).find('a > i')
-      var glyph = $this.hasClass('glyphicon')
-      var fa    = $this.hasClass('fa')
-
-      //Switch states
-      if (glyph) {
-        $this.toggleClass('glyphicon-star')
-        $this.toggleClass('glyphicon-star-empty')
-      }
-
-      if (fa) {
-        $this.toggleClass('fa-star')
-        $this.toggleClass('fa-star-o')
-      }
-    })
-  })
 </script>
 <!-- AdminLTE for demo purposes -->
 <script src="<%=request.getContextPath()%>/backend/js/demo.js"></script>

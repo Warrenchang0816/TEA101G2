@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.memberComment.model.MemberCommServiceB;
+import com.memberComment.model.MemberCommentServiceB;
 import com.memberComment.model.MemberCommentVO;
 
 
@@ -300,7 +301,25 @@ public class MemberCommServletB extends HttpServlet {
 				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
 				exceptionView.forward(req, res);
 			}
-		}	
+		}
+		
+		if ("backend_UpdateMemberCommStatus".equals(action)) {
+			System.out.println("backend_UpdateMemberCommStatus");
+			try {
+				String memberCommId = req.getParameter("memberCommId").trim();
+				System.out.println("memberCommId:"+memberCommId);
+				String memberCommStatus = req.getParameter("memberCommStatus").trim();
+				System.out.println("memberCommStatus:"+memberCommStatus);
+				System.out.println("backend_UpdateMemberCommStatus11111");
+				MemberCommentServiceB mcsb = new MemberCommentServiceB();
+				mcsb.updateMemberCommStatus(memberCommId, memberCommStatus);
+				System.out.println("backend_UpdateMemberCommStatus2222222");
+			} catch (Exception e) {
+				e.printStackTrace();
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}		
 	}
 }
 
