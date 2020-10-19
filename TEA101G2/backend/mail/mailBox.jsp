@@ -163,8 +163,9 @@
                     <td class="mailbox-star"><a href="#"><i class="fas fa-star-o text-warning"></i></a></td>
                     --%>
                     
-                    
+                 <tr>
                     <td class="mailbox-name">
+                    <span style="color:red">${formListVO.formListStatus.equals("M")? "NEW" : ""}</span>
                     <a href="<%=request.getContextPath()%>/backend/mail/sendMail.jsp?to=<%= formListSolu%>"><%=empName%></a>
                     </td>
                     

@@ -94,11 +94,11 @@ Base64.Encoder encode = Base64.getEncoder();
           </div>
         </div>
         
-         <div class="col-xl-3 col-sm-6 mb-3">
+        <div class="col-xl-3 col-sm-6 mb-3">
           <div class="card dashboard text-white bg-primary o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <i class="fa fa-fw fa-envelope-open"></i>
+                <span style="color:red; font-size: 2.5rem">${HFSpaceListNew.isEmpty()? "" : HFSpaceListNew.size()}</span>
               </div>
               <div class="mr-5"><h5>新申請的場地</h5></div>
             </div>

@@ -58,14 +58,8 @@
 			</figure>
 			
 			
-<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LoginHandler" enctype="multipart/form-data"> 
+<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/backendLoginHandler" enctype="multipart/form-data"> 
 
-				<div class="access_social">
-					<a href="#0" class="social_bt facebook">Login with Facebook</a>
-					<a href="#0" class="social_bt google">Login with Google</a>
-					<a href="#0" class="social_bt linkedin">Login with Linkedin</a>
-				</div>
-				<div class="divider"><span>Or</span></div>
 				<div class="form-group">
 					<label>員工帳號</label>
 					<input type="account" class="form-control" name="empAccount" id="empAccount"
@@ -107,30 +101,6 @@
   
 </body>
 
-<script>
 
-var empAccount = document.getElementById('empAccount');
-empAccount.addEventListener("change", function() {
-	var empAccount = document.getElementById('empAccount').value;
-	var MyPoint2 = "/OnlineWS/" + empAccount;
-	var host2 = window.location.host;
-	var path2 = window.location.pathname;
-	var webCtx2 = path2.substring(0, path2.indexOf('/', 1));
-	var endPointURL2 = "ws://" + host2 + webCtx2 + MyPoint2;
-	//websocket 有專屬的通訊協定 ws://
-	
-	var webSocket;
-
-		console.log("endPointURL2:" + endPointURL2);
-		// create a websocket
-		webSocket = new WebSocket(endPointURL2);
-		
-		webSocket.onopen = function(event) {
-			console.log(empAccount + "online");
-		};
-		
-});
-
-</script>
 
 </html>

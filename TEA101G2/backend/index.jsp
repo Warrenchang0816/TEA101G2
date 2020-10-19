@@ -11,6 +11,7 @@ Base64.Encoder encode = Base64.getEncoder();
 Map<String, Session> connectedSessions = (Map<String, Session>)getServletContext().getAttribute("TEA101G2DV_OnlineList");
 pageContext.setAttribute("connectedSessions", connectedSessions);
 
+
 %>
 
 <!DOCTYPE html>
@@ -83,48 +84,8 @@ pageContext.setAttribute("connectedSessions", connectedSessions);
 		
 
 
-			<!-- Example DataTables Card-->
-      <div class="card mb-3">
-        <div class="card-header">
-          <i class="fa fa-table"></i> 上線名單</div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-				<tr>
-					<th>上線</th>
-					<th>上線</th>
-				</tr>
-              </thead>
-              <tfoot>
-				<tr>
-					<th>上線</th>
-					<th>上線</th>
-				</tr>
-              </tfoot>
-			<tbody>
-			
-			
-	<c:forEach var="connectedSessions" items="${connectedSessions}" begin="0" end="<%=connectedSessions.size()%>">
-		<tr>
-			<td>${connectedSessions.key}</td>
-			<td>${connectedSessions.value}</td>
-		</tr>
-	</c:forEach>
- 	
- 
- 
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-      </div>
-	  <!-- /tables-->
 	  
 
-	<input type="button" id="online" class="button" value="online" onclick="online();" /> 
-	<input type="button" id="offline" class="button" value="offline" onclick="offline();" /> 
 	
 
 

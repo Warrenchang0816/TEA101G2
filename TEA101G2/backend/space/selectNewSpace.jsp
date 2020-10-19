@@ -8,7 +8,7 @@
 <%
 	SpaceServiceB spaceSvc = new SpaceServiceB();
 
-	List<SpaceVO> listNew = spaceSvc.selectAllNewSpace("F");
+	List<SpaceVO> listNew = spaceSvc.selectAllNewSpace("N");
 	pageContext.setAttribute("listNew",listNew);
 %>
 

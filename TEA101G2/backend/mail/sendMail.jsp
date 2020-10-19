@@ -84,12 +84,12 @@
 				</div>
                 <div class="form-group">
                 <label>收件者:</label>
-                  <input class="form-control" placeholder="To:" name="empId" value="<%= (mail == null && request.getParameter("to") == null)? "" : (request.getParameter("to") == null)? mail.getEmpId() : request.getParameter("to")%>">
+                  <input class="form-control" id="mailReceivers" placeholder="To:" name="empId" value="<%= (mail == null && request.getParameter("to") == null)? "" : (request.getParameter("to") == null)? mail.getEmpId() : request.getParameter("to")%>">
                   <span style="color:red"><%= (errorMsgs == null)? "" : (mail.getEmpId().equals(""))? "收件者請勿空白" : (errorMsgs.peek().contains("帳號"))? errorMsgs.poll() : ""%></span>
                 </div>
                 <div class="form-group">
                 <label>主旨:</label>
-                  <input class="form-control" placeholder="Subject:" name="formListTitle" value="<%= (mail == null)? "" : mail.getFormListTitle()%>">
+                  <input class="form-control" placeholder="Subject:" id="title" name="formListTitle" value="<%= (mail == null)? "" : mail.getFormListTitle()%>">
                 </div>
                 <div class="form-group">
                 <label>內容:</label>
@@ -111,14 +111,16 @@
               <div class="card-footer">
                 <div class="float-right">
                	 <input type="hidden" name="formListSolu" value="<%= loginEmp.getEmpId()%>">
-                  <button type="submit" class="btn btn-primary" name="action" value="backend_SendMail"><i class="far fa-envelope"></i> 寄送</button>
+                  <button type="submit" class="btn btn-primary" name="action" value="backend_SendMail" onclick="sendMail()"><i class="far fa-envelope"></i> 寄送</button>
                 </div>
                 <button type="reset" class="btn btn-default" onclick ="history.back()"><i class="fas fa-times"></i> 取消</button>
               </div>
               <!-- /.card-footer -->
               
 </FORM>
-              
+               <button type="button" class="btn btn-primary" name="action" value="backend_SendMail" onclick="sendMail()"><i class="far fa-envelope"></i> 寄送</button>
+                </div>
+                <button type="reset" class="btn btn-default" onclick ="history.back()"><i class="fas fa-times"></i> 取消</button>
             </div>
             <!-- /.card -->
           </div>
@@ -137,6 +139,96 @@
 
     
     <script src="<%=request.getContextPath()%>/backend/js/adminlte.min.js"></script>
+    
+<script>
+var MyPoint2 = "/OnlineWS/${loginEmp.empId}";
+var host2 = window.location.host;
+var path2 = window.location.pathname;
+var webCtx2 = path2.substring(0, path2.indexOf('/', 1));
+var endPointURL2 = "ws://" + host2 + webCtx2 + MyPoint2;
+console.log("endPointURL2:" + endPointURL2);
+//websocket 有專屬的通訊協定 ws://
+
+var onlineWebSocket;
+
+	var self = '${loginEmp.empId}';
+    
+    function sendMail(){
+
+    	console.log("FUCKCKKCKC");
+    	onlineWebSocket = new WebSocket(endPointURL2);
+    	console.log('onlineWebSocket:'+onlineWebSocket);
+    	var receivers = document.getElementById("mailReceivers").value;
+    	var title = document.getElementById("title").value;
+    	var currentdate = new Date(); 
+		var date = currentdate.getFullYear() + "-" + (currentdate.getMonth()+1) + "-" + currentdate.getDate();
+    	console.log('receivers:'+receivers);
+    	console.log('self:'+self);
+    	console.log('date:'+date);
+    	onlineWebSocket.onopen = function(event) {
+			console.log("Connect Success!");
+		};
+		
+		onlineWebSocket.onmessage = function(event) {
+			var jsonObj = JSON.parse(event.data);
+			if ("online" === jsonObj.type) {
+				var jsonObj = {
+						"type" : "mail",
+						"sender" : self,
+						"receivers" : receivers,
+						"title" : title,
+						"time" : date
+					};
+				if (onlineWebSocket.readyState === 1) {
+					onlineWebSocket.send(JSON.stringify(jsonObj));
+					console.log('UFUFUFUFU');
+				}
+			
+			}else if("mailJSON" === jsonObj.type){
+				alert('type:'+jsonObj.type);
+				alert('sender:'+jsonObj.sender);
+				alert('receivers:'+jsonObj.receivers);
+				alert('title:'+jsonObj.title);
+				alert('time:'+jsonObj.time);
+				if(self === receivers){
+					
+					<%-- http://localhost:8082/TEA101G2TEA1013/backend/mail/sendMail.jsp?to=EMP00006
+					let list_html =
+						`
+						<tr>
+		                    <td class="mailbox-name">
+		                    
+		                    <a href="\${request.contextPath()}/backend/mail/sendMail.jsp?to=\${jsonObj.sender}">\${jsonObj.sender}</a>
+		                    </td>
+		                    
+		                    <td class="mailbox-subject">
+		                    	<a href="\${request.contextPath()}/FormListServlet?action=backend_SelectOneMail&formListId=\${formListVO.formListId}">\${jsonObj.title}</a>
+
+		                    </td>
+		                    <td class="mailbox-attachment"></td>
+		                    <td class="mailbox-date">${jsonObj.time}</td>
+		                 </tr>
+						`
+					--%>
+				}
+			}
+		}
+			
+		
+		onlineWebSocket.onclose = function(event) {
+			console.log("onlineWebSocketDisconnected!");
+		};
+		
+			
+
+    }
+	
+	
+	
+    
+</script>
+    
+    
 <!-- Page Script -->
 <script>
   $(function () {

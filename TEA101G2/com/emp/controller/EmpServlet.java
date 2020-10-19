@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import javax.servlet.RequestDispatcher;
@@ -19,8 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.json.JSONObject;
+
 import com.emp.model.EmpService;
 import com.emp.model.EmpVO;
+import com.google.gson.Gson;
 
 
 @WebServlet("/EmpServlet")
@@ -38,6 +42,7 @@ public class EmpServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
+		res.setContentType("text/html; charset=utf-8");
 		String action = req.getParameter("action");
 		
 		if ("backend_AddEmp".equals(action)) {
@@ -603,7 +608,71 @@ public class EmpServlet extends HttpServlet {
 				exceptionView.forward(req, res);
 			}
 		}	
-	
+		
+		
+		if ("selectEmpNameById".equals(action)) {
+			Queue<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			try {
+				String selectFriend = req.getParameter("selectFriend").trim();
+
+				EmpService empServ = new EmpService();
+				String selectName = empServ.selectEmpNameById(selectFriend);
+				
+//				JSONObject jObj = new JSONObject(request.getParameter("loadProds")); 
+//				Iterator it = jObj.keys(); //gets all the keys 
+//
+//				while(it.hasNext()) 
+//				{ 
+//				    String key = it.next(); // get key 
+//				    Object o = jObj.get(key); // get value 
+//				    System.out.println(key + " : " + o); // print the key and value 
+//				} 
+				
+				Gson gson = new Gson();
+				String jsonString = gson.toJson(selectName);
+				System.out.println("jsonString:" + jsonString);
+//				res.getOutputStream().print(jsonString);
+				res.getWriter().write(jsonString);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				errorMsgs.add(e.getMessage());
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}		
+		
+		if ("selectAllEmpIdName".equals(action)) {
+			try {
+				EmpService empServ = new EmpService();
+				
+				Map<String, String> map = empServ.selectAllEmpIdName();
+				JSONObject jObj = new JSONObject(map); 
+				res.getWriter().write(new Gson().toJson(jObj));
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}		
+		
+		if ("selectAllEmpIdNameR".equals(action)) {
+			try {
+				EmpService empServ = new EmpService();
+				
+				Map<String, String> map = empServ.selectAllEmpIdNameR();
+				JSONObject jObj = new JSONObject(map); 
+				res.getWriter().write(new Gson().toJson(jObj));
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}		
 
 //======================================================================================================================================
 		

@@ -13,14 +13,14 @@ public class MemberDAO implements MemberDAO_interface {
 	private static final String USER = "TEA101G2";
 	private static final String PASSWORD = "TEA101G2";
 	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
-	private static final String INSERT = "INSERT INTO MEMBER ( MEMBER_ID, MEMBER_ACCOUNT, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_NICKNAME, MEMBER_EMAIL, MEMBER_PHOTO, MEMBER_PHONE, MEMBER_ADDRESS, MEMBER_BIRTH, MEMBER_SEX, MEMBER_COUNTRY, MEMBER_SIGNUP_DATE, MEMBER_AUTH, MEMBER_STATUS ) VALUES ( 'MEM' || lpad(MEMBER_ID_SEQ.NEXTVAL, 5, '0' ),?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String INSERT = "INSERT INTO MEMBER ( MEMBER_ID, MEMBER_ACCOUNT, MEMBER_PASSWORD, MEMBER_NAME, MEMBER_NICKNAME, MEMBER_EMAIL, MEMBER_PHOTO, MEMBER_PHONE, MEMBER_ADDRESS, MEMBER_BIRTH, MEMBER_SEX, MEMBER_COUNTRY, MEMBER_SIGNUP_DATE, MEMBER_AUTH, MEMBER_STATUS, MEMBER_ONLINE ) VALUES ( 'MEM' || lpad(MEMBER_ID_SEQ.NEXTVAL, 5, '0' ),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String GET_ALL = "SELECT * FROM MEMBER";
 	private static final String GET_ONE = "SELECT * FROM MEMBER WHERE MEMBER_ID = ?";
 	private static final String GET_ONE_BY_ACCOUNT = "SELECT * FROM MEMBER WHERE MEMBER_ACCOUNT = ?";
 	private static final String DELETE = "DELETE FROM MEMBER WHERE MEMBER_ID = ?";
 	private static final String UPDATE = "UPDATE MEMBER SET MEMBER_ACCOUNT= ?, MEMBER_PASSWORD=?, MEMBER_NAME=?, MEMBER_NICKNAME=?, "
 			+ "MEMBER_EMAIL=?, MEMBER_PHOTO=?, MEMBER_PHONE=?, MEMBER_ADDRESS=?, MEMBER_BIRTH=?, MEMBER_SEX=?, MEMBER_COUNTRY=?, "
-			+ "MEMBER_SIGNUP_DATE=?, MEMBER_AUTH=?,MEMBER_STATUS=? WHERE MEMBER_ID = ?";
+			+ "MEMBER_SIGNUP_DATE=?, MEMBER_AUTH=?,MEMBER_STATUS=?,MEMBER_ONLINE=? WHERE MEMBER_ID = ?";
 	private static final String USER_LOGIN = "SELECT * FROM MEMBER WHERE MEMBER_ACCOUNT = ? and MEMBER_PASSWORD=?";
 	
 	@Override
@@ -47,6 +47,7 @@ public class MemberDAO implements MemberDAO_interface {
 			pstmt.setDate(12, memberVO.getMemberSignupDate());
 			pstmt.setInt(13, memberVO.getMemberAuth());
 			pstmt.setString(14, memberVO.getMemberStatus());
+			pstmt.setString(15, "N");
 			pstmt.executeUpdate();
 			System.out.println("success");
 
@@ -96,7 +97,8 @@ public class MemberDAO implements MemberDAO_interface {
 			ptmt.setDate(12, memberVO.getMemberSignupDate());
 			ptmt.setInt(13, memberVO.getMemberAuth());
 			ptmt.setString(14, memberVO.getMemberStatus());
-			ptmt.setString(15, memberVO.getMemberId());
+			ptmt.setString(15, memberVO.getMemberOnline());
+			ptmt.setString(16, memberVO.getMemberId());
 
 			ptmt.executeUpdate();
 			
@@ -188,6 +190,7 @@ public class MemberDAO implements MemberDAO_interface {
 				memberVO.setMemberSignupDate(rs.getDate("MEMBER_SIGNUP_DATE"));
 				memberVO.setMemberAuth(rs.getInt("MEMBER_AUTH"));
 				memberVO.setMemberStatus(rs.getString("MEMBER_STATUS"));
+				memberVO.setMemberOnline(rs.getString("MEMBER_ONLINE"));
 			}
 
 		} catch (ClassNotFoundException e) {
@@ -253,6 +256,7 @@ public class MemberDAO implements MemberDAO_interface {
 				memberVO.setMemberSignupDate(rs.getDate("MEMBER_SIGNUP_DATE"));
 				memberVO.setMemberAuth(rs.getInt("MEMBER_AUTH"));
 				memberVO.setMemberStatus(rs.getString("MEMBER_STATUS"));
+				memberVO.setMemberOnline(rs.getString("MEMBER_ONLINE"));
 				
 				list.add(memberVO);
 			}
@@ -319,6 +323,7 @@ public class MemberDAO implements MemberDAO_interface {
 				memberVO.setMemberSignupDate(rs.getDate("MEMBER_SIGNUP_DATE"));
 				memberVO.setMemberAuth(rs.getInt("MEMBER_AUTH"));
 				memberVO.setMemberStatus(rs.getString("MEMBER_STATUS"));
+				memberVO.setMemberOnline(rs.getString("MEMBER_ONLINE"));
 			} else {
 				System.out.println("QQ fail");
 			}
@@ -385,6 +390,7 @@ public class MemberDAO implements MemberDAO_interface {
 				memberVO.setMemberSignupDate(rs.getDate("MEMBER_SIGNUP_DATE"));
 				memberVO.setMemberAuth(rs.getInt("MEMBER_AUTH"));
 				memberVO.setMemberStatus(rs.getString("MEMBER_STATUS"));
+				memberVO.setMemberOnline(rs.getString("MEMBER_ONLINE"));
 			}
 
 		} catch (ClassNotFoundException e) {

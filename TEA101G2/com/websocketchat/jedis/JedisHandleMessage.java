@@ -16,7 +16,9 @@ public class JedisHandleMessage {
 		jedis = pool.getResource();
 		jedis.auth("12345");
 		List<String> historyData = jedis.lrange(key, 0, -1);
-		System.out.println("FUCKJEDIS22");
+//		for(String history: historyData) {
+//			System.out.println(history);
+//		}
 		jedis.close();
 		return historyData;
 	}
@@ -29,7 +31,7 @@ public class JedisHandleMessage {
 		jedis.auth("12345");
 		jedis.rpush(senderKey, message);
 		jedis.rpush(receiverKey, message);
-		System.out.println("FUCKJEDIS");
+//		System.out.println("FUCKJEDIS");
 		jedis.close();
 	}
 

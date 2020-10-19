@@ -20,6 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
 import com.member.model.MemberService;
 import com.member.model.MemberVO;
 
@@ -408,5 +411,33 @@ public class MemberServlet extends HttpServlet {
 				exceptionView.forward(req, res);
 			}
 		}
+		
+		if ("selectAllMemberIdName".equals(action)) {
+			try {
+				MemberService memberSvc = new MemberService();
+				
+				Map<String, String> map = memberSvc.selectAllMemberIdName();
+				JSONObject jObj = new JSONObject(map); 
+				res.getWriter().write(new Gson().toJson(jObj));
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}
+		if ("selectAllMemberIdNameR".equals(action)) {
+			try {
+				MemberService memberSvc = new MemberService();
+				
+				Map<String, String> map = memberSvc.selectAllEmpIdNameR();
+				JSONObject jObj = new JSONObject(map); 
+				res.getWriter().write(new Gson().toJson(jObj));
+			} catch (Exception e) {
+				e.printStackTrace();
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}	
 	}
 }

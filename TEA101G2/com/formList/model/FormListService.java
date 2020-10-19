@@ -57,8 +57,22 @@ private FormListDAOInterface dao;
 	//mail角度
 	//formListSolu(寄件者)
 	//empId(收件者)
+	//formListStatus-'R':已讀,'M':未讀
+	//formListStatus-'00':收&寄垃圾信,'10':收垃圾信,'01':寄垃圾信,'11':收&寄正常
 	
 	public List<FormListVO> selectAllMailByGet(String empId) {
+		List<FormListVO> all = dao.selectAll();
+		List<FormListVO> allByGet = new ArrayList<FormListVO>();
+		
+		allByGet = all.stream()
+				.filter(fl -> "mail".equals(fl.getFormListType()))
+				.filter(fl -> empId.equals(fl.getEmpId()))
+				.collect(Collectors.toList());
+		
+		return allByGet;
+	}
+	
+	public List<FormListVO> selectAllNewMailByGet(String empId) {
 		List<FormListVO> all = dao.selectAll();
 		List<FormListVO> allByGet = new ArrayList<FormListVO>();
 		
@@ -77,7 +91,6 @@ private FormListDAOInterface dao;
 		
 		allBySend = all.stream()
 				.filter(fl -> "mail".equals(fl.getFormListType()))
-				.filter(fl -> "M".equals(fl.getFormListStatus()))
 				.filter(fl -> formListSolu.equals(fl.getFormListSolu()))
 				.collect(Collectors.toList());
 		

@@ -2,15 +2,34 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.formList.model.*"%>
+<%@ page import="com.space.model.*"%>
 <%@ page import="com.emp.model.*"%>
+<%@ page import="com.orderMaster.model.*"%>
 
 <% 	
 
 EmpService empServ = new EmpService();
 EmpVO loginEmpVO = (EmpVO)session.getAttribute("loginEmp");
 String loginEmpId = loginEmpVO.getEmpId();
+pageContext.setAttribute("loginEmpId",loginEmpId);
 EmpVO loginEmp = empServ.selectOneEmp(loginEmpId);
 pageContext.setAttribute("loginEmp",loginEmp);
+
+SpaceServiceB HFSpaceSvc = new SpaceServiceB();
+
+List<SpaceVO> HFSpaceListNew = HFSpaceSvc.selectAllNewSpace("N");
+pageContext.setAttribute("HFSpaceListNew",HFSpaceListNew);
+
+OrderMasterServiceB HFOrderMasterSvc = new OrderMasterServiceB();
+List<OrderMasterVO> orderMasterlistT = HFOrderMasterSvc.selectAllOrderMasterByStatus("T");
+pageContext.setAttribute("orderMasterlistT",orderMasterlistT);
+
+FormListService HFFormListSvc = new FormListService();
+List<FormListVO> formListUndo = HFFormListSvc.selectAllFormListByStatus("undo");
+pageContext.setAttribute("formListUndo",formListUndo);
+
+List<FormListVO> mailListNew = HFFormListSvc.selectAllNewMailByGet(loginEmpId);
+pageContext.setAttribute("mailListNew",mailListNew);
 
 %>
 
@@ -64,12 +83,25 @@ pageContext.setAttribute("loginEmp",loginEmp);
   height: 60px;
   border-radius: 50%;
 }
+
+.open-online {
+  background-color: #555;
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 10px;
+  right: 400px;
+  width: 100px;
+  height: 60px;
+}
 </style>
 	
 </head>
 
 
-<body class="fixed-nav sticky-footer" id="page-top">
+<body class="fixed-nav sticky-footer" id="page-top" onload="online()" onunload="offline()">
 
 
   <!-- Navigation-->
@@ -111,6 +143,7 @@ pageContext.setAttribute("loginEmp",loginEmp);
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/mail/mailBox.jsp">
             <i class="fa fa-fw fa-envelope-open"></i>
             <span class="nav-link-text">信件</span>
+            <span style="color:red">${mailListNew.isEmpty()? "" : "New!!"}</span>
           </a>
         </li>
         
@@ -126,6 +159,7 @@ pageContext.setAttribute("loginEmp",loginEmp);
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/space/space.jsp">
             <i class="fa fa-fw fa-user"></i>
             <span class="nav-link-text">管理場地</span>
+           	<span style="color:red">${HFSpaceListNew.isEmpty()? "" : "New!!"}</span>
           </a>
         </li>
         
@@ -133,6 +167,7 @@ pageContext.setAttribute("loginEmp",loginEmp);
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/orderMaster/orderMaster.jsp">
             <i class="fa fa-fw fa-user"></i>
             <span class="nav-link-text">管理訂單</span>
+            <span style="color:red">${orderMasterlistT.isEmpty()? "" : "New!!"}</span>
           </a>
         </li>
         
@@ -140,6 +175,7 @@ pageContext.setAttribute("loginEmp",loginEmp);
           <a class="nav-link" href="<%=request.getContextPath()%>/backend/formList/formList.jsp">
             <i class="fa fa-fw fa-user"></i>
             <span class="nav-link-text">管理客服表單</span>
+            <span style="color:red">${formListUndo.isEmpty()? "" : "New!!"}</span>
           </a>
         </li>
 
@@ -162,115 +198,9 @@ pageContext.setAttribute("loginEmp",loginEmp);
 				<button class="btn btn-outline-warning" type="button" onclick ="history.back()">回上一頁</button>
 			</div>
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-fw fa-envelope"></i>
-            <span class="d-lg-none">Messages
-              <span class="badge badge-pill badge-primary">12 New</span>
-            </span>
-            <span class="indicator text-primary d-none d-lg-block">
-              <i class="fa fa-fw fa-circle"></i>
-            </span>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="messagesDropdown">
-            <h6 class="dropdown-header">New Messages:</h6>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <strong>David Miller</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">Hey there! This new version of SB Admin is pretty awesome! These messages clip off when they reach the end of the box so they don't overflow over to the sides!</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <strong>Jane Smith</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">I was wondering if you could meet for an appointment at 3:00 instead of 4:00. Thanks!</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <strong>John Doe</strong>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">I've sent the final files over to you for review. When you're able to sign off of them let me know and we can discuss distribution.</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item small" href="#">View all messages</a>
-          </div>
-        </li>
         
         
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-fw fa-bell"></i>
-            <span class="d-lg-none">Alerts
-              <span class="badge badge-pill badge-warning">6 New</span>
-            </span>
-            <span class="indicator text-warning d-none d-lg-block">
-              <i class="fa fa-fw fa-circle"></i>
-            </span>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
-            <h6 class="dropdown-header">New Alerts:</h6>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <span class="text-success">
-                <strong>
-                  <i class="fa fa-long-arrow-up fa-fw"></i>Status Update</strong>
-              </span>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <span class="text-danger">
-                <strong>
-                  <i class="fa fa-long-arrow-down fa-fw"></i>Status Update</strong>
-              </span>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <span class="text-success">
-                <strong>
-                  <i class="fa fa-long-arrow-up fa-fw"></i>Status Update</strong>
-              </span>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item small" href="#">View all alerts</a>
-          </div>
-        </li>
         
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-fw fa-bell"></i>
-            <span class="d-lg-none">訊息
-              <span class="badge badge-pill badge-warning">6 New</span>
-            </span>
-            <span class="indicator text-warning d-none d-lg-block">
-              <i class="fa fa-fw fa-circle"></i>
-            </span>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
-            <h6 class="dropdown-header" id="messh6">新訊息:</h6>
-            
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <span class="text-success">
-                <strong>
-                  <i class="fa fa-long-arrow-up fa-fw"></i>Status Update</strong>
-              </span>
-              <span class="small float-right text-muted">11:21 AM</span>
-              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
-            </a>
-            
-            
-
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item small" href="#">View all alerts</a>
-          </div>
-        </li>
         
         
         
@@ -314,7 +244,7 @@ pageContext.setAttribute("loginEmp",loginEmp);
           <div class="modal-body">確定從後台登出嗎?</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
-            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/LogoutHandler" style="margin-bottom: 0px;">
+            <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/backendLogoutHandler" style="margin-bottom: 0px;">
 			    <input type="submit" class="btn btn-primary" value="確認登出">
 			</FORM>
           </div>
@@ -332,13 +262,15 @@ pageContext.setAttribute("loginEmp",loginEmp);
       </div>
     </footer>
     <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
+    <a class="scroll-to-top rounded" href="#page-top" style="z-index:10">
       <i class="fa fa-angle-up"></i>
     </a>
     
-<button class="open-button" onclick="openForm()">Chat</button>
+<button class="open-button" onclick="openChat();" style="z-index:10">Chat</button>
+<button class="open-online" onclick="openOnlineList()" style="z-index:10">OnlineList</button>
 	
 <%@ include file="/backend/chat.jsp" %>
+<%@ include file="/backend/onlineList.jsp" %>
     
     
     <!-- Bootstrap core JavaScript-->
@@ -361,9 +293,8 @@ pageContext.setAttribute("loginEmp",loginEmp);
     
     
 <script>
-
-
 </script>
+
 </body>
 
 </html>

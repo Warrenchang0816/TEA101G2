@@ -4,6 +4,21 @@
 <%@ page import="com.formList.model.*"%>
 <%@ page import="com.emp.model.*"%>
 
+<%
+EmpService mailSideEmpServ = new EmpService();
+EmpVO mailSideLoginEmpVO = (EmpVO)session.getAttribute("loginEmp");
+String mailSideLoginEmpId = mailSideLoginEmpVO.getEmpId();
+pageContext.setAttribute("mailSideloginEmpId",mailSideLoginEmpId);
+EmpVO mailSideLoginEmp = mailSideEmpServ.selectOneEmp(mailSideLoginEmpId);
+pageContext.setAttribute("mailSideloginEmp",mailSideLoginEmp);
+
+FormListService mailSideFormListSvc = new FormListService();
+List<FormListVO> mailSideListNew = mailSideFormListSvc.selectAllNewMailByGet(mailSideLoginEmpId);
+pageContext.setAttribute("mailSideListNew",mailSideListNew);
+
+%>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -56,7 +71,7 @@
                   <li class="nav-item active">
                     <a href="<%=request.getContextPath()%>/backend/mail/mailBox.jsp" class="nav-link">
                       <i class="fas fa-inbox"></i> 收件夾
-                      <span class="badge bg-primary float-right">12</span>
+                      <span class="badge bg-primary float-right">${mailSideListNew.isEmpty()? "" : mailSideListNew.size()}</span>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -122,6 +137,14 @@
     
     <script src="<%=request.getContextPath()%>/backend/js/adminlte.min.js"></script>
 <script src="<%=request.getContextPath()%>/backend/js/demo.js"></script>
+
+<script>
+
+
+
+
+</script>
+
 </body>
 
 </html>

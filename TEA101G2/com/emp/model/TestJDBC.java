@@ -5,7 +5,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.http.Part;
 
@@ -34,13 +42,13 @@ public class TestJDBC {
 //		}
 		
 		//All
-		List<EmpVO> list = dao.selectAll();
-		for(EmpVO empVO : list) {
-			System.out.println(empVO.getEmpId());
-			System.out.println(empVO.getEmpName());
-			System.out.println(empVO.getEmpPhoto());
-		}		
-		System.out.println("FUCK");
+//		List<EmpVO> list = dao.selectAll();
+//		for(EmpVO empVO : list) {
+//			System.out.println(empVO.getEmpId());
+//			System.out.println(empVO.getEmpName());
+//			System.out.println(empVO.getEmpPhoto());
+//		}		
+//		System.out.println("FUCK");
 		
 		//One
 //		EmpVO one = dao.selectOne("20");
@@ -141,6 +149,56 @@ public class TestJDBC {
 //		}
 		
 //		System.out.println(allname.indexOf(";", 2));
+		
+		
+		
+//		Map<String, String> chatNames = new HashMap<String, String>();
+//		EmpService es = new EmpService();
+//		List<EmpVO> empList = es.selectAllEmp();
+//		chatNames = empList.stream().collect(Collectors.toMap(EmpVO::getEmpId, EmpVO::getEmpName));
+//		
+//		Set<String> key = chatNames.keySet();
+//		for(String id: key) {
+//			System.out.println(id);
+//		}
+//		
+//		Collection<String> values = chatNames.values();
+//		for(String name: values) {
+//			System.out.println(name);
+//		}
+//		
+//		Set<Map.Entry<String, String>> entries = chatNames.entrySet();
+//		
+//		Stream<Map.Entry<String, String>> entriesStream = entries.stream();
+//		Stream<String> keyStream = key.stream();
+//		Stream<String> valuesStream = values.stream();
+		
+//		Optional<String> empName = entriesStream.findAny(name -> name.getKey().equals("EMP00006")).map(Map.Entry::getValue).findFirst();
+		
+//		String empName = entriesStream.filter(name -> name.getKey().equals("EMP00007")).map(Map.Entry::getValue).findFirst().get();
+//		System.out.println("FUCK " + empName);
+		
+//		EmpService es = new EmpService();
+//		Set<Map.Entry<String, String>> list = es.selectAllEmpIdName();
+//		for(int i = 0; int ) {
+//			
+//		}
+		
+//		Map<String, String> list = es.selectAllEmpIdName();
+//		for (Map.Entry<String, String> entry : list.entrySet()) {
+//		    System.out.println(entry.getKey() + "/" + entry.getValue());
+//		}
+		
+		
+		
+//		{"type":"history","sender":"EMP00006","receiver":"EMP00007","message":""}
+		String message =" {type:history,sender:EMP00006,receiver:EMP00007,message:}";
+		String[] messages = message.split(",");
+		System.out.println(messages[0]);
+		String type = messages[0].substring(messages[0].lastIndexOf(":"), messages[0].length());
+		System.out.println("type:"+type);
+//		String typename = message.substring(message.lastIndexOf("=") + 2, header.length() - 1);
+		
 	}
 	
 	

@@ -79,7 +79,7 @@ Base64.Encoder encode = Base64.getEncoder();
           <div class="card dashboard text-white bg-danger o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <i class="fa fa-fw fa-heart"></i>
+                <span style="color:red; font-size: 2.5rem">${formListUndo.isEmpty()? "" : formListUndo.size()}</span>
               </div>
               <div class="mr-5"><h5>未處理的表單</h5></div>
             </div>

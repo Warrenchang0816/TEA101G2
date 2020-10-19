@@ -41,11 +41,11 @@ public class TestJDBC {
 //		System.out.println("FUCK");
 		
 		//One
-		MemberVO one = dao.selectOne("MEM00003");
-		System.out.println(one.getMemberId());
-		System.out.println(one.getMemberName());
-		System.out.println(one.getMemberPhoto());
-		System.out.println("FUCK");
+//		MemberVO one = dao.selectOne("MEM00003");
+//		System.out.println(one.getMemberId());
+//		System.out.println(one.getMemberName());
+//		System.out.println(one.getMemberPhoto());
+//		System.out.println("FUCK");
 		
 		//insert
 //		MemberVO add = new MemberVO();
@@ -92,6 +92,11 @@ public class TestJDBC {
 //		dao.update(update);
 //		System.out.println("FUCK");
 		
+		
+		MemberService ms = new MemberService();
+		MemberVO member = ms.getOneMember("MEM00007");
+		ms.updateMemberOnline(member, "Y");
+		System.out.println("FUCKKK");
 	}
 	
 

@@ -1,6 +1,8 @@
 package com.member.model;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Part;
 
@@ -21,6 +23,12 @@ public class MemberService {
 	public MemberVO updateMember(MemberVO memberVO) {
 		dao.update(memberVO);
 		return memberVO;
+	}
+	
+	public void updateMemberOnline(MemberVO memberVO, String memberOnline) {		
+		MemberVO updateMemberOnline = dao.findByPrimaryKey(memberVO.getMemberId());
+		updateMemberOnline.setMemberOnline(memberOnline);
+		dao.update(updateMemberOnline);
 	}
 
 	public void deleteMember(String memberId) {
@@ -81,5 +89,24 @@ public class MemberService {
 		String jsonObj = gson.toJson(list);
 		System.out.println(jsonObj);
 		return jsonObj;
+	}
+	
+	public List<MemberVO> selectAllMemberOnline() {
+		List<MemberVO> all = dao.getAll();
+		List<MemberVO> allMemberOnline = all.stream()
+					.filter(m -> m.getMemberOnline().equals("Y"))
+					.collect(Collectors.toList());
+		
+		return allMemberOnline;
+	}
+	
+	public Map<String, String> selectAllMemberIdName() {
+		List<MemberVO> all = dao.getAll();
+		return all.stream().collect(Collectors.toMap(MemberVO::getMemberId, MemberVO::getMemberName));
+	}
+	
+	public Map<String, String> selectAllEmpIdNameR() {
+		List<MemberVO> all = dao.getAll();
+		return all.stream().collect(Collectors.toMap(MemberVO::getMemberName, MemberVO::getMemberId));
 	}
 }

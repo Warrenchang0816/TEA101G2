@@ -2,18 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.util.stream.*"%>
-<%@ page import="com.emp.model.*"%>
+<%@ page import="com.member.model.*"%>
 
 <%
 
-Map<String, String> chatNames = new HashMap<String, String>();
-EmpService es = new EmpService();
-List<EmpVO> empList = es.selectAllEmp();
-chatNames = empList.stream().collect(Collectors.toMap(EmpVO::getEmpId, EmpVO::getEmpName));
-Set<Map.Entry<String, String>> entries = chatNames.entrySet();
-Stream<Map.Entry<String, String>> entriesStream = entries.stream();
-String theName = entriesStream.filter(name -> name.getKey().equals("EMP00007")).map(Map.Entry::getValue).findFirst().get();
-pageContext.setAttribute("theName", theName);
+MemberVO loginMember = (MemberVO)session.getAttribute("userVO");
+pageContext.setAttribute("loginMember", loginMember);
 
 %>
 
@@ -100,76 +94,6 @@ pageContext.setAttribute("theName", theName);
 }
 
 
-<%--
-.input-area {
-	background: #0078ae;
-	box-shadow: inset 0 0 10px #00568c;
-}
-
-.input-area input {
-	margin: 0.5em 0em 0.5em 0.5em;
-}
-
-.text-field {
-	border: 1px solid grey;
-	padding: 0.2em;
-	box-shadow: 0 0 5px #000000;
-}
-
-h1.chat {
-	font-size: 1.0em;
-	padding: 5px;
-	margin: 5px;
-}
-
-
-#message {
-	min-width: 50%;
-	max-width: 60%;
-}
-
-
-
-.statusOutput {
-	background: #0078ae;
-	text-align: center;
-	color: #ffffff;
-	border: 1px solid grey;
-	padding: 0.2em;
-	box-shadow: 0 0 5px #000000;
-	width: 30%;
-	margin-top: 10%;
-	margin-left: 60%;
-}
-
-
-#row {
-	float: left;
-	width: 50%;
-}
-
-.column {
-  float: left;
-  width: 50%;
-  padding: 5%;
-  margin-bottom: 5px;
-  background-color: #ffffff;
-}
-
-
-.friend + .me{
-  border-bottom-right-radius: 5px;
-}
-
-.me + .me{
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-.me:last-of-type {
-  border-bottom-right-radius: 30px;
-}
---%>
 
 h1.chat {
 	font-size: 1.0em;
@@ -299,26 +223,10 @@ h1.chat {
 
 </head>
 
-
-
-
-
-<%-- 
-<div class="chat-popup" id="myForm">
-  <form action="/action_page.php" class="form-container">
-    <h1>Chat</h1>
-	
-    <label for="msg"><b>Message</b></label>
-	<div id="messagesArea" class="panel message-area" ></div>
-    <input id="message" class="text-field" type="text" placeholder="Message" onkeydown="if (event.keyCode == 13) sendMessage();" /> 
-    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-  </form>
-</div>
---%>
 <body>
 <div class="chat-popup" id="myForm" style="height: 350px; background-color: white;">
   <div class="form-container">
-    <h1 class="chat">${loginEmp.empName}</h1>
+    <h1 class="chat">${loginMember.memberName}</h1>
    	<label for="conv"><b>To: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></label>
    	<select id="receiver" size="1" class="receiver">
 	</select>
@@ -342,31 +250,31 @@ h1.chat {
 
 </body>
 <script>
-	var MyPoint = "/FriendWS/${loginEmp.empId}";
+	var MyPoint = "/FriendWS/${loginMember.memberId}";
 	var host = window.location.host;
 	var path = window.location.pathname;
 	var webCtx = path.substring(0, path.indexOf('/', 1));
 	var endPointURL = "ws://" + window.location.host + webCtx + MyPoint;
 
 	var messagesArea = document.getElementById("messagesArea");
-	var self = '${loginEmp.empId}';
+	var self = '${loginMember.memberId}';
 	var chatWebSocket;
 	
 	var array = [];
-	var idName;
-	
 	
 	
 	function clickToChat(objButton) {
+		console.log("clickToChat")
 		  document.getElementById("myForm").style.display = "block";
 		  
 		  var friend = objButton.value;
+		  console.log("clickToChat11111111")
 		  $.when($.ajax({
 			    type: 'POST',
-			    url: '<%=request.getContextPath()%>/EmpServlet',
+			    url: '<%=request.getContextPath()%>/MemberServlet.do',
 			    dataType: "json",
 			    data: {
-			    	action: 'selectAllEmpIdName',
+			    	action: 'selectAllMemberIdName',
 			    },
 			    success: function(data) {
 			    },
@@ -379,9 +287,8 @@ h1.chat {
 		          + currentdate.getMinutes() + ":" 
 		          + currentdate.getSeconds();
 				  --%>
-				  
+				  console.log("clickToChat222222")
 				  if(array.length === 0){
-					  console.log("FUCKK11111")
 						array.push(friend);
 						let name_array = JSON.stringify(array);
 						sessionStorage.setItem('name_array', name_array);
@@ -390,33 +297,21 @@ h1.chat {
 						receiver.add(option);
 					}else{
 						if(!array.includes(friend)){
-							console.log("FUCKK22222")
 					        array.push(friend);
 					        let name_array = JSON.stringify(array);
 							sessionStorage.setItem('name_array', name_array);
 							var option = document.createElement("option");
 							option.text = data.map[friend];
 							receiver.add(option);
-							$('#receiver > option').each(function() {
-								console.log("FUCKK3333355555")
-								if(this.value === data.map[friend]){
-									console.log("this.value:"+this.value)
-									console.log("data.map[friend]:"+data.map[friend])
-									this.selected = true;
-								}
-							})
 							
 						}else{
-							console.log("FUCKK33333")
 							$('#receiver > option').each(function() {
-								console.log("FUCKK3333355555")
 								if(this.value === data.map[friend]){
 									console.log("this.value:"+this.value)
 									console.log("data.map[friend]:"+data.map[friend])
 									this.selected = true;
 								}
 							})
-							console.log("FUCKK44444")
 						}
 				   	}
 				  
@@ -441,11 +336,12 @@ h1.chat {
 								};
 							chatWebSocket.send(JSON.stringify(jsonObj));
 						} else if ("history" === jsonObj.type) {
+							console.log("historyFUCKKK")
 							messagesArea.innerHTML = '';
 							var ul = document.createElement('ul');
 							ul.id = "area";
 							messagesArea.appendChild(ul);
-							
+							console.log("historyFUCKKK222222")
 							// 這行的jsonObj.message是從redis撈出跟好友的歷史訊息，再parse成JSON格式處理
 							var messages = JSON.parse(jsonObj.message);
 							for (var i = 0; i < messages.length; i++) {
@@ -464,6 +360,7 @@ h1.chat {
 								li.appendChild(span);
 								span.innerHTML = datetime;
 								div.appendChild(newContent);
+								console.log("historyFUCKKK33333")
 							}
 							messagesArea.scrollTop = messagesArea.scrollHeight;
 						} else if ("chat" === jsonObj.type && friend === jsonObj.sender && self === jsonObj.receiver) {
@@ -501,23 +398,25 @@ h1.chat {
 	}
 
 	function sendChatMessage() {
+		console.log("sendChatMessage")
 		$.when($.ajax({
 		    type: 'POST',
-		    url: '<%=request.getContextPath()%>/EmpServlet',
-		    dataType: "json",
+		    url: '<%=request.getContextPath()%>/MemberServlet.do',
+		    dataType: 'json',
 		    data: {
-		    	action: 'selectAllEmpIdNameR',
+		    	action: 'selectAllMemberIdNameR',
 		    },
 		    success: function(data) {
 		    },
 		})).done(function (data){
+			console.log("sendChatMessage22222")
 			var currentdate = new Date(); 
 			var datetime = currentdate.getHours()  + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 			var inputMessage = document.getElementById("message");
 			var friend = document.getElementById("receiver").value;
 			var selcetId = data.map[friend];
 			var message = inputMessage.value.trim();
-
+			console.log("sendChatMessage33333")
 				var jsonObj = {
 					"type" : "chat",
 					"sender" : self,
@@ -528,7 +427,7 @@ h1.chat {
 				chatWebSocket.send(JSON.stringify(jsonObj));
 				inputMessage.value = "";
 				inputMessage.focus();
-				
+				console.log("sendChatMessage44444")
 				var li = document.createElement('li');
 				var div = document.createElement('div');
 				var span = document.createElement('span');
@@ -542,23 +441,19 @@ h1.chat {
 				li.appendChild(span);
 				span.append(datetime);
 				messagesArea.scrollTop = messagesArea.scrollHeight;
-			
+				console.log("sendChatMessage55555")
 		});
-		
 		
 	}
 
-	// 有好友上線或離線就更新列表
 
-	// 註冊列表點擊事件並抓取好友名字以取得歷史訊息
-	
 	function chatListener() {
 		$.when($.ajax({
 		    type: 'POST',
-		    url: '<%=request.getContextPath()%>/EmpServlet',
+		    url: '<%=request.getContextPath()%>/MemberServlet.do',
 		    dataType: "json",
 		    data: {
-		    	action: 'selectAllEmpIdNameR',
+		    	action: 'selectAllMemberIdNameR',
 		    },
 		    success: function(data) {
 		    },
@@ -653,10 +548,10 @@ h1.chat {
 	function openChat() {
 		$.when($.ajax({
 		    type: 'POST',
-		    url: '<%=request.getContextPath()%>/EmpServlet',
+		    url: '<%=request.getContextPath()%>/MemberServlet.do',
 		    dataType: "json",
 		    data: {
-		    	action: 'selectAllEmpIdName',
+		    	action: 'selectAllMemberIdName',
 		    },
 		    success: function(data) {
 		    },
@@ -686,10 +581,10 @@ h1.chat {
 			  
 				$.when($.ajax({
 				    type: 'POST',
-				    url: '<%=request.getContextPath()%>/EmpServlet',
+				    url: '<%=request.getContextPath()%>/MemberServlet.do',
 				    dataType: "json",
 				    data: {
-				    	action: 'selectAllEmpIdNameR',
+				    	action: 'selectAllMemberIdNameR',
 				    },
 				    success: function(data) {
 				    },
@@ -716,10 +611,10 @@ h1.chat {
 						} else if ("history" === jsonObj.type) {
 							$.when($.ajax({
 							    type: 'POST',
-							    url: '<%=request.getContextPath()%>/EmpServlet',
+							    url: '<%=request.getContextPath()%>/MemberServlet.do',
 							    dataType: "json",
 							    data: {
-							    	action: 'selectAllEmpIdName',
+							    	action: 'selectAllMemberIdName',
 							    },
 							    success: function(data) {
 							    },
@@ -756,10 +651,10 @@ h1.chat {
 						} else if ("chat" === jsonObj.type && friend === jsonObj.sender && self === jsonObj.receiver) {
 							$.when($.ajax({
 							    type: 'POST',
-							    url: '<%=request.getContextPath()%>/EmpServlet',
+							    url: '<%=request.getContextPath()%>/MemberServlet.do',
 							    dataType: "json",
 							    data: {
-							    	action: 'selectAllEmpIdName',
+							    	action: 'selectAllMemberIdName',
 							    },
 							    success: function(data) {
 							    },
