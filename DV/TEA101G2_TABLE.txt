@@ -214,7 +214,6 @@ FORM_CREATE_DATE  DATE NOT NULL,
 FORM_LIST_TYPE   VARCHAR2(20) NOT NULL,
 FORM_TITLE   VARCHAR2(90) NOT NULL,
 FORM_CONTENT   CLOB,
---FORM_FILE BLOB,
 --FORM_STATUS VARCHAR2(20) NOT NULL,
 --FORM_SOLU VARCHAR2(200),
 --FORM_SOLU_DATE  DATE,
@@ -234,7 +233,7 @@ FORM_STATUS----'R':已讀,'M':未讀
 FORM_CREATE_DATE----寄件日期
 
 *MailServer
-final String myGmail = "bigplantform@gmail.com";
+final String myGmail = "BigZooTEA101G2";
 final String myGmail_password = "2020TEA101G2";
 
 *MESSAGE
