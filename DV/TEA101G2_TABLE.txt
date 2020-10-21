@@ -103,7 +103,7 @@ CONSTRAINT ORDER_MASTER_MEMBER_FK FOREIGN KEY (MEMBER_ID) REFERENCES MEMBER (MEM
 ORDER_STATUS
 'T':交易成立(未付款)
 'P':交易暫停
-'R':退費
+'R':退費完成
 'F':交易成立(已付款)
 ------------------------------------------------------------------------------
 
