@@ -47,13 +47,12 @@ public class OrderDetailServlet extends HttpServlet {
 				if(spaceDetailId == null || spaceDetailId.isEmpty()) errorMsgs.add("場地明細編號: 請勿空白");
 
 //---------------------------------判斷租借時間是否有效-----------------------------------------------------
-				SpaceDetailServiceB spaceDetailSvc = new SpaceDetailServiceB();
+				SpaceDetailService spaceDetailSvc = new SpaceDetailService();
 				OrderDetailService orderDetailSvc = new OrderDetailService();
 				SpaceDetailVO spaceDetailVO = spaceDetailSvc.selectOneSpaceDetail(spaceDetailId);
 				List<OrderDetailVO> oldorderlist = orderDetailSvc.selectAllOrderDetailBySD(spaceDetailId);
 				long spaceStartTimeLong = (spaceDetailVO.getSpaceDetailFreeTimeStart().getTime());
 				long spaceEndTimeLong = (spaceDetailVO.getSpaceDetailFreeTimeEnd().getTime());
-				
 				
 				
 				//場地租借開始時間格式偵錯
@@ -259,8 +258,50 @@ public class OrderDetailServlet extends HttpServlet {
 				RequestDispatcher exceptionView = req.getRequestDispatcher("/frontend/error.jsp");
 				exceptionView.forward(req, res);
 			}
-		}		
+		}
 		
+		/**************************** 用orderMasterId把全部orderDetailVO滾成odlist ******************************/
+		
+		if ("listAllOrderDetail".equals(action)) {
+			Queue<String> errorMessages = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMessages);
+			
+			try {
+				String orderMasterId = req.getParameter("orderMasterId");
+				if (orderMasterId == null || (orderMasterId.trim()).length() == 0) {
+					errorMessages.add("請輸入orderMasterId");
+				}
+				// Send the use back to the form, if there were errors
+				if (!errorMessages.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/ordermaster/selectAllOrderMaster.jsp");
+					failureView.forward(req, res);
+					return;// 程式中斷
+				}
+				/************************************* 開始滾資料 *************************************************/
+				OrderDetailService ods = new OrderDetailService();
+				List<OrderDetailVO> odlist = ods.selectAllOrderDetailByMaster(orderMasterId);
+				System.out.println(odlist);
+				if (odlist == null) {
+					errorMessages.add("查無資料");
+				}
+				// Send the use back to the form, if there were errors
+				if (!errorMessages.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/ordermaster/selectAllOrderMaster.jsp");
+					failureView.forward(req, res);
+					return;// 程式中斷
+				}
+				/*************************** 查詢完成,準備轉交(Send the Success view) ********************************/
+				req.setAttribute("odlist", odlist); // 資料庫取出的orderDetailVO物件,存入req
+				String url = "/frontend/orderdetail/selectAllOrderDetail.jsp";
+				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+				sucessVeiw.forward(req, res);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				errorMessages.add(e.getMessage());
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/frontend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}
 	}
-
 }

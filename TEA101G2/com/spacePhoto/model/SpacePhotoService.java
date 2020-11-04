@@ -37,10 +37,11 @@ public class SpacePhotoService {
 	public List<SpacePhotoVO> getAll(){
 		return dao.getAll();
 	}
-	//取相同spaceId
+	//取相同spaceId的SpacePhoto
 	public List<SpacePhotoVO> getAllPhoto(String spaceId){
 		return dao.getAllPhoto(spaceId);
 	}
+	
 	//取SpaceId預設圖
 	public List<SpacePhotoVO> getDefaultPhoto(String spaceId){
 		return dao.getDefaultPhoto(spaceId);

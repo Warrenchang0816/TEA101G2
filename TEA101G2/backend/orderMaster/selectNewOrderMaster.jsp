@@ -1,3 +1,4 @@
+<%@page import="java.sql.Date"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
@@ -20,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>新的訂單</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
@@ -96,7 +97,12 @@
 <%
 	MemberServiceB memberSer = new MemberServiceB();
 	MemberVO memberVO = memberSer.selectOneMember(((OrderMasterVO)pageContext.getAttribute("orderMasterVO")).getMemberId());
+	long deadLines = ((OrderMasterVO)pageContext.getAttribute("orderMasterVO")).getOrderCreateDate().getTime() + (7*60*60*24*1000);
+	long todays = new java.sql.Date(System.currentTimeMillis()).getTime();
+	pageContext.setAttribute("deadLines", deadLines);
+	pageContext.setAttribute("todays", todays);
 %>
+${orderMasterVO.orderCreateDate.getTime() >= deadLines}
 	<tr>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderDetailServletB" style="margin-bottom: 0px;">${orderMasterVO.orderMasterId}
@@ -120,9 +126,9 @@
 				<input type="hidden" name="memberId"  value="${orderMasterVO.memberId}">
 			 	<input type="hidden" name="action"	value="backend_SelectOneMember"></FORM>
 		</td>
-		<td>${orderMasterVO.orderCreateDate}</td>
+		<td ${todays >= deadLines? 'style="color:red"' : 'style="color:#777 !important"'}>${orderMasterVO.orderCreateDate}</td>
 		<td>${orderMasterVO.orderAmount}</td>
-		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "交易暫停" : orderMasterVO.orderStatus.equals("P")? "交易取消" : "退費"}</td>
+		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "申請退費" : orderMasterVO.orderStatus.equals("P")? "交易取消" : "退費"}</td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServletB" style="margin-bottom: 0px;">
 			    <button type="submit" class="btn btn-link" onclick="javascript:return confirm('確認取消?');">

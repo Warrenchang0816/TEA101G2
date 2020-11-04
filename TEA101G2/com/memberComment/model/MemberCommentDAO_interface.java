@@ -9,4 +9,5 @@ public interface MemberCommentDAO_interface {
 	public MemberCommentVO findByPrimaryKey(String memberCommentId);
 	public List<MemberCommentVO> getAll();
 	public List<MemberCommentVO> getAllById(String memberCommentId);
+	public Double getMemberRating(String memberId);
 }

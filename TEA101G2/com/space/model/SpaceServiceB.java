@@ -68,7 +68,7 @@ public class SpaceServiceB {
 		
 		allNew = all.stream()
 				.filter(s -> spaceStatus.equals(s.getSpaceStatus()))
-				.filter(s -> (s.getSpaceStatusEmp() == null))
+//				.filter(s -> (s.getSpaceStatusEmp() == null))
 				.collect(Collectors.toList());
 		
 		return allNew;

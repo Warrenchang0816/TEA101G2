@@ -35,6 +35,15 @@ pageContext.setAttribute("onlineList", onlineList);
   z-index: 9;
 }
 
+#onlineList {
+  display: none;
+  position: fixed;
+  bottom: 10px;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
 /* Add styles to the form container */
 .form-container {
   max-width: 300px;
@@ -140,7 +149,7 @@ pageContext.setAttribute("onlineList", onlineList);
 </div>
 --%>
 <body >
-<div class="chat-popup" id="onlineList" style="height: 350px; background-color: white; right: 400px; width: 250px;">
+<div class="chat-popup" id="onlineList" style="height: 350px; background-color: white; right: 60%; width: 250px;">
   <div class="form-container">
     <h1 class="chat">在線員工</h1>
     
@@ -148,7 +157,6 @@ pageContext.setAttribute("onlineList", onlineList);
               <thead>
                 <tr>
 					<th>員工</th>
-					<th>在線狀態</th>
 					<th>公務訊息傳遞</th>
                 </tr>
               </thead>
@@ -156,8 +164,7 @@ pageContext.setAttribute("onlineList", onlineList);
  
               <c:forEach var="empVO" items="${onlineList}" begin="0" end="<%=onlineList.size()%>">
               	<tr>
-             		<th>[${empVO.empId}]${empVO.empName}</th>
-					<th>${empVO.empOnline}</th>
+             		<th class="onlineEmpId">[${empVO.empId}]<br>${empVO.empName}</th>
 					<th>			     
 						<button type="button" class="btn btn-link" id="messbtn" value="${empVO.empId}" onclick="clickToChat(this)">
 							<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chat-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -184,15 +191,16 @@ pageContext.setAttribute("onlineList", onlineList);
 
 <script>
 
+var MyPoint2 = "/OnlineWS/${loginEmp.empId}";
+var host2 = window.location.host;
+var path2 = window.location.pathname;
+var webCtx2 = path2.substring(0, path2.indexOf('/', 1));
+var endPointURL2 = "ws://" + host2 + webCtx2 + MyPoint2;
+//websocket 有專屬的通訊協定 ws://
+
+var onlineWebSocket;
+
 function online() {
-	var MyPoint2 = "/OnlineWS/${loginEmp.empId}";
-	var host2 = window.location.host;
-	var path2 = window.location.pathname;
-	var webCtx2 = path2.substring(0, path2.indexOf('/', 1));
-	var endPointURL2 = "ws://" + host2 + webCtx2 + MyPoint2;
-	//websocket 有專屬的通訊協定 ws://
-	
-	var onlineWebSocket;
 
 		console.log("endPointURL2:" + endPointURL2);
 		// create a websocket
@@ -233,13 +241,41 @@ function online() {
 							<th>Y</th>
 						</tr>
 						`
-						$("#onlineListtbody").append(list_html);
 						
-						$('#selects th[name="${jsonObj.user}"]').exist(function(exist, elements, index) { 
-							
-						},function (exist, elements) {
-							
-						});
+						let list_html2 =
+						`
+						<tr>
+		             		<th class="onlineEmpId">[\${jsonObj.user}]<br>\${data.map[jsonObj.user]}</th>
+							<th>			     
+								<button type="button" class="btn btn-link" id="messbtn" value="\${jsonObj.user}" onclick="clickToChat(this)">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chat-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+									  <path fill-rule="evenodd" d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"/>
+									  <path fill-rule="evenodd" d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zM4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8zm0 2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/>
+									</svg>
+				        		</button>
+			        		</th>
+						</tr>
+						`
+						
+						var thList;
+						
+						$('#onlineListtbody > tr > th.onlineEmpId').each(function() {
+							console.log('th:' + this.innerHTML);
+							console.log('eachloginEmpId: ' + jsonObj.user);
+							thList += this.innerHTML;
+							console.log('thList: ' + thList);
+							if(this.innerHTML.indexOf(jsonObj.user) !== -1){
+								console.log('FUCKKKth:' + this.innerHTML);
+							}
+						})
+						
+						console.log('thList222: ' + thList);
+						if(thList.indexOf(jsonObj.user) !== -1){
+							console.log('FUCKKyou');
+						}else{
+							console.log('FUCKKyou2222');
+							$("#onlineListtbody").append(list_html2);
+						}
 					}
 				})
 				
@@ -254,6 +290,7 @@ function online() {
 
 function offline() {
 	onlineWebSocket.close();
+	console.log("FUCKKKKOnlineWS，Disconnected!");
 };
 
 function openOnlineList(){

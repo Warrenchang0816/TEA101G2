@@ -8,17 +8,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
-	private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String USER = "TEA101G2";
-	private static final String PASSWORD = "TEA101G2";
-	private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
 	private static final String INSERT = "INSERT INTO MEMBER_FAVORITE VALUES ('FAVORITE' || lpad(MEMBER_FAVORITE_ID_SEQ.NEXTVAL, 5, '0' ),?,?)";
 	private static final String UPDATE = "UPDATE MEMBER_FAVORITE SET MEMBER_ID=?,SPACE_ID=? WHERE MEMBER_FAVORITE_ID = ?";
 	private static final String DELETE = "DELETE FROM MEMBER_FAVORITE WHERE MEMBER_FAVORITE_ID = ?";
 	private static final String GET_ONE = "SELECT * FROM MEMBER_FAVORITE WHERE MEMBER_FAVORITE_ID = ?";
 	private static final String GET_ALL = "SELECT * FROM MEMBER_FAVORITE";
 	private static final String GET_ALL_ID = "SELECT * FROM MEMBER_FAVORITE WHERE MEMBER_ID = ?";
+	private static final String GET_MEMBER_FAVORITE_STATUS = "SELECT * FROM MEMBER_FAVORITE WHERE MEMBER_ID=? AND SPACE_ID =?";
+
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TEA101G2");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void insert(MemberFavoriteVO memberFavoriteVO) {
@@ -26,8 +38,7 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 		PreparedStatement pstmt = null;
 
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(INSERT);
 
 			pstmt.setString(1, memberFavoriteVO.getMemberId());
@@ -35,8 +46,6 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 
 			pstmt.executeUpdate();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -63,8 +72,7 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 		PreparedStatement pstmt = null;
 
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(UPDATE);
 
 			pstmt.setString(1, memberFavoriteVO.getMemberId());
@@ -73,8 +81,6 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 
 			pstmt.executeUpdate();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -101,34 +107,31 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 		PreparedStatement pstmt = null;
 
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(DELETE);
-			
+
 			pstmt.setString(1, memberFavoriteId);
-			
+
 			pstmt.executeUpdate();
-			
-		}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				if (pstmt != null) {
-					try {
-						pstmt.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (con != null) {
-					try {
-						con.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
 				}
 			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -136,16 +139,15 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		MemberFavoriteVO memberFavoriteVO = null;
-		
+
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ONE);
-			
+
 			pstmt.setString(1, memberFavoriteId);
-			
+
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				memberFavoriteVO = new MemberFavoriteVO();
@@ -154,11 +156,9 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 				memberFavoriteVO.setSpaceId(rs.getString("SPACE_ID"));
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			if (rs != null) {
 				try {
 					rs.close();
@@ -172,7 +172,8 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 				} catch (Exception e) {
 					e.printStackTrace(System.err);
 				}
-			}if (con != null) {
+			}
+			if (con != null) {
 				try {
 					con.close();
 				} catch (Exception e) {
@@ -188,15 +189,15 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		MemberFavoriteVO memberFavoriteVO = null;
-		List<MemberFavoriteVO> list = new ArrayList<MemberFavoriteVO>();;
-		
+		List<MemberFavoriteVO> list = new ArrayList<MemberFavoriteVO>();
+		;
+
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL);
-			
+
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				memberFavoriteVO = new MemberFavoriteVO();
@@ -206,32 +207,31 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 				list.add(memberFavoriteVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (pstmt != null) {
-					try {
-						pstmt.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}if (con != null) {
-					try {
-						con.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
 				}
 			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 		return list;
 	}
 
@@ -240,13 +240,13 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		MemberFavoriteVO memberFavoriteVO = null;
-		List<MemberFavoriteVO> list = new ArrayList<MemberFavoriteVO>();;
-		
+		List<MemberFavoriteVO> list = new ArrayList<MemberFavoriteVO>();
+		;
+
 		try {
-			Class.forName(DRIVER);
-			con = DriverManager.getConnection(URL, USER, PASSWORD);
+			con = ds.getConnection();
 			pstmt = con.prepareStatement(GET_ALL_ID);
 			pstmt.setString(1, memberId);
 			rs = pstmt.executeQuery();
@@ -258,33 +258,82 @@ public class MemberFavoriteDAO implements MemberFavoriteDAO_interface {
 				list.add(memberFavoriteVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException se) {
-						se.printStackTrace(System.err);
-					}
-				}
-				if (pstmt != null) {
-					try {
-						pstmt.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
-				}if (con != null) {
-					try {
-						con.close();
-					} catch (Exception e) {
-						e.printStackTrace(System.err);
-					}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
 				}
 			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
 		return list;
 	}
 
+	@Override
+	public MemberFavoriteVO getMemberFavoriteStatus(String memberId, String spaceId) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		MemberFavoriteVO memberFavoriteVO = null;
+
+		try {
+			con = ds.getConnection();
+			pstmt = con.prepareStatement(GET_MEMBER_FAVORITE_STATUS);
+
+			pstmt.setString(1, memberId);
+			pstmt.setString(2, spaceId);
+
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				memberFavoriteVO = new MemberFavoriteVO();
+				memberFavoriteVO.setMemberFavoriteId(rs.getString("MEMBER_FAVORITE_ID"));
+				memberFavoriteVO.setMemberId(rs.getString("MEMBER_ID"));
+				memberFavoriteVO.setSpaceId(rs.getString("SPACE_ID"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (pstmt != null) {
+				try {
+					pstmt.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return memberFavoriteVO;
+	}
 }

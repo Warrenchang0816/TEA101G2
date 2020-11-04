@@ -13,6 +13,7 @@
     String formlistUserId = formlistUserVO.getMemberId();
 	FormListService formListSvc = new FormListService();
 	List<FormListVO> messageList = formListSvc.selectAllMessagesByGet(formlistUserId);
+	Collections.reverse(messageList);
 	pageContext.setAttribute("messageList",messageList);
 	
 %>
@@ -43,7 +44,7 @@
 
 </head>
 
-<body>
+<body onload="readMeassgeBox()" onunload="readMeassgeBox()">
 	
     <div id="page">
         <jsp:include page="/frontend/other/header.jsp"/>
@@ -57,14 +58,14 @@
             <div class="container-fluid">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#">會員中心</a>
+                        <a href="<%=request.getContextPath()%>/frontend/member/memberSetting.jsp">設定</a>
                     </li>
                     <li class="breadcrumb-item active">訊息</li>
                 </ol>
                 <!-- Breadcrumbs-->
                 <div class="box_general padding_bottom">
                     <div class="header_box version_2">
-                        <h2><i class="fa fa-user"></i>Message Box</h2>
+                        <h2><i class="icon-mail"></i>訊息內容</h2>
                     </div>
                     
 
@@ -76,6 +77,7 @@
 <c:forEach var="formListVO" items="${messageList}" begin="0" end="<%=messageList.size()%>" varStatus="Count">
 				
 					<li>
+					<input type="hidden" class="formListId" name="formListId" value="${formListVO.formListId}">
 						<span>${formListVO.formListCreateDate}</span>
 						<figure><img src="img/avatar1.jpg" alt=""></figure>
 						<h4>${formListVO.formListTitle}${formListVO.formListStatus == "M"? "<i class='unread'>NEW</i>" : ""}</h4>
@@ -119,7 +121,25 @@
     <!-- COMMON SCRIPTS -->
 
     <script> 
- 
+    function readMeassgeBox() {
+    	var idList;
+    	$('.formListId').each(function() {
+        	$.ajax({
+        	    type: 'POST',
+        	    url: '<%=request.getContextPath()%>/FormListServlet',
+        	    dataType: "json",
+        	    data: {
+        	    	action: 'readMessage',
+        	    	formListId: this.value,
+        	    },
+        	    success: function(data) {
+        	    },
+        	})
+    	})
+    	console.log('FUCKYAYAYYA222');
+    }
+
+
     </script>
     
     <script src="<%=request.getContextPath()%>/frontend/js/common_scripts.js"></script>

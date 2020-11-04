@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>新增員工</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
@@ -44,10 +44,6 @@
   <link href="<%=request.getContextPath()%>/backend/css/custom.css" rel="stylesheet">
   
 <style>
-    img.preview {
-      width: 200px;
-    }
-
 	.custom-file-upload {
     border: 1px solid #ccc;
     display: inline-block;
@@ -80,7 +76,23 @@ top: 2px;
 
 
 </style>
-	
+
+<style>
+#label-photo{
+  display: inline-block;
+  background-color: royalblue;
+  color: white;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+
+</style>
+
+
 </head>
 
 
@@ -110,29 +122,39 @@ top: 2px;
  			
 			<div class="row">
 
-				<div class="col-md-4">
+				<div class="col-md-4" id="photo-preveiw">
 				<%--
 					<div class="form-group">
 					<label>員工照片</label>
 						 <form action="/file-upload" class="dropzone" name="empPhoto"></form>
 						<div class="dropzone"><div class="dz-default dz-message"><span>照片預覽</span></div></div>
 				    </div>
-				    --%>
+				    
 				    
 				    <img id="blah" src="#" alt="your image" />
+				    --%>
 				</div>
 			</div>
 			<%-- 
 			<label for="file-upload" class="custom-file-upload">
 			    <i class="fa fa-cloud-upload"></i> 上傳照片
 			</label>
-			--%>
+			
 			<input id="file-upload" type="file" class = "empPhoto" name="empPhoto"/>
 			
-			<%-- 
 				<div class="preview" id="preview"><span class="text1">預覽圖</span></div>
 				<input type="file" name="empPhoto"/>
 			--%>
+			
+			<div id="btn-photo">
+				<label id="label-photo">
+					<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-image" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9c0 .013 0 .027.002.04V12l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094L15 9.499V3.5a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13zm4.502 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+					</svg>
+					上傳照片
+					<input type="file" name="spacePhoto" id="imgInp2" style="visibility: hidden; position: absolute;"/>									
+				</label>
+			</div>
 
  			<div class="row">
 				<div class="col-md-8 add_top_30">
@@ -367,5 +389,19 @@ top: 2px;
         });
         
    </script>
+   
+   
+   <script>
+      $("#imgInp2").on("change",function() {
+    	  $("img.preview").remove();
+		for (let i = 0; i < this.files.length; i++) {
+			let reader = new FileReader();
+			reader.readAsDataURL(this.files[i]);
+			reader.addEventListener("load", function() {
+				$("#photo-preveiw").append(`<img src="\${reader.result}" class ="preview" id="preview" style="height:200px; margin-top:10px; margin-right:5px;border: double;">`);
+			});
+		};
+	});
+</script>
 
 </html>

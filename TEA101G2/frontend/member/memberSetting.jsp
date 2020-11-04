@@ -11,7 +11,7 @@
 	MemberVO formlistUserVO = (MemberVO) session.getAttribute("userVO");
 	String formlistUserId = formlistUserVO.getMemberId();
 	FormListService formListSvc = new FormListService();
-	List<FormListVO> messageListNew = formListSvc.selectAllMessagesByGet(formlistUserId);
+	List<FormListVO> messageListNew = formListSvc.selectAllNewMessagesByGet(formlistUserId);
 	pageContext.setAttribute("messageListNew",messageListNew);
 
 %>
@@ -46,25 +46,26 @@
             background-color:#272727;
             background-color: white;
         }
-        #unread {
-		    background-color: #dc3545;
-		}
-		#unread {
-		    background-color: #dc3545;
-		    -webkit-border-radius: 50px;
-		    -moz-border-radius: 50px;
-		    -ms-border-radius: 50px;
-		    border-radius: 50px;
-		    font-size: 12px;
-		    font-size: 0.75rem;
-		    color: #fff;
-		    font-style: normal;
-		    padding: 3px 12px 2px 12px;
-		    margin-left: 3px;
-		    position: relative;
-		    top: -3px;
-		    line-height: 1;
-		}
+        
+#unread {
+  background-color: #dc3545;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  -ms-border-radius: 50px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-size: 0.75rem;
+  color: #fff;
+  font-style: normal;
+  padding: 3px 12px 2px 12px;
+  margin-left: 3px;
+  position: relative;
+  top: -3px;
+  line-height: 1;
+}
+#unread {
+  background-color: #dc3545;
+}
     </style>
 
 </head>
@@ -88,7 +89,7 @@
                 </div>
                 <!-- UPDATE PROFILE-->
                 <div class="col-lg-4 col-md-6">
-                    <a class="box_topic" href="#0" style="border-radius: 30px">
+                    <a class="box_topic" href="<%=request.getContextPath()%>/frontend/ordermaster/selectAllOrderMaster.jsp" style="border-radius: 30px">
                         <i class="fa fa-shopping-bag"></i>
                         <h3><strong style="color:#6C6C6C">訂單查詢</strong></h3>
                         <p>查詢你的訂單紀錄</p>
@@ -96,7 +97,7 @@
                 </div>
                 <!-- Query Order-->
                 <div class="col-lg-4 col-md-6">
-                    <a class="box_topic" href="#0" style="border-radius: 30px">
+                    <a class="box_topic" href="<%=request.getContextPath()%>/frontend/space/memberSpace.jsp" style="border-radius: 30px">
                         <i class="fa fa-home"></i>
                         <h3><strong style="color:#6C6C6C">我的場地</strong></h3>
                         <p>查看你正在出租的場地</p>

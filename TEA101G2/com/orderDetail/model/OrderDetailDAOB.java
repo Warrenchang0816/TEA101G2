@@ -8,11 +8,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
-	String driver = "oracle.jdbc.driver.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "TEA101G2";
-	String passwd = "TEA101G2";
+//	String driver = "oracle.jdbc.driver.OracleDriver";
+//	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+//	String userid = "TEA101G2";
+//	String passwd = "TEA101G2";
+	
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource)ctx.lookup("java:comp/env/jdbc/TEA101G2");
+		}
+		catch(NamingException e){
+			e.printStackTrace();
+		}
+	}
 	
 
 	private static final String INSERT_STMT = 
@@ -35,8 +51,9 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(INSERT_STMT);
 			
 			ptmt.setString(1, orderDetailVO.getOrderMasterId());
@@ -46,8 +63,6 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 
 			ptmt.executeUpdate();
 			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -75,16 +90,15 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 		PreparedStatement ptmt = null;
 
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(DELETE);
 			
 			ptmt.setString(1, orderDetailId);
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {
@@ -112,8 +126,9 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(UPDATE);
 			
 			ptmt.setString(1, orderDetailVO.getOrderMasterId());
@@ -124,8 +139,6 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -156,8 +169,9 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 		OrderDetailVO orderDetailVO = new OrderDetailVO();
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ONE_STMT);
 			
 			ptmt.setString(1, orderDetailId);
@@ -171,8 +185,6 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 				orderDetailVO.setRentEndTime(rs.getTimestamp("RENT_END_TIME"));
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -211,8 +223,9 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 		List<OrderDetailVO> list = new ArrayList<OrderDetailVO>();;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ALL_STMT);
 			
 			rs = ptmt.executeQuery();
@@ -226,8 +239,6 @@ public class OrderDetailDAOB implements OrderDetailDAOInterfaceB{
 				list.add(orderDetailVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {

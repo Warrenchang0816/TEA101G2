@@ -30,7 +30,7 @@ public class OrderDetailDAO implements OrderDetailDAOInterface{
 	//用JDBC連線
 //	String driver = "oracle.jdbc.driver.OracleDriver";
 //	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-//	String userid = "TEA101G2";
+//	String userid = "TEA101G2SP";
 //	String passwd = "123456";
 	
 
@@ -44,11 +44,15 @@ public class OrderDetailDAO implements OrderDetailDAOInterface{
 		"DELETE FROM ORDER_DETAIL where ORDER_DETAIL_ID = ?";
 	private static final String UPDATE = 
 		"UPDATE ORDER_DETAIL set ORDER_MASTER_ID=?,SPACE_DETAIL_ID=?,RENT_START_TIME=?,RENT_END_TIME=? where ORDER_DETAIL_ID = ?";
+	//呼叫同個場地明細的所有訂單明細
 	private static final String SELECT_ALL_STMT_SPACEDETAIL = 
 			"SELECT * FROM ORDER_DETAIL where SPACE_DETAIL_ID = ?";
-//	private static final String SELECT_ALL_BY_MASTERID_STMT = 
-//		"SELECT * FROM ORDER_DETAIL where ORDER_MASTER_ID = ? order by ORDER_DETAIL_ID";
-
+	//呼叫同一個訂單內的所有訂單明細，照日期順序排列
+	private static final String SELECT_ALL_BY_MASTERID_STMT = 
+		"SELECT * FROM ORDER_DETAIL where ORDER_MASTER_ID = ? order by RENT_START_TIME";
+	//遠征第二站：用OrderMasterId呼叫一個SpaceDetailId
+	private static final String SELECT_ONE_BY_OM =
+		"SELECT SPACE_DETAIL_ID FROM(SELECT * FROM ORDER_DETAIL WHERE ORDER_MASTER_ID = ?)WHERE ROWNUM = 1";
 
 	@Override
 	public void insert(OrderDetailVO orderDetailVO) {
@@ -199,9 +203,58 @@ public class OrderDetailDAO implements OrderDetailDAOInterface{
 				}
 			}
 		}
-
 	}
+	
+	/*************************遠征第二站：取一個spaceDetailId***************************/
+	@Override
+	public String selectOneSPId(String orderMasterId) {
+		Connection con = null;
+		PreparedStatement ptmt = null;
+		ResultSet rs = null;
+		
+		String spaceDetailId = null;
+		
+		try {
+			con = ds.getConnection();
+			ptmt = con.prepareStatement(SELECT_ONE_BY_OM);
+			
+			ptmt.setString(1, orderMasterId);
+			
+			rs = ptmt.executeQuery();
+			while (rs.next()) {
+				spaceDetailId = (rs.getString("SPACE_DETAIL_ID"));
+			}
+			System.out.println(spaceDetailId);
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException se) {
+					se.printStackTrace(System.err);
+				}
+			}
+			if (ptmt != null) {
+				try {
+					ptmt.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}if (con != null) {
+				try {
+					con.close();
+				} catch (Exception e) {
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+
+		return spaceDetailId;
+	}
+	
+	
 	@Override
 	public OrderDetailVO selectOne(String orderDetailId) {
 		Connection con = null;
@@ -359,60 +412,57 @@ public class OrderDetailDAO implements OrderDetailDAOInterface{
 		return list;
 	}
 
-//	@Override
-//	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId) {
-//		Connection con = null;
-//		PreparedStatement ptmt = null;
-//		ResultSet rs = null;
-//		
-//		OrderDetailVO orderDetailVO = null;
-//		List<OrderDetailVO> list = new ArrayList<OrderDetailVO>();;
-//		
-//		try {
-//			Class.forName(driver);
-//			con = DriverManager.getConnection(url, userid, passwd);
-//			ptmt = con.prepareStatement(SELECT_ALL_BY_MASTERID_STMT);
-//			
-//			ptmt.setString(1, orderMasterId);
-//			
-//			rs = ptmt.executeQuery();
-//			while (rs.next()) {
-//				orderDetailVO = new OrderDetailVO();
-//				orderDetailVO.setOrderDetailId(rs.getString("ORDER_DETAIL_ID"));
-//				orderDetailVO.setOrderMasterId(rs.getString("ORDER_MASTER_ID"));
-//				orderDetailVO.setSpaceDetailId(rs.getString("SPACE_DETAIL_ID"));
-//				orderDetailVO.setRentStartTime(rs.getTimestamp("RENT_START_TIME"));
-//				orderDetailVO.setRentEndTime(rs.getTimestamp("RENT_END_TIME"));
-//				list.add(orderDetailVO);
-//			}
-//
-//			}catch (ClassNotFoundException e) {
-//				e.printStackTrace();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}finally {
-//				if (rs != null) {
-//					try {
-//						rs.close();
-//					} catch (SQLException se) {
-//						se.printStackTrace(System.err);
-//					}
-//				}
-//				if (ptmt != null) {
-//					try {
-//						ptmt.close();
-//					} catch (Exception e) {
-//						e.printStackTrace(System.err);
-//					}
-//				}if (con != null) {
-//					try {
-//						con.close();
-//					} catch (Exception e) {
-//						e.printStackTrace(System.err);
-//					}
-//				}
-//			}
-//		return list;
-//	}
+	@Override
+	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId) {
+		Connection con = null;
+		PreparedStatement ptmt = null;
+		ResultSet rs = null;
+		
+		OrderDetailVO orderDetailVO = null;
+		List<OrderDetailVO> list = new ArrayList<OrderDetailVO>();;
+		
+		try {
+			con = ds.getConnection();
+			ptmt = con.prepareStatement(SELECT_ALL_BY_MASTERID_STMT);
+			
+			ptmt.setString(1, orderMasterId);
+			
+			rs = ptmt.executeQuery();
+			while (rs.next()) {
+				orderDetailVO = new OrderDetailVO();
+				orderDetailVO.setOrderDetailId(rs.getString("ORDER_DETAIL_ID"));
+				orderDetailVO.setOrderMasterId(rs.getString("ORDER_MASTER_ID"));
+				orderDetailVO.setSpaceDetailId(rs.getString("SPACE_DETAIL_ID"));
+				orderDetailVO.setRentStartTime(rs.getTimestamp("RENT_START_TIME"));
+				orderDetailVO.setRentEndTime(rs.getTimestamp("RENT_END_TIME"));
+				list.add(orderDetailVO);
+			}
+
+			}catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException se) {
+						se.printStackTrace(System.err);
+					}
+				}
+				if (ptmt != null) {
+					try {
+						ptmt.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}if (con != null) {
+					try {
+						con.close();
+					} catch (Exception e) {
+						e.printStackTrace(System.err);
+					}
+				}
+			}
+		return list;
+	}
 
 }

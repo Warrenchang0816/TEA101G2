@@ -25,7 +25,7 @@ public class LogoutHandler extends HttpServlet {
 		MemberVO userVO = (MemberVO)session.getAttribute("userVO");
 		ms.updateMemberOnline(userVO, "N");
 		session.invalidate();
-		String url = req.getContextPath() + "/frontend/loginTest.jsp"; 
+		String url = req.getContextPath() + "/frontend/home.jsp"; 
 		res.sendRedirect(url);
 	}
 }

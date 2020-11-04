@@ -261,15 +261,23 @@ public class OrderMasterServletB extends HttpServlet {
 					addMessage.setFormListType("message");
 					addMessage.setFormListTitle("訂單["+orderMasterId+"] 退費完成");
 					addMessage.setFormListContext("親愛的會員"+memberName+"，您好<br />您日前申請的退費已完成，感謝您的耐心等候，有任何問題都可以聯絡我們。<br />訂單編號: " + orderMasterId + "，預訂日期: " + OrderMaster.getOrderCreateDate());
-					addMessage.setFormListFile(formListFile);
 					addMessage.setFormListStatus("M");
 					addMessage.setFormListSolu(memberId);
+					
+					orderMasterServ = new OrderMasterServiceB();
+					updateOrderMaster = orderMasterServ.updateOrderMaster(updateOrderMaster);
+					FormListService formListServ = new FormListService();
+					formListServ.addFormList(addMessage);
+
+					String url = "/backend/orderMaster/selectOrderMasterStatusR.jsp";
+					RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+					sucessVeiw.forward(req, res);
 				}else if ("T".equals(OrderMaster.getOrderStatus())) {
 					updateOrderMaster.setOrderMasterId(orderMasterId);
 					updateOrderMaster.setMemberId(OrderMaster.getMemberId());
 					updateOrderMaster.setOrderCreateDate(OrderMaster.getOrderCreateDate());
 					updateOrderMaster.setOrderAmount(OrderMaster.getOrderAmount());
-					updateOrderMaster.setOrderStatus("P");
+					updateOrderMaster.setOrderStatus("C");
 					updateOrderMaster.setOrderStatusComm(OrderMaster.getOrderStatusComm());
 					updateOrderMaster.setOrderStatusEmp(orderStatusEmp);
 					
@@ -279,9 +287,31 @@ public class OrderMasterServletB extends HttpServlet {
 					addMessage.setFormListType("message");
 					addMessage.setFormListTitle("訂單["+orderMasterId+"] 交易取消通知");
 					addMessage.setFormListContext("親愛的會員"+memberName+"，您好<br />您日前成立的訂單已超過付款期限，有任何問題都可以聯絡我們，感謝。<br />訂單編號: " + orderMasterId + "，預訂日期: " + OrderMaster.getOrderCreateDate());
-					addMessage.setFormListFile(formListFile);
 					addMessage.setFormListStatus("M");
 					addMessage.setFormListSolu(memberId);
+					
+					orderMasterServ = new OrderMasterServiceB();
+					updateOrderMaster = orderMasterServ.updateOrderMaster(updateOrderMaster);
+					FormListService formListServ = new FormListService();
+					formListServ.addFormList(addMessage);
+
+					String url = "/backend/orderMaster/selectNewOrderMaster.jsp";
+					RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+					sucessVeiw.forward(req, res);
+				}else if ("F".equals(OrderMaster.getOrderStatus())) {
+					updateOrderMaster.setOrderMasterId(orderMasterId);
+					updateOrderMaster.setMemberId(OrderMaster.getMemberId());
+					updateOrderMaster.setOrderCreateDate(OrderMaster.getOrderCreateDate());
+					updateOrderMaster.setOrderAmount(OrderMaster.getOrderAmount());
+					updateOrderMaster.setOrderStatus("P");
+					updateOrderMaster.setOrderStatusComm(OrderMaster.getOrderStatusComm());
+					updateOrderMaster.setOrderStatusEmp(orderStatusEmp);
+					
+					orderMasterServ = new OrderMasterServiceB();
+					updateOrderMaster = orderMasterServ.updateOrderMaster(updateOrderMaster);
+					String url = "/backend/orderMaster/selectOrderMasterStatusR.jsp";
+					RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+					sucessVeiw.forward(req, res);
 				}
 				
 				if (!errorMsgs.isEmpty()) {
@@ -290,14 +320,7 @@ public class OrderMasterServletB extends HttpServlet {
 					return;
 				}
 
-				orderMasterServ = new OrderMasterServiceB();
-				updateOrderMaster = orderMasterServ.updateOrderMaster(updateOrderMaster);
-				FormListService formListServ = new FormListService();
-				formListServ.addFormList(addMessage);
 
-				String url = "/backend/orderMaster/selectOrderMasterStatusR.jsp";
-				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
-				sucessVeiw.forward(req, res);
 				
 			} catch (Exception e) {
 				e.printStackTrace();

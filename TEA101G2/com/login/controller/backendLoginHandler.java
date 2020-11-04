@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 
+import com.backend.listener.OnlineSessionBindingListener;
 import com.emp.model.EmpService;
 import com.emp.model.EmpVO;
 
@@ -55,8 +56,9 @@ public class backendLoginHandler extends HttpServlet {
 				if(empService.isEmpAccountLogin(empAccount)) {
 					if(empService.isEmpPasswordLogin(empPassword)) {
 						EmpVO loginEmp = empService.selectAllEmpByAccount(empAccount);
-						empService.updateEmpOnline(loginEmp, "Y");
 						session.setAttribute("loginEmp", loginEmp);
+						OnlineSessionBindingListener onlineSessionBindingListener = new OnlineSessionBindingListener(getServletContext(), loginEmp);
+						session.setAttribute("onlineSessionBindingListener", onlineSessionBindingListener);
 							try {
 								String location = (String)session.getAttribute("backendLocation");
 								if(location != null)

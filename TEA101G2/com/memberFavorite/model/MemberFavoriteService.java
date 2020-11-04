@@ -34,4 +34,8 @@ public class MemberFavoriteService {
 	public List<MemberFavoriteVO> getAllMemberFavoriteById(String memberFavoriteId) {
 		return dao.getAllById(memberFavoriteId);
 	}
+	
+	public MemberFavoriteVO getMemberFavoriteStatus(String memberId, String spaceId) {
+		return dao.getMemberFavoriteStatus(memberId, spaceId);
+	}
 }

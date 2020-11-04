@@ -32,13 +32,13 @@ public class FriendWS {
 	public void onOpen(@PathParam("userName") String userName, Session userSession) throws IOException {
 		/* save the new user in the map */
 		chatSessionsMap.put(userName, userSession);
-		System.out.println("chatUserName: " + userName);
-		System.out.println("chatUserSession: " + userSession);
+//		System.out.println("chatUserName: " + userName);
+//		System.out.println("chatUserSession: " + userSession);
 		/* Sends all the connected users to the new user */
 		Set<String> userNames = chatSessionsMap.keySet();
-		for(String userNamefuck : userNames) {
-			System.out.println("userNamefuck:"+userNamefuck);
-		}
+//		for(String userNamefuck : userNames) {
+//			System.out.println("userNamefuck:"+userNamefuck);
+//		}
 		State stateMessage = new State("open", userName, userNames);
 		String stateMessageJson = gson.toJson(stateMessage);  //轉換JSON
 		Collection<Session> sessions = chatSessionsMap.values();
@@ -55,11 +55,11 @@ public class FriendWS {
 
 	@OnMessage
 	public void onMessage(Session userSession, String message) {
-		System.out.println("Message received: " + message);
+//		System.out.println("Message received: " + message);
 		String[] messages = message.split(",");
 		String type = messages[0].substring(messages[0].lastIndexOf(":") + 2, messages[0].length()-1);
-		System.out.println("type:"+type);
-		System.out.println("message type:"+ type.equals("chat"));
+//		System.out.println("type:"+type);
+//		System.out.println("message type:"+ type.equals("chat"));
 		ChatMessage chatMessage = gson.fromJson(message, ChatMessage.class);
 //		System.out.println(chatMessage);
 		String sender = chatMessage.getSender();

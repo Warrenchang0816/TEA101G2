@@ -10,4 +10,8 @@ public interface MemberDAO_interface {
 	public MemberVO findByAccount(String Account);
 	public List<MemberVO> getAll();
 	public MemberVO LoginAuthenticate(String account, String password);
+	//IPO場地評價用--根據MEMBER_ID取一個MEMBER_NICKNAME
+	public String showNickname(String memberId);
+	public MemberVO findByEmail(String Email);
+	public void updateMemberPassword(String password, String email);
 }

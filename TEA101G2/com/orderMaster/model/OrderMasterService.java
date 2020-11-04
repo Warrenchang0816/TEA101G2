@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.orderDetail.model.*;
+import com.spaceDetail.model.*;
+import com.spacePhoto.model.*;
 
 public class OrderMasterService {
 	
 	private OrderMasterDAOInterface dao;
+	private OrderDetailDAO oddao;
+	private SpaceDetailDAO sddao;
 	
 	public OrderMasterService() {
 		dao = new OrderMasterDAO();
@@ -21,13 +25,17 @@ public class OrderMasterService {
 	}
 	
 
-	public void insertwithOrderDetail(OrderMasterVO orderMasterVO, List<OrderDetailVO> odlist) {
-		dao.insertwithOrderDetail(orderMasterVO, odlist);
+	public String insertwithOrderDetail(OrderMasterVO orderMasterVO, List<OrderDetailVO> odlist) {
+		return dao.insertwithOrderDetail(orderMasterVO, odlist);
 	}
 	
 	public OrderMasterVO updateOrderMaster(OrderMasterVO orderMasterVO) {		
 		dao.update(orderMasterVO);
 		return orderMasterVO;
+	}
+	//付款完成，設定訂單狀態
+	public void purchaseDone(String orderMasterId) {
+		dao.purchaseDone(orderMasterId);
 	}
 	
 	public void deleteOrderMaster(String orderMasterId) {
@@ -41,6 +49,15 @@ public class OrderMasterService {
 	
 	public List<OrderMasterVO> selectAllOrderMaster() {
 		return dao.selectAll();
+	}
+	
+	//超長遠征取SpaceId以生成場地照片
+	public String runforSPId(String orderMasterId) {
+		OrderMasterVO omVO = dao.selectOne(orderMasterId);
+		System.out.println(omVO.getOrderMasterId());
+		String spaceDetailId = oddao.selectOneSPId(omVO.getOrderMasterId());
+		String spaceId = sddao.selectOneSpaceId(spaceDetailId);
+		return spaceId;
 	}
 	
 //	public List<OrderMasterVO> selectAllOrderMasterByMember(String memberId) {

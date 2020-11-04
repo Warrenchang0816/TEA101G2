@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.formListFile.model.FormListFileVO;
+
 public class FormListService {
 private FormListDAOInterface dao;
 	
@@ -15,6 +17,10 @@ private FormListDAOInterface dao;
 	public FormListVO addFormList(FormListVO formListVO) {
 		dao.insert(formListVO);
 		return formListVO;
+	}
+	
+	public void addFormListAndFile(FormListVO formListVO, List<FormListFileVO> formListFileList) {
+		dao.insertWithFormListFile(formListVO, formListFileList);
 	}
 	
 	public FormListVO updateFormList(FormListVO formListVO) {		
@@ -143,6 +149,12 @@ private FormListDAOInterface dao;
 				.collect(Collectors.toList());
 		
 		return allByGet;
+	}
+	
+	public void readMessage(String formListId) {
+		FormListVO formList = dao.selectOne(formListId);
+		formList.setFormListStatus("R");
+		dao.update(formList);
 	}
 
 }

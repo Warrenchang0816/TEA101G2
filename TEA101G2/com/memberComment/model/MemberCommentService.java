@@ -34,4 +34,8 @@ public class MemberCommentService {
 	public List<MemberCommentVO> getAllMemberCommentById(String memberCommentId) {
 		return dao.getAllById(memberCommentId);
 	}
+	
+	public Double getMemberRating(String memberId) {
+		return dao.getMemberRating(memberId);
+	}
 }

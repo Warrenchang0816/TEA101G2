@@ -121,6 +121,26 @@ pageContext.setAttribute("memberOnlineList", memberOnlineList);
 
 </style>
 
+<style>
+#message-popup {
+  background-color: royalblue;
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 10px;
+  right: 150px;
+  height: 30px;
+  z-index: 9;
+  
+}
+
+
+
+
+</style>
+
 </head>
 
 
@@ -139,7 +159,7 @@ pageContext.setAttribute("memberOnlineList", memberOnlineList);
   </form>
 </div>
 --%>
-<body >
+<body onload="online();" onunload="offline();">
 <div class="chat-popup" id="onlineList" style="height: 350px; background-color: white; right: 400px; width: 250px;">
   <div class="form-container">
     <h1 class="chat">在線會員</h1>
@@ -185,18 +205,25 @@ pageContext.setAttribute("memberOnlineList", memberOnlineList);
 <script>
 
 function online() {
-	var MyPoint2 = "/OnlineWS/${loginEmp.empId}";
+	var MyPoint2 = "/OnlineWS/${loginMember.memberId}";
 	var host2 = window.location.host;
 	var path2 = window.location.pathname;
 	var webCtx2 = path2.substring(0, path2.indexOf('/', 1));
 	var endPointURL2 = "ws://" + host2 + webCtx2 + MyPoint2;
 	//websocket 有專屬的通訊協定 ws://
 	
+	var MyPoint = "/FriendWS/${loginMember.memberId}";
+	var host = window.location.host;
+	var path = window.location.pathname;
+	var webCtx = path.substring(0, path.indexOf('/', 1));
+	var endPointURL = "ws://" + window.location.host + webCtx + MyPoint;
+	
 	var onlineWebSocket;
 
 		console.log("endPointURL2:" + endPointURL2);
 		// create a websocket
 		onlineWebSocket = new WebSocket(endPointURL2);
+		chatWebSocket = new WebSocket(endPointURL);
 		
 		onlineWebSocket.onopen = function(event) {
 			console.log("OnlineWS，connected");
@@ -250,6 +277,115 @@ function online() {
 			console.log("OnlineWS，Disconnected!");
 
 		};	
+		
+		
+		chatWebSocket.onopen = function(event) {
+			console.log("ChatConnect Success!");
+		};
+		
+		chatWebSocket.onmessage = function(event) {
+			console.log("ChatConnect onmessage!");
+			
+			  $.when($.ajax({
+				    type: 'POST',
+				    url: '<%=request.getContextPath()%>/MemberServlet.do',
+				    dataType: "json",
+				    data: {
+				    	action: 'selectAllMemberIdName',
+				    },
+				    success: function(data) {
+				    	console.log("ChatConnect success!");
+				    },
+				})).done(function (data){
+				
+					console.log("ChatConnect data!"+data);
+					var jsonObj = JSON.parse(event.data);
+					if ("open" === jsonObj.type) {
+						
+						var jsonObj = {
+								"type" : "history",
+								"sender" : self,
+								"receiver" : "",
+								"message" : "",
+								"time" : datetime
+							};
+						chatWebSocket.send(JSON.stringify(jsonObj));
+					} else if ("history" === jsonObj.type) {
+						console.log("historyFUCKKK")
+						messagesArea.innerHTML = '';
+						var ul = document.createElement('ul');
+						ul.id = "area";
+						messagesArea.appendChild(ul);
+						console.log("historyFUCKKK222222")
+						// 這行的jsonObj.message是從redis撈出跟好友的歷史訊息，再parse成JSON格式處理
+						var messages = JSON.parse(jsonObj.message);
+						for (var i = 0; i < messages.length; i++) {
+							var historyData = JSON.parse(messages[i]);
+							var showMsg = historyData.message;
+							var datetime = historyData.time;
+							var li = document.createElement('li');
+							var div = document.createElement('div');
+							var span = document.createElement('span');
+							var newContent = historyData.sender === self ? document.createTextNode('我: ' + showMsg) : document.createTextNode(data.map[historyData.sender] + ': ' + showMsg);
+							// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
+							historyData.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
+							historyData.sender === self ? div.className += 'me message last' : div.className += 'friend message last';
+							ul.appendChild(li);
+							li.appendChild(div);
+							li.appendChild(span);
+							span.innerHTML = datetime;
+							div.appendChild(newContent);
+							console.log("historyFUCKKK33333")
+						}
+						messagesArea.scrollTop = messagesArea.scrollHeight;
+						<%--
+					} else if ("chat" === jsonObj.type && friend === jsonObj.sender && self === jsonObj.receiver) {
+						console.log("CHATFUCKYAYAYA");
+						var currentdate = new Date(); 
+						var datetime = currentdate.getHours()  + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+						var li = document.createElement('li');
+						var div = document.createElement('div');
+						var span = document.createElement('span');
+						div.className  = "message last";
+						var newContent = jsonObj.sender === self ? document.createTextNode('我: ' + jsonObj.message) : document.createTextNode(data.map[jsonObj.sender] + ': ' + jsonObj.message);
+						jsonObj.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
+						console.log(li);
+						document.getElementById("area").appendChild(li);
+						li.appendChild(div);
+						div.appendChild(newContent);
+						li.appendChild(span);
+						span.innerHTML = datetime;
+						messagesArea.scrollTop = messagesArea.scrollHeight;
+						--%>
+						
+					}else if ("chat" === jsonObj.type && self === jsonObj.receiver) {
+						console.log("CHATFUCKCKCKKCKCKCKCKCKCKKCKCKCKC");
+						console.log("sender:" + data.map[jsonObj.sender]);
+						console.log("receiver:" + data.map[jsonObj.receiver]);
+						console.log("message:" + jsonObj.message);
+						
+						let list_html =
+							`
+							<button type="button" id="message-popup" value="\${jsonObj.sender}" onclick="clickToChat(this)">
+			             		"來自\${data.map[jsonObj.sender]}的訊息"
+							</button>
+							`
+						$("#openChat-button").after(list_html);
+						popOffListener();
+						
+					} else if ("close" === jsonObj.type) {
+						console.log("FUCKKKoff")
+					}
+					
+
+				chatWebSocket.onclose = function(event) {
+					console.log("ChatDisconnected!");
+				};
+				
+				});
+				
+		};
+		
 };
 
 function offline() {
@@ -262,6 +398,15 @@ function openOnlineList(){
 
 function closeOnlineList(){
 	document.getElementById("onlineList").style.display = "none";
+}
+
+function popOffListener(){
+	var messagePopup = document.getElementById("message-popup");
+	messagePopup.addEventListener("click", function(e) {
+        $(this).fadeOut(500, function(){
+            $(this).remove();
+        });
+	})
 }
 
 </script>

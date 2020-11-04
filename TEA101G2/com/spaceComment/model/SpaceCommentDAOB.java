@@ -8,13 +8,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import com.spaceDetail.model.SpaceDetailVO;
 
 public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
-	String driver = "oracle.jdbc.driver.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "TEA101G2";
-	String passwd = "TEA101G2";
+//	String driver = "oracle.jdbc.driver.OracleDriver";
+//	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+//	String userid = "TEA101G2";
+//	String passwd = "TEA101G2";
+	
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource)ctx.lookup("java:comp/env/jdbc/TEA101G2");
+		}
+		catch(NamingException e){
+			e.printStackTrace();
+		}
+	}
 
 	private static final String INSERT_STMT = 
 	    "INSERT INTO SPACE_COMMENT VALUES ('SCOMMENT' || lpad(SPACE_COMMENT_ID_SEQ.NEXTVAL, 5, '0'),?,?,?,?,?,?,?,?)";
@@ -34,8 +50,9 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(INSERT_STMT);
 			
 			ptmt.setString(1, spaceCommVO.getSpaceId());
@@ -49,8 +66,6 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 
 			ptmt.executeUpdate();
 			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -77,16 +92,15 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 		PreparedStatement ptmt = null;
 
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(DELETE);
 			
 			ptmt.setString(1, spaceCommId);
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {
@@ -113,8 +127,9 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(UPDATE);
 			
 			ptmt.setString(1, spaceCommVO.getSpaceId());
@@ -130,8 +145,6 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -161,8 +174,9 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 		SpaceCommentVO spaceCommVO = new SpaceCommentVO();
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ONE_STMT);
 			
 			ptmt.setString(1, spaceCommId);
@@ -180,8 +194,6 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 				spaceCommVO.setSpaceCommStatusComm(rs.getString("SPACE_COMMENT_STATUS_COMM"));
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -219,8 +231,9 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 		List<SpaceCommentVO> list = new ArrayList<SpaceCommentVO>();;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ALL_STMT);
 			
 			rs = ptmt.executeQuery();
@@ -238,8 +251,6 @@ public class SpaceCommentDAOB implements SpaceCommentDAOInterfaceB{
 				list.add(spaceCommVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {

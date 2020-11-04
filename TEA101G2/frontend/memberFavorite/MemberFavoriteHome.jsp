@@ -24,7 +24,7 @@
 			<li>
 				<a href='<%=request.getContextPath()%>/frontend/memberFavorite/addMemberFavorite.jsp'><input type="button" value="新增評論"></a>
 			</li>
-			<li><a href='getAllMemberFavorite.jsp'>List</a> all Favorite. <br>
+			<li><a href='<%=request.getContextPath()%>/frontend/memberFavorite/getAllMemberFavorite.jsp'>List</a> all Favorite. <br>
 			<li>                    
 				<form method="post" action="<%=request.getContextPath()%>/MemberFavoriteServlet.do">
 					<input type="text" name="memberFavoriteId" placeholder="請輸入收藏編號" value="${param.memberFavoriteId}"/>

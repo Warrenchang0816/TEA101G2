@@ -1,14 +1,36 @@
+<%@page import="java.text.DateFormat"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.spaceDetail.model.*"%>
+<%@ page import="com.orderDetail.model.*"%>
 
 <%-- 此頁練習採用 EL 的寫法取值 --%>
 
 <%
 	List<SpaceDetailVO> list = (List<SpaceDetailVO>)request.getAttribute("spaceDetailIdList");
+	//大吳親授瞞天過海欺負JS日期轉換法雙重奏(搞定場地時間&已被預約時間)ver.20201020
+	List<SpaceDetailVO> calendarlist = (List<SpaceDetailVO>)request.getAttribute("calendarList");
+	List<OrderDetailVO> odlist = (List<OrderDetailVO>)request.getAttribute("odlist");
+	String spaceId = (String)request.getAttribute("spaceId");
+	System.out.println(spaceId);
+	for(SpaceDetailVO spaceDetailVO : calendarlist) {
+		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		spaceDetailVO.setSpaceDetailId(df.format(spaceDetailVO.getSpaceDetailFreeTimeStart()));
+		spaceDetailVO.setSpaceId(df.format(spaceDetailVO.getSpaceDetailFreeTimeEnd()));
+		System.out.println(spaceDetailVO);
+	}
+	for(OrderDetailVO orderDetailVO : odlist) {
+		java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		orderDetailVO.setOrderDetailId(df.format(orderDetailVO.getRentStartTime()));
+		orderDetailVO.setOrderMasterId(df.format(orderDetailVO.getRentEndTime()));
+		System.out.println(orderDetailVO);
+	}
 	SpaceDetailService spaceDetailSvc = new SpaceDetailService();
-    pageContext.setAttribute("list", list);
+	pageContext.setAttribute("calendarlist", calendarlist);
+	pageContext.setAttribute("list", list);
+	pageContext.setAttribute("odlist", odlist);
+	pageContext.setAttribute("spaceId", spaceId);
     LinkedList<String> errorMsgs = (LinkedList<String>) request.getAttribute("errorMsgs");
 %>
 
@@ -16,7 +38,7 @@
 <html>
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-<title>所有場地明細</title>
+<title>預訂頁面</title>
 
 <!-- GOOGLE WEB FONT -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -33,13 +55,24 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<!-- jQuery v3.4.1 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Moment.js v2.20.0 -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
+
+<!-- FullCalendar v3.8.1 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.min.css" rel="stylesheet"  />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.print.css" rel="stylesheet" media="print"></link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.8.1/fullcalendar.min.js"></script>  	
   	
 </head>
 
 <body>
 
 <div id="page">
-<%@ include file="/frontend/header.jsp" %>		
+<jsp:include page="/frontend/other/header.jsp" />	
   
   <main>
 		
@@ -51,6 +84,16 @@
 			</div>
 		</section>
 		<!--/hero_in-->
+  </main>
+  <!--/main-->
+</div>
+<!-- page -->
+
+<!-- calendar -->
+<div id="example"></div>
+
+<!-- 要預訂的選項 -->
+<span style="color:red"><%= (errorMsgs.size() == 0)? "" : errorMsgs.poll()%></span>
 <FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServlet" name="form1">
   <table class="table">
     <thead>
@@ -63,8 +106,7 @@
 		<th>場地預訂結束時間</th>
 	  </tr>
     </thead>
-	<%@ include file="page1.file" %> 
-	<c:forEach var="spaceDetailVO" items="${list}" begin="<%=pageIndex%>" end="<%=pageIndex+rowsPerPage-1%>" varStatus="status">
+	<c:forEach var="spaceDetailVO" items="${list}" varStatus="status">
 	<tbody>	
 		<tr>
 			<td>${spaceDetailVO.spaceDetailFreeDate}</td>
@@ -85,25 +127,57 @@
   </table>
 <!-- 設定OrderMaster資料 -->
 <input type="hidden" name="orderCreateDate" value="<%=new Date()%>">
+<input type="hidden" name="memberId" value="${userVO.memberId}">
+<input type="hidden" name="spaceId" value="${spaceId}">
 <input type="hidden" name="action" value="addOrderMasterwithOrderDetail">
 <input type="submit" value="送出預訂" class="btn_1 medium">
 </FORM>
-<%@ include file="page2.file" %>
 
-</main>
-<!--/main-->
-</div>
-<!-- page -->
-
+<!-- calendar scripts -->
+<script>
+  	$( "#example" ).fullCalendar({
+  		// 參數設定[註1]
+  		header: { // 頂部排版
+  			left: "prev,next today", // 左邊放置上一頁、下一頁和今天
+  			center: "title", // 中間放置標題
+  			right: "month,basicWeek,basicDay" // 右邊放置月、周、天
+  		},
+  		defaultDate: new Date(), // 起始日期
+  		weekends: true, // 顯示星期六跟星期日
+  		editable: false,  // 啟動拖曳調整日期
+  		events: [ // 事件
+  <c:forEach var="spaceDetailVO" items="${calendarlist}">	
+  			{ // 事件
+  				title: '此時段租金${spaceDetailVO.spaceDetailCharge}/hr',
+  				start: '${spaceDetailVO.spaceDetailId}',
+  				end: '${spaceDetailVO.spaceId}'
+  			},
+  </c:forEach>
+  <c:forEach var="orderDetailVO" items="${odlist}">	
+  			{ // 事件
+  				title: '已被預約時段',
+  				start: '${orderDetailVO.orderDetailId}',
+  				end: '${orderDetailVO.orderMasterId}',
+  				backgroundColor: '#FF5F5F'
+  			},
+  </c:forEach>
+  			{ // 事件(包含開始時間、結束時間)
+  				title: "發表BigZoo",
+  				start: "2020-10-29T09:00:00",
+  				end: "2020-10-29T12:00:00"
+  			}
+ 
+  			//{ // 事件(設定連結)
+  				//title: "大衛海鮮",
+  				//url: "https://www.facebook.com/PageDavidSeafood/",
+  				//start: "2020-10-22"
+  			//}
+  		]
+  	});
+</script>
 <!-- COMMON SCRIPTS -->
   	<script src="<%=request.getContextPath()%>/plugins/js/common_scripts.js"></script>
   	<script src="<%=request.getContextPath()%>/plugins/js/main.js"></script>
-	
-<!-- Map -->
-	<script src="http://maps.googleapis.com/maps/api/js"></script>
-	<script src="<%=request.getContextPath()%>/plugins/js/markerclusterer.js"></script>
-	<script src="<%=request.getContextPath()%>/plugins/js/map_hotels.js"></script>
-	<script src="<%=request.getContextPath()%>/plugins/js/infobox.js"></script>
 	
 </body>
 <%--

@@ -9,12 +9,28 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 
 public class EmpDAO implements EmpDAOInterface{
-	String driver = "oracle.jdbc.driver.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "TEA101G2";
-	String passwd = "TEA101G2";
+//	String driver = "oracle.jdbc.driver.OracleDriver";
+//	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+//	String userid = "TEA101G2";
+//	String passwd = "TEA101G2";
+	
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource)ctx.lookup("java:comp/env/jdbc/TEA101G2");
+		}
+		catch(NamingException e){
+			e.printStackTrace();
+		}
+	}
 	
 
 	private static final String INSERT_STMT = 
@@ -34,8 +50,9 @@ public class EmpDAO implements EmpDAOInterface{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(INSERT_STMT);
 			
 			ptmt.setString(1, empVO.getEmpAccount());
@@ -57,8 +74,6 @@ public class EmpDAO implements EmpDAOInterface{
 
 			ptmt.executeUpdate();
 			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -85,16 +100,15 @@ public class EmpDAO implements EmpDAOInterface{
 		PreparedStatement ptmt = null;
 
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(DELETE);
 			
 			ptmt.setString(1, empId);
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {
@@ -121,8 +135,9 @@ public class EmpDAO implements EmpDAOInterface{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(UPDATE);
 			
 			ptmt.setString(1, empVO.getEmpAccount());
@@ -145,8 +160,6 @@ public class EmpDAO implements EmpDAOInterface{
 
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -176,8 +189,9 @@ public class EmpDAO implements EmpDAOInterface{
 		EmpVO empVO = new EmpVO();
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ONE_STMT);
 			
 			ptmt.setString(1, empId);
@@ -203,8 +217,6 @@ public class EmpDAO implements EmpDAOInterface{
 				empVO.setEmpOnline(rs.getString("EMP_ONLINE"));
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -242,8 +254,9 @@ public class EmpDAO implements EmpDAOInterface{
 		List<EmpVO> list = new ArrayList<EmpVO>();;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ALL_STMT);
 			
 			rs = ptmt.executeQuery();
@@ -270,8 +283,6 @@ public class EmpDAO implements EmpDAOInterface{
 				list.add(empVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {

@@ -35,7 +35,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>場地資料</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
@@ -235,7 +235,7 @@
 			
 		<div class="row">
 			<div class="col-md-4">
-				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/SpaceCommServlet" style="margin-bottom: 0px;">
+				<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/SpaceCommServletB" style="margin-bottom: 0px;">
 				    <input type="submit" class="btn_1 medium" value="評價紀錄">
 				    <input type="hidden" name="spaceId"  value="<%=spaceVO.getSpaceId()%>">
 				    <input type="hidden" name="spaceName"  value="<%=spaceVO.getSpaceName()%>">
@@ -336,7 +336,7 @@
 			<tbody>
 <c:forEach var="spacePhotoVO" items="${photoList}" begin="0" end="<%=photoList.size()%>">
 	<tr>
-		<td><img src="data:image/png;base64,<%=encode.encodeToString(((SpacePhotoVO)pageContext.getAttribute("spacePhotoVO")).getSpacePhoto())%>" id="perview"/></td>
+		<td><img src="data:image/png;base64,<%=encode.encodeToString(((SpacePhotoVO)pageContext.getAttribute("spacePhotoVO")).getSpacePhoto())%>" id="perview" style="border: double;"/></td>
 	</tr>
 </c:forEach>
 			</tbody>

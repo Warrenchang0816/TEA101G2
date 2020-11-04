@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.member.model.MemberService;
 import com.memberComment.model.MemberCommentService;
 import com.memberComment.model.MemberCommentVO;
 
@@ -37,13 +36,13 @@ public class MemberCommentServlet extends HttpServlet {
 			try {
 				String memberAId = req.getParameter("memberAId");
 				if (memberAId == null || memberAId.trim().length() == 0) {
-					System.out.println("fail Aid");
+					System.out.println("fail AId");
 					errorMsgs.put("memberAId", "請勿空白");
 				}
 
 				String memberBId = req.getParameter("memberBId");
 				if (memberBId == null || memberBId.trim().length() == 0) {
-					System.out.println("fail Bid");
+					System.out.println("fail BId");
 					errorMsgs.put("memberBId", "請勿空白");
 				}
 
@@ -68,10 +67,16 @@ public class MemberCommentServlet extends HttpServlet {
 				}
 
 				if (!errorMsgs.isEmpty()) {
-					RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberComment/addMemberComment.jsp");
+					RequestDispatcher failView = req
+							.getRequestDispatcher("/frontend/memberComment/addMemberComment.jsp");
 					failView.forward(req, res);
 					return;
 				}
+
+				// default data
+				String memberStatus = "F";
+				String memberStatusEmp = "F";
+				String memberStatusComm = "F";
 
 				MemberCommentVO memberCommentVO = new MemberCommentVO();
 				memberCommentVO.setMemberAId(memberAId);
@@ -79,24 +84,26 @@ public class MemberCommentServlet extends HttpServlet {
 				memberCommentVO.setMemberCommentContent(memberCommentContent);
 				memberCommentVO.setMemberCommentLevel(memberCommentLevel);
 				memberCommentVO.setMemberCommentDate(memberCommentDate);
-				
+				memberCommentVO.setMemberCommStatus(memberStatus);
+				memberCommentVO.setMemberCommStatusEmp(memberStatusEmp);
+				memberCommentVO.setMemberCommStatusComm(memberStatusComm);
+
 				MemberCommentService memberCommentSvc = new MemberCommentService();
 				memberCommentSvc.addMemberComment(memberCommentVO);
-				
+
 				Gson gson = new Gson();
 				String jsonString = gson.toJson(memberCommentVO);
 				res.getWriter().write(jsonString);
 				System.out.println(jsonString);
 
-
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberComment/addMemberComment.jsp");
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
 				failView.forward(req, res);
 			}
 		}
-		
+
 		if ("getOneUpdate".equals(action)) {
 			Map<String, String> errorMsgs = new LinkedHashMap<String, String>();
 			req.setAttribute("errorMsgs", errorMsgs);
@@ -104,8 +111,8 @@ public class MemberCommentServlet extends HttpServlet {
 			try {
 				String memberCommentId = req.getParameter("memberCommentId").trim();
 
-				MemberCommentService memCommentSvc = new MemberCommentService();
-				MemberCommentVO memberCommentVO = memCommentSvc.getOneMemberComment(memberCommentId);
+				MemberCommentService memberCommentSvc = new MemberCommentService();
+				MemberCommentVO memberCommentVO = memberCommentSvc.getOneMemberComment(memberCommentId);
 
 				req.setAttribute("memberCommentVO", memberCommentVO);
 
@@ -116,7 +123,7 @@ public class MemberCommentServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("//TODO");
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
 				failView.forward(req, res);
 			}
 		}
@@ -142,12 +149,11 @@ public class MemberCommentServlet extends HttpServlet {
 				if (memberCommentContent == null || memberCommentContent.isEmpty()) {
 					errorMsgs.put("memberCommentContent", "請勿空白");
 				}
-				
-				
+
 				Double memberCommentLevel = null;
 				try {
 					memberCommentLevel = Double.parseDouble(req.getParameter("memberCommentLevel").trim());
-					if(memberCommentLevel < 1 || memberCommentLevel > 5) {
+					if (memberCommentLevel < 1 || memberCommentLevel > 5) {
 						errorMsgs.put("memberCommentLevel", "分數錯誤");
 					}
 				} catch (NumberFormatException e) {
@@ -162,6 +168,11 @@ public class MemberCommentServlet extends HttpServlet {
 					memberCommentDate = new java.sql.Date(System.currentTimeMillis());
 				}
 
+				// default data
+				String memberStatus = "F";
+				String memberStatusEmp = "F";
+				String memberStatusComm = "F";
+
 				MemberCommentVO memberCommentVO = new MemberCommentVO();
 				memberCommentVO.setMemberCommentId(memberCommentId);
 				memberCommentVO.setMemberAId(memberAId);
@@ -169,10 +180,14 @@ public class MemberCommentServlet extends HttpServlet {
 				memberCommentVO.setMemberCommentContent(memberCommentContent);
 				memberCommentVO.setMemberCommentLevel(memberCommentLevel);
 				memberCommentVO.setMemberCommentDate(memberCommentDate);
+				memberCommentVO.setMemberCommStatus(memberStatus);
+				memberCommentVO.setMemberCommStatusEmp(memberStatusEmp);
+				memberCommentVO.setMemberCommStatusComm(memberStatusComm);
 
 				if (!errorMsgs.isEmpty()) {
 					req.setAttribute("memberCommentVO", memberCommentVO);
-					RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberComment/updateMemberComment.jsp");
+					RequestDispatcher failView = req
+							.getRequestDispatcher("/frontend/memberComment/updateMemberComment.jsp");
 					failView.forward(req, res);
 					return;
 				}
@@ -188,7 +203,8 @@ public class MemberCommentServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberComment/updateMemberComment.jsp");
+				RequestDispatcher failView = req
+						.getRequestDispatcher("/frontend/memberComment/updateMemberComment.jsp");
 				failView.forward(req, res);
 			}
 		}
@@ -202,7 +218,7 @@ public class MemberCommentServlet extends HttpServlet {
 
 				MemberCommentService memberCommentSvc = new MemberCommentService();
 				memberCommentSvc.deleteMemberComment(memberCommentId);
-				
+
 				String url = "/frontend/memberComment/getAllMemberComment.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
@@ -210,7 +226,7 @@ public class MemberCommentServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("//TODO");
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
 				failView.forward(req, res);
 			}
 		}
@@ -226,20 +242,22 @@ public class MemberCommentServlet extends HttpServlet {
 				}
 
 				if (!errorMsgs.isEmpty()) {
-					RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberComment/MemberCommentHome.jsp");
+					RequestDispatcher failView = req
+							.getRequestDispatcher("/frontend/memberComment/MemberCommentHome.jsp");
 					failView.forward(req, res);
 					return;
 				}
 
-				MemberCommentService memCommentSvc = new MemberCommentService();
-				MemberCommentVO memberCommentVO = memCommentSvc.getOneMemberComment(memberCommentId);
+				MemberCommentService memberCommentSvc = new MemberCommentService();
+				MemberCommentVO memberCommentVO = memberCommentSvc.getOneMemberComment(memberCommentId);
 
 				if (memberCommentVO == null) {
 					errorMsgs.put("memberCommentId", "查無資料");
 				}
 
 				if (!errorMsgs.isEmpty()) {
-					RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberComment/MemberCommentHome.jsp");
+					RequestDispatcher failView = req
+							.getRequestDispatcher("/frontend/memberComment/MemberCommentHome.jsp");
 					failView.forward(req, res);
 					return;
 				}
@@ -253,7 +271,7 @@ public class MemberCommentServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("//TODO");
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
 				failView.forward(req, res);
 			}
 		}

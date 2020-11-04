@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.member.model.*"%>
-<%@ page import="java.util.*"%>
-
-<% Base64.Encoder encode = Base64.getEncoder();%>
-<%MemberVO userVO = (MemberVO)session.getAttribute("userVO");%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +36,7 @@
 		<label style="font-size: 30px">個人設定<span style="color: #fc5b62"> > </span></label>
 	</div>
 	<div class="content-wrapper">
-		<form method="post" action="<%=request.getContextPath()%>/MemberServlet.do" enctype="multipart/form-data" name="form_edit_profile">
+		<form method="post" action="<%=request.getContextPath()%>/MemberServlet.do" enctype="multipart/form-data" name="form_edit_profile" enctype="multipart/form-data">
 		<div class="container-fluid">
 			<ol class="breadcrumb">
 				<li class="breadcrumb-item">
@@ -59,9 +55,10 @@
 						<label>Your photo</label>
 						</div>
 						
-						<img src="data:image/png;base64,<%=encode.encodeToString(userVO.getMemberPhoto())%>" width="200" height ="200"style="border-radius: 100%">
-						<div class="custom-file" style="margin-top: 46px; padding-left: 10.4px;">
-  							<input type="file" name="memberPhoto" class="custom-file-input" id="customFile" value="${userVO.memberPhoto}">
+						<img src="<%=request.getContextPath()%>/memberPhoto/showpicture?memberId=${userVO.memberId}" 
+						id="preview_avatar" width="200" height ="200" style="border-radius: 100%" accept="image/gif, image/jpeg, image/png"/>
+							<div class="custom-file" style="margin-top: 46px; padding-left: 10.4px;">
+  							<input type="file" name="memberPhoto" class="custom-file-input" id="ch_avatar" value="${userVO.memberPhoto}">
   							<label class="custom-file-label" for="customFile">Choose file</label>
 						</div>
 					</div>
@@ -143,6 +140,24 @@
 	</div>
 	<!-- COMMON SCRIPTS -->
 	
+	<script>
+		$("#ch_avatar").change(function(){
+		     readURL(this);
+		   });
+		
+		function readURL(input){
+			  if(input.files && input.files[0]){
+			    var reader = new FileReader();
+			    reader.onload = function (e) {
+			       $("#preview_avatar").attr('src', e.target.result);
+			    }
+			    reader.readAsDataURL(input.files[0]);
+			  }
+			}
+		
+
+	</script>
+		
 	<script>
 		$("form[name='form_edit_profile']").validator().on('submit', function(e) {
 			if (e.isDefaultPrevented()) { 

@@ -8,6 +8,7 @@
 
 	FormListService formListSvc = new FormListService();
 	List<FormListVO> list = formListSvc.selectAllFormListByStatus("undo");
+	Collections.reverse(list);
 	pageContext.setAttribute("list",list);
 	
 %>
@@ -21,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>未處理的表單</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
@@ -100,6 +101,10 @@
 		<%
 			String memberId = ((FormListVO)pageContext.getAttribute("formListVO")).getMemberId();
 			String memberName = memberServ.selectOneMember(memberId).getMemberName();
+			long deadLines = ((FormListVO)pageContext.getAttribute("formListVO")).getFormListCreateDate().getTime() + (7*60*60*24*1000);
+			long todays = new java.sql.Date(System.currentTimeMillis()).getTime();
+			pageContext.setAttribute("deadLines", deadLines);
+			pageContext.setAttribute("todays", todays);
 		%>
 	<tr>
 		<td>
@@ -124,7 +129,7 @@
 			    <input type="hidden" name="memberId"  value="${formListVO.memberId}">
 			    <input type="hidden" name="action"	value="backend_SelectOneMember"></FORM>
 		</td>
-		<td>${formListVO.formListCreateDate}</td>
+		<td ${todays >= deadLines? 'style="color:red"' : 'style="color:#777 !important"'}>${formListVO.formListCreateDate}</td>
 		<td>${formListVO.formListType}</td>
 		<td>${formListVO.formListTitle}</td>
 		<td>${formListVO.formListStatus.equals("undo")? "未處理" : formListVO.formListStatus.equals("done")? "結案" : "已處理"}</td>

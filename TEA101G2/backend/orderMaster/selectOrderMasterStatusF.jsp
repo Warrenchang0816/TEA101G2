@@ -20,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>付款訂單</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
@@ -58,7 +58,7 @@
         <li class="breadcrumb-item">
           <a href="<%=request.getContextPath()%>/backend/orderMaster/orderMaster.jsp">管理訂單</a>
         </li>
-        <li class="breadcrumb-item active">結案訂單</li>
+        <li class="breadcrumb-item active">付款訂單</li>
       </ol>
       
       
@@ -76,6 +76,7 @@
 					<th>訂單創建日期</th>
 					<th>訂單金額</th>
 					<th>訂單狀態</th>
+					<th>申請退費</th>
 				</tr>
               </thead>
               <tfoot>
@@ -85,6 +86,7 @@
 					<th>訂單創建日期</th>
 					<th>訂單金額</th>
 					<th>訂單狀態</th>
+					<th>申請退費</th>
 				</tr>
               </tfoot>
 
@@ -119,7 +121,19 @@
 		</td>
 		<td>${orderMasterVO.orderCreateDate}</td>
 		<td>${orderMasterVO.orderAmount}</td>
-		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "交易暫停" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費"}</td>
+		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "申請退費" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費"}</td>
+		<td>
+			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServletB" style="margin-bottom: 0px;">
+			    <button type="submit" class="btn btn-link" onclick="javascript:return confirm('確認完成?');">
+					<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					  <path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+					  <path fill-rule="evenodd" d="M1.5 13A1.5 1.5 0 0 0 3 14.5h10a1.5 1.5 0 0 0 1.5-1.5V8a.5.5 0 0 0-1 0v5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5h8a.5.5 0 0 0 0-1H3A1.5 1.5 0 0 0 1.5 3v10z"/>
+					</svg>
+        		</button>
+        		<input type="hidden" name="orderMasterId"  value="${orderMasterVO.orderMasterId}">
+			    <input type="hidden" name="orderStatusEmp"  value="[${loginEmp.empId}]${loginEmp.empName}">
+			    <input type="hidden" name="action"	value="backend_UpdateOrderMaster"></FORM>
+		</td>
 	
 </c:forEach>
  

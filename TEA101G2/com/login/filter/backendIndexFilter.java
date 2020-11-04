@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class LoginFilter implements Filter{
+import com.emp.model.EmpVO;
+
+public class backendIndexFilter implements Filter{
 	private FilterConfig config;
 	
 	public void init(FilterConfig config) {
@@ -29,33 +31,16 @@ public class LoginFilter implements Filter{
 		HttpServletResponse res = (HttpServletResponse) response;
 		HttpSession session = req.getSession();
 		
-		Object loginEmp = session.getAttribute("loginEmp");
-		String servletPath = req.getServletPath();
+		EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
+		Integer loginEmpAuth = loginEmp.getEmpAuth();
 		
-		if(isBackendLoginPage(servletPath)) {
-			if(loginEmp == null) {
-				session.setAttribute("location", req.getRequestURI());
-				res.sendRedirect(req.getContextPath() + "/backend/backendLogin.jsp");
+		if(loginEmpAuth < 2) {
+				res.sendRedirect(req.getContextPath() + "/backend/empIndex.jsp");
 				return;
-			}else {
-				chain.doFilter(req, res);
-			}
 		}else {
 			chain.doFilter(req, res);
 		}
 		
 	}
-	
-	
-	private boolean isBackendLoginPage(String servletPath) {
-		if(!servletPath.equals("/backend/backendLogin.jsp") && !servletPath.equals("/LoginHandler")
-				&& !servletPath.endsWith(".css") && !servletPath.endsWith(".js")
-				&& !servletPath.endsWith(".png") && !servletPath.endsWith(".ico") && !servletPath.endsWith(".jpg")
-				&& !servletPath.endsWith(".woff") && !servletPath.endsWith(".ttf"))
-		return true;
-		else
-		return false;
-	}
-	
 	
 }

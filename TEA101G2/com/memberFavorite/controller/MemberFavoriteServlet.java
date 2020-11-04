@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
 import com.memberFavorite.model.MemberFavoriteService;
 import com.memberFavorite.model.MemberFavoriteVO;
 
@@ -86,7 +87,7 @@ public class MemberFavoriteServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("//TODO");
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
 				failView.forward(req, res);
 			}
 		}
@@ -152,7 +153,7 @@ public class MemberFavoriteServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("//TODO");
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
 				failView.forward(req, res);
 			}
 		}
@@ -168,8 +169,8 @@ public class MemberFavoriteServlet extends HttpServlet {
 				}
 				
 				if (!errorMsgs.isEmpty()) {
-					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/memberFavorite/MemberFavoriteHome.jsp");
-					failureView.forward(req, res);
+					RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberFavorite/MemberFavoriteHome.jsp");
+					failView.forward(req, res);
 					return;
 				}
 
@@ -180,8 +181,8 @@ public class MemberFavoriteServlet extends HttpServlet {
 					errorMsgs.put("memberFavoriteId", "查無資料");
 				}
 				if (!errorMsgs.isEmpty()) {
-					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/memberFavorite/MemberFavoriteHome.jsp");
-					failureView.forward(req, res);
+					RequestDispatcher failView = req.getRequestDispatcher("/frontend/memberFavorite/MemberFavoriteHome.jsp");
+					failView.forward(req, res);
 					return;
 				}
 				
@@ -194,9 +195,46 @@ public class MemberFavoriteServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 				errorMsgs.put("error", e.getMessage());
-				RequestDispatcher failView = req.getRequestDispatcher("//TODO");
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
 				failView.forward(req, res);
 			}
-		}	
+		}
+		
+		if("getMemberFavoriteStatus".equals(action)) {
+			Map<String, String> errorMsgs = new LinkedHashMap<String, String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+			MemberFavoriteVO Status = null;
+			
+			try {
+				String memberId = req.getParameter("memberId").trim();
+				String spaceId = req.getParameter("spaceId").trim();
+				MemberFavoriteService memberFavoriteSvc = new MemberFavoriteService();
+				Status = memberFavoriteSvc.getMemberFavoriteStatus(memberId, spaceId);
+
+				if (Status != null) {
+					memberFavoriteSvc.deleteMemberFavorite(Status.getMemberFavoriteId());
+				} else {
+					Status = new MemberFavoriteVO();
+					Status.setMemberId(memberId);
+					Status.setSpaceId(spaceId);
+					memberFavoriteSvc.addMemberFavorite(Status);
+				}
+				
+				String url = "/frontend/home.jsp";
+				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+				sucessVeiw.forward(req, res);
+				
+				Gson gson = new Gson();
+				String jsonString = gson.toJson(Status);
+				res.getWriter().write(jsonString);
+				System.out.println(jsonString);
+					
+			}catch(Exception e) {
+				e.printStackTrace();
+				errorMsgs.put("error", e.getMessage());
+				RequestDispatcher failView = req.getRequestDispatcher("/frontend/error.jsp");
+				failView.forward(req, res);
+			}
+		}
 	}
 }

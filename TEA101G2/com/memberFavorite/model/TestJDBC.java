@@ -5,7 +5,7 @@ import java.util.List;
 public class TestJDBC {
 	public static void main(String[] args) {
 	
-		MemberFavoriteDAOInterfaceB dao = new MemberFavoriteDAOB();
+		MemberFavoriteDAO_interface dao = new MemberFavoriteDAO();
 		
 		//All
 //		List<MemberFavoriteVO> list = dao.selectAll();
@@ -25,8 +25,8 @@ public class TestJDBC {
 //		System.out.println("FUCK");
 		
 		//delete
-		dao.delete("10");
-		System.out.println("FUCK");
+//		dao.delete("10");
+//		System.out.println("FUCK");
 		
 		//update
 //		MemberFavoriteVO update = new MemberFavoriteVO();
@@ -35,6 +35,13 @@ public class TestJDBC {
 //		update.setMemberId("20");
 //		dao.update(update);
 //		System.out.println("FUCK");
+		
+		MemberFavoriteVO memf = dao.getMemberFavoriteStatus("MEM00001", "SPACE00001");
+		if(memf != null) {
+			System.out.println(memf.getMemberFavoriteId());
+		} else {
+			System.out.println("fail");
+		}
 		
 	}
 

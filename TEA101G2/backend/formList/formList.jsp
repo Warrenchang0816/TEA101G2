@@ -18,7 +18,7 @@ Base64.Encoder encode = Base64.getEncoder();
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>管理客服表單</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
@@ -58,12 +58,14 @@ Base64.Encoder encode = Base64.getEncoder();
       
 	  <!-- Icon Cards-->
       <div class="row">
-
+		<div class="col-xl-3 col-sm-6 mb-3">
+        </div>
+        
         <div class="col-xl-3 col-sm-6 mb-3">
           <div class="card dashboard text-white bg-danger o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <i class="fa fa-fw fa-heart"></i>
+                <img alt="rocket" width="60" src="https://www.flaticon.com/svg/static/icons/svg/3069/3069169.svg" />
               </div>
               <div class="mr-5"><h5>搜尋表單</h5></div>
             </div>
@@ -79,7 +81,7 @@ Base64.Encoder encode = Base64.getEncoder();
           <div class="card dashboard text-white bg-danger o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <span style="color:red; font-size: 2.5rem">${formListUndo.isEmpty()? "" : formListUndo.size()}</span>
+                <span style="color:white; font-size: 2.5rem">${formListUndo.isEmpty()? "" : formListUndo.size()}</span>
               </div>
               <div class="mr-5"><h5>未處理的表單</h5></div>
             </div>
@@ -92,14 +94,9 @@ Base64.Encoder encode = Base64.getEncoder();
           </div>
         </div>
         
-		</div>
-		<!-- /cards -->
-		<h2></h2>
-		<div class="box_general padding_bottom">
-			<div class="header_box version_2">
-				<h2><i class="fa fa-bar-chart"></i>Statistic</h2>
-			</div>
-		 <canvas id="myAreaChart" width="100%" height="30" style="margin:45px 0 15px 0;"></canvas>
+        <div class="col-xl-3 col-sm-6 mb-3">
+        </div>
+        
 		</div>
 	  </div>
 	  <!-- /.container-fluid-->

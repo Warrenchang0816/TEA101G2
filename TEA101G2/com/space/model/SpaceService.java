@@ -32,8 +32,17 @@ public class SpaceService {
 		return dao.getAll();
 	}
 	
-	//TEST
-	public List<SpaceVO> searchSpace(String spaceAddress, String spaceType, String spaceContain){
-		return dao.searchSpace(spaceAddress, spaceType, spaceContain);
+	public List<SpaceVO> selectAllByMemId(String memberId){
+		return dao.selectAllByMemId(memberId) ;
+	}
+	
+	public SpaceVO updateSpaceStatus(SpaceVO spaceVO) {
+		dao.updateSpaceStatus(spaceVO);
+		return spaceVO;
+	}
+	
+	//TDD
+	public List<SpaceVO> searchSpace(String subQuery, String spaceAddress, String spaceType, String spaceContain){
+		return dao.searchSpace(subQuery, spaceAddress, spaceType, spaceContain);
 	}
 }

@@ -8,13 +8,17 @@ public class TestJDBC {
 		SpaceDAOInterfaceB dao = new SpaceDAOB();
 		
 		
-		SpaceServiceB ss = new SpaceServiceB();
-		List<SpaceVO> list = ss.selectAllNewSpace("F");
-		for(SpaceVO spaceVO : list) {
-		System.out.println(spaceVO.getSpaceId());
+//		SpaceServiceB ss = new SpaceServiceB();
+//		List<SpaceVO> list = ss.selectAllNewSpace("F");
+//		for(SpaceVO spaceVO : list) {
+//		System.out.println(spaceVO.getSpaceId());
+//		}
+		
+		String s = "就是爽";
+		String[] sSplit = s.split(":");
+		for(String ss : sSplit) {
+			System.out.println(ss);
 		}
-		
-		
 //		List<SpaceVO> list = dao.selectAll();
 //		for(SpaceVO spaceVO : list) {
 //		System.out.println(spaceVO.getSpaceId());

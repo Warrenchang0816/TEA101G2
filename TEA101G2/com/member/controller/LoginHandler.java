@@ -59,7 +59,7 @@ public class LoginHandler extends HttpServlet {
 					}
 				} catch (Exception e) {
 				}
-				res.sendRedirect(req.getContextPath() + "/frontend/loginTest.jsp");
+				res.sendRedirect(req.getContextPath() + "/frontend/home.jsp");
 			} else {
 				errorMsgs.put("error", "帳號密碼錯誤，請再次登入");
 				RequestDispatcher failureView = req.getRequestDispatcher("/frontend/login.jsp");

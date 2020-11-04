@@ -2,91 +2,88 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.orderDetail.model.*"%>
+<%@ page import="com.orderMaster.model.*"%>
+<%@ page import="com.spaceDetail.model.*"%>
+
 
 <%    
-	OrderDetailService orderDetailSvc = new OrderDetailService();
-    List<OrderDetailVO> list = orderDetailSvc.selectAllOrderDetail();
-    pageContext.setAttribute("list",list);
-   
+	OrderDetailService ods = new OrderDetailService();
+    List<OrderDetailVO> odlist = (List<OrderDetailVO>)request.getAttribute("odlist");
+    pageContext.setAttribute("odlist", odlist);
 %>
 
-<!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>selectAllOrderDetail</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<title>訂單明細</title>
 
-<a href='<%=request.getContextPath()%>/frontend/orderdetail/orderDetail.jsp'><input type="button" value="回訂單明細頁面"></a>
-<a href='<%=request.getContextPath()%>/frontend/orderdetail/addOrderDetail.jsp'><input type="button" value="新增訂單明細"></a>
+<!-- GOOGLE WEB FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-  table#table-1 {
-	background-color: #CCCCFF;
-    border: 2px solid black;
-    text-align: center;
-  }
-  table#table-1 h4 {
-    color: red;
-    display: block;
-    margin-bottom: 1px;
-  }
-  h4 {
-    color: blue;
-    display: inline;
-  }
-</style>
+<!-- BASE CSS -->
+    <link href="<%=request.getContextPath()%>/plugins/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<%=request.getContextPath()%>/plugins/css/style.css" rel="stylesheet">
+	<link href="<%=request.getContextPath()%>/plugins/css/vendors.css" rel="stylesheet">
 
-<style>
-  table {
-	width: 800px;
-	background-color: white;
-	margin-top: 5px;
-	margin-bottom: 5px;
-  }
-  table, th, td {
-    border: 1px solid #CCCCFF;
-  }
-  th, td {
-    padding: 5px;
-    text-align: center;
-  }
-</style>
+<!-- Your custom styles -->
+    <link href="<%=request.getContextPath()%>/plugins/css/custom.css" rel="stylesheet" type="text/css">
+
+<!-- Table -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  	
 </head>
+
 <body>
 
-
-<table>
-	<tr>
+<div id="page">
+<jsp:include page="/frontend/other/header.jsp" />	
+  
+  <main>
+		
+		<section class="hero_in hotels">
+			<div class="wrapper">
+				<div class="container">
+					<h1 class="fadeInUp"><span></span>訂單明細</h1>
+				</div>
+			</div>
+		</section>
+		<!--/hero_in-->
+  <table class="table">
+    <thead>
+	  <tr>
 		<th>訂單明細編號</th>
-		<th>訂單編號</th>
-		<th>場地明細編號</th>
-		<th>修改</th>
-		<th>刪除</th>
-	</tr>
+		<th>場地租借起始時間</th>
+		<th>場地租借結束時間</th>
+		<th>場地租借費用(每小時)</th>
+	  </tr>
+    </thead>
+	<c:forEach var="orderDetailVO" items="${odlist}">
+	<tbody>	
+		<tr>
+			<td>${orderDetailVO.orderDetailId}</td>
+			<td>${orderDetailVO.rentStartTime}</td>
+			<td>${orderDetailVO.rentEndTime}</td>
+			<% 
+			  SpaceDetailService sds = new SpaceDetailService();
+			  SpaceDetailVO sdVO = sds.selectOneSpaceDetail(((OrderDetailVO)pageContext.getAttribute("orderDetailVO")).getSpaceDetailId());
+			  request.setAttribute("spaceDetailCharge", sdVO.getSpaceDetailCharge());
+			%>
+			<td>${spaceDetailCharge}</td>
+		</tr>
+	</tbody>
+	</c:forEach>
+  </table>
+  <a href="<%=request.getContextPath()%>/frontend/ordermaster/selectAllOrderMaster.jsp">返回我的訂單</a>
+</main>
+<!--/main-->
+</div>
+<!-- page -->
 
-<c:forEach var="orderDetailVO" items="${list}" begin="0" end="<%=list.size()%>">
-	<tr>
-		<td>${orderDetailVO.orderDetailId}</td>
-		<td>${orderDetailVO.orderMasterId}</td>
-		<td>${orderDetailVO.spaceDetailId}</td>
-		<td>
-			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderDetailServlet" style="margin-bottom: 0px;">
-			    <input type="submit" value="修改">
-			    <input type="hidden" name="orderDetailId"  value="${orderDetailVO.orderDetailId}">
-			    <input type="hidden" name="action"	value="selectOneUpdate"></FORM>
-		</td>
-		<td>
-			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderDetailServlet" style="margin-bottom: 0px;">
-			    <button name="delete" value="刪除" type="submit" class="delete" onclick="javascript:return confirm('確認刪除?');">刪除</button>
-			    <input type="hidden" name="orderDetailId"  value="${orderDetailVO.orderDetailId}">
-			    <input type="hidden" name="action" value=deleteOrderDetail></FORM>
-		</td>
+<!-- COMMON SCRIPTS -->
+  	<script src="<%=request.getContextPath()%>/plugins/js/common_scripts.js"></script>
+  	<script src="<%=request.getContextPath()%>/plugins/js/main.js"></script>
 	
-</c:forEach>
-
-
-</table>
-
-
 </body>
 </html>

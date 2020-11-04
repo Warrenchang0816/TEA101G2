@@ -2,11 +2,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.formList.model.*"%>
+<%@ page import="com.formListFile.model.*"%>
 <%@ page import="com.emp.model.*"%>
 
 <%
 FormListVO formListVO = (FormListVO)request.getAttribute("selectOneFormList");
 Base64.Encoder encode = Base64.getEncoder();
+FormListFileService flfs = new FormListFileService();
+String formListId = formListVO.getFormListId();
+List<FormListFileVO> flfList = flfs.selectAllFormListFileByFormList(formListId);
+pageContext.setAttribute("flfList", flfList);
 
 %>
 
@@ -19,7 +24,7 @@ Base64.Encoder encode = Base64.getEncoder();
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>客服表單內容</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
@@ -62,12 +67,7 @@ Base64.Encoder encode = Base64.getEncoder();
     
       <!-- Breadcrumbs-->
 	      <ol class="breadcrumb">
-	        <li class="breadcrumb-item">
-	          <a href="<%=request.getContextPath()%>/backend/formList/formList.jsp">管理客服表單</a>
-	        </li>
-	        <li class="breadcrumb-item">
-	          <a href="<%=request.getContextPath()%>/backend/formList/selectFormList.jsp">搜尋表單</a>
-	        </li>
+
 	        <li class="breadcrumb-item active"><%=formListVO.getFormListId()%></li>
 	      </ol>
       
@@ -126,7 +126,13 @@ Base64.Encoder encode = Base64.getEncoder();
 								<label>表單圖片</label>
 								<div style="height:300px;" class="form-control" >
 								<%--application.getRealPath("/backend/img/BlobTest3.jpg") --%>
-									<img src="<%=(formListVO.getFormListFile() == null)? "" : "data:image/png;base64," + encode.encodeToString(formListVO.getFormListFile())%>" id="perview"/>
+								<c:if test="${flfList.size() == 0}"></c:if>
+								<c:if test="${flfList.size() != 0}">
+									<c:forEach  var="formListFile" items="${flfList}" begin="0" end="<%=flfList.size()%>">
+										<img src="data:image/png;base64,<%= encode.encodeToString(((FormListFileVO)pageContext.getAttribute("formListFile")).getFormListFile())%>" id="perview"/>
+									</c:forEach>
+								</c:if>
+									<%--<img src="<%=(formListVO.getFormListFile() == null)? "" : "data:image/png;base64," + encode.encodeToString(formListVO.getFormListFile())%>" id="perview"/>--%>
 								</div>
 							</div>
 						</div>
@@ -158,7 +164,7 @@ Base64.Encoder encode = Base64.getEncoder();
 							<div class="form-group">
 								<label>表單狀態</label>
 								<input type="text" class="form-control"  name="formListStatus" readonly
-									value="<%= (formListVO == null)? "" : (formListVO.getFormListStatus().equals("new"))? "未結案" : (formListVO.getFormListStatus().equals("handle"))? "已處理" : "結案" %>"/>
+									value="<%= (formListVO == null)? "" : (formListVO.getFormListStatus().equals("undo"))? "未結案" : (formListVO.getFormListStatus().equals("handle"))? "已處理" : "結案" %>"/>
 								
 							</div>
 						</div>
@@ -192,7 +198,7 @@ Base64.Encoder encode = Base64.getEncoder();
 							<div class="form-group">
 								<label>員工</label>
 								<input type="text" class="form-control" placeholder="" name="empName" readonly
-									value="<%= empName %>"/>
+									value="<%= empName == null? "" :  empName%>"/>
 							</div>
 						</div>
 

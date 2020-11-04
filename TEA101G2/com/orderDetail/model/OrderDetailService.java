@@ -40,9 +40,9 @@ public class OrderDetailService {
 		return dao.selectAll();
 	}
 	
-//	public List<OrderDetailVO> selectAllOrderDetailByMaster(String orderMasterId) {
-//		return dao.selectAllByMasterId(orderMasterId);
-//	}
+	public List<OrderDetailVO> selectAllOrderDetailByMaster(String orderMasterId) {
+		return dao.selectAllByMasterId(orderMasterId);
+	}
 	
 	public List<OrderDetailVO> selectAllOrderDetailBySpaceDetail(String spaceDetailId) {
 		List<OrderDetailVO> all = dao.selectAll();
@@ -55,5 +55,15 @@ public class OrderDetailService {
 		return allBySpaceDetail;
 	}
 	
+	public List<OrderDetailVO> selectAllOrderDetailByOrderMaster(String orderMasterId) {
+		List<OrderDetailVO> all = dao.selectAll();
+		List<OrderDetailVO> allByOrderMaster= new ArrayList<OrderDetailVO>();
+		
+		allByOrderMaster = all.stream()
+				.filter(od -> orderMasterId.equals(od.getOrderMasterId()))
+				.collect(Collectors.toList());
+		System.out.println(allByOrderMaster);
+		return allByOrderMaster;
+	}
 	
 }

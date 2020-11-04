@@ -15,13 +15,13 @@ public class OnlineListener implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext context = event.getServletContext();
 		context.setAttribute("TEA101G2DV_OnlineList", sessionsMap);
-		System.out.println("FFFFFUCKTEA101G2DV_OnlineList");
+//		System.out.println("FFFFFUCKTEA101G2DV_OnlineList");
 		
 	}
 	
 	public void contextDestroyed(ServletContextEvent event) {
 		ServletContext context = event.getServletContext();
 		context.removeAttribute("TEA101G2DV_OnlineList");
-		System.out.println("FUCKKKKKTEA101G2DV_OnlineList");
+//		System.out.println("FUCKKKKKTEA101G2DV_OnlineList");
 	}
 }

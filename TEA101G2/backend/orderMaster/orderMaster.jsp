@@ -18,7 +18,7 @@ Base64.Encoder encode = Base64.getEncoder();
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>管理訂單</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
@@ -61,7 +61,7 @@ Base64.Encoder encode = Base64.getEncoder();
           <div class="card dashboard text-white bg-success o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <i class="fa fa-fw fa-calendar-check-o"></i>
+                <img alt="rocket" width="50" src="https://www.flaticon.com/svg/static/icons/svg/2622/2622133.svg" />
               </div>
               <div class="mr-5"><h5>搜尋訂單</h5></div>
             </div>
@@ -74,29 +74,14 @@ Base64.Encoder encode = Base64.getEncoder();
           </div>
         </div>
         
-        <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card dashboard text-white bg-success o-hidden h-100">
-            <div class="card-body">
-              <div class="card-body-icon">
-                <span style="color:red; font-size: 2.5rem">${orderMasterlistT.isEmpty()? "" : orderMasterlistT.size()}</span>
-              </div>
-              <div class="mr-5"><h5>新的訂單</h5></div>
-            </div>
-            <a class="card-footer text-white clearfix small z-1" href="<%=request.getContextPath()%>/backend/orderMaster/selectNewOrderMaster.jsp">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-                <i class="fa fa-angle-right"></i>
-              </span>
-            </a>
-          </div>
-        </div>
+
         
         
          <div class="col-xl-3 col-sm-6 mb-3">
           <div class="card dashboard text-white bg-success o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <i class="fa fa-fw fa-calendar-check-o"></i>
+                <img alt="rocket" width="50" src="https://www.flaticon.com/svg/static/icons/svg/2622/2622133.svg" />
               </div>
               <div class="mr-5"><h5>退費訂單</h5></div>
             </div>
@@ -113,9 +98,9 @@ Base64.Encoder encode = Base64.getEncoder();
           <div class="card dashboard text-white bg-success o-hidden h-100">
             <div class="card-body">
               <div class="card-body-icon">
-                <i class="fa fa-fw fa-calendar-check-o"></i>
+                <img alt="rocket" width="50" src="https://www.flaticon.com/svg/static/icons/svg/2622/2622133.svg" />
               </div>
-              <div class="mr-5"><h5>結案訂單</h5></div>
+              <div class="mr-5"><h5>付款訂單</h5></div>
             </div>
             <a class="card-footer text-white clearfix small z-1" href="<%=request.getContextPath()%>/backend/orderMaster/selectOrderMasterStatusF.jsp">
               <span class="float-left">View Details</span>
@@ -126,15 +111,24 @@ Base64.Encoder encode = Base64.getEncoder();
           </div>
         </div>
         
+         <div class="col-xl-3 col-sm-6 mb-3">
+          <div class="card dashboard text-white bg-success o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <span style="color:white; font-size: 2.5rem">${orderMasterlistT.isEmpty()? "" : orderMasterlistT.size()}</span>
+              </div>
+              <div class="mr-5"><h5>新的訂單</h5></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="<%=request.getContextPath()%>/backend/orderMaster/selectNewOrderMaster.jsp">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        
 	</div>
-		<!-- /cards -->
-		<h2></h2>
-		<div class="box_general padding_bottom">
-			<div class="header_box version_2">
-				<h2><i class="fa fa-bar-chart"></i>Statistic</h2>
-			</div>
-		 <canvas id="myAreaChart" width="100%" height="30" style="margin:45px 0 15px 0;"></canvas>
-		</div>
 	  </div>
 	  <!-- /.container-fluid-->
    	</div>

@@ -2,12 +2,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.formList.model.*"%>
+<%@ page import="com.formListFile.model.*"%>
 <%@ page import="com.emp.model.*"%>
 
 <%
 
 	FormListVO formListVO = (FormListVO)request.getAttribute("selectOneMail");
 	pageContext.setAttribute("formListVO", formListVO);
+	String formListId = (String)request.getAttribute("formListId");
+	FormListFileService flfs = new FormListFileService();
+	List<FormListFileVO> formListFileList = flfs.selectAllFormListFileByFormList(formListId);
+	pageContext.setAttribute("formListFileList", formListFileList);
 	Base64.Encoder encode = Base64.getEncoder();
 	
 %>
@@ -21,7 +26,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>信件</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
@@ -98,15 +103,22 @@
                     </div>
                 </div>
                 <div class="form-group">
-	                <div class="btn btn-default btn-file">
-	                    <i class="fas fa-paperclip"></i> 附件1
-	                    <a href="data:image/png;base64,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>" download>
-							<img id="mailImag" src="data:image/png;base64,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>" alt="W3Schools">
-						</a>
-	                </div>
+                
+                <c:if test='<%=formListFileList.size() != 0%>'>
+                	<c:forEach var="formListFile" items="${formListFileList}" begin="0" end="<%=formListFileList.size()%>" varStatus="count">
+		                <div class="btn btn-default btn-file">
+		                    <i class="fas fa-paperclip"></i> 附件${count.count}
+			                    <a href="data:image/png;base64,<%=encode.encodeToString(((FormListFileVO)pageContext.getAttribute("formListFile")).getFormListFile())%>" download>
+									<img id="mailImag" src="data:image/png;base64,<%=encode.encodeToString(((FormListFileVO)pageContext.getAttribute("formListFile")).getFormListFile())%>" alt="W3Schools">
+								</a>
+		                </div>
+		               <%-- <a download="file.txt" href="data:application/csv;charset=utf-8,<%=encode.encodeToString(((FormListFileVO)pageContext.getAttribute("formListFile")).getFormListFile())%>">download</a> --%>
+	                </c:forEach>
+	            </c:if>
+	            
                 </div>
 				
-				<a download="file.txt" href="data:application/octet-stream,<%=encode.encodeToString(((FormListVO)pageContext.getAttribute("formListVO")).getFormListFile())%>">download</a>
+				
 				
 				
               </div>

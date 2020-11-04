@@ -5,7 +5,7 @@ import java.util.List;
 public class TestJDBC {
 	public static void main(String[] args) {
 	
-		OrderMasterDAOInterfaceB dao = new OrderMasterDAOB();
+		OrderMasterDAOInterface dao = new OrderMasterDAO();
 		
 		//All
 //		List<OrderMasterVO> list = dao.selectAll();
@@ -14,14 +14,14 @@ public class TestJDBC {
 //		}
 		
 		//AllByMember
-		OrderMasterServiceB oms = new OrderMasterServiceB();
+		OrderMasterService oms = new OrderMasterService();
 		List<OrderMasterVO> list = oms.selectAllOrderMasterByMember("MEM00001");
 		for(OrderMasterVO orderMasterVO : list) {
 			System.out.println(orderMasterVO.getOrderMasterId());
 		}		
 		
 		//One
-//		OrderMasterVO one = dao.selectOne("20");
+//		OrderMasterVO one = dao.selectOne("MEM00001");
 //		System.out.println(one.getOrderMasterId());
 		
 		//insert

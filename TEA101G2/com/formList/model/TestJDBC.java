@@ -5,7 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.Part;
+
+import com.formListFile.model.FormListFileDAO;
+import com.formListFile.model.FormListFileVO;
 
 public class TestJDBC {
 	public static void main(String[] args) {
@@ -54,9 +61,31 @@ public class TestJDBC {
 //		add.setFormListType("檢舉");
 //		add.setFormListTitle("長相問題");
 //		add.setFormListContext("太醜");
-//		add.setFormListFile(baos.toByteArray());
-//		dao.insert(add);
+//		add.setFormListStatus("undo");
+//		FormListFileVO addFile = new FormListFileVO();
+//		List<FormListFileVO> addFileList = new ArrayList<FormListFileVO>();
+//		addFile.setFormListFile(baos.toByteArray());
+//		addFileList.add(addFile);
+//		dao.insertWithFormListFile(add, addFileList);
 //		System.out.println("FUCK");
+		
+//		List<Part> fileList = allPartlist.stream().filter(ap -> ap.getSubmittedFileName().contains(".")).collect(Collectors.toList());
+		
+		String ap = "BlobTest1.jpg";
+		String ap2 = null;
+		String ap3 = "";
+		if(ap3.contains(".")) {
+			System.out.println("FUCKCKK");
+		}else {
+			System.out.println("SHITTTT");
+		}
+		
+		if(!ap3.isEmpty()) {
+			System.out.println("FUCKCKK");
+		}else {
+			System.out.println("SHITTTT");
+		}
+		
 		
 		//delete
 //		dao.delete("10");

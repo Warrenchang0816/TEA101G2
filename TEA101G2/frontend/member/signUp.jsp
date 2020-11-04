@@ -3,7 +3,6 @@
 <%@ page import="com.member.model.*"%>
 <%@ page import="java.util.*"%>
 
-<% Base64.Encoder encode = Base64.getEncoder();%>
 <%MemberVO userVO = (MemberVO) session.getAttribute("userVO");%>
 <%MemberVO memberVO = (MemberVO) request.getAttribute("memberVO");%>
 
@@ -27,10 +26,12 @@
     <link href="<%=request.getContextPath()%>/frontend/css/style.css" rel="stylesheet">
 	<link href="<%=request.getContextPath()%>/frontend/css/vendors.css" rel="stylesheet">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/frontend/admin_section/css/admin.css">
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/frontend/datetimepicker/jquery.datetimepicker.css" />
 	<!-- VALIDATOR JS -->
 	<script src="<%=request.getContextPath()%>/frontend/js/jquery-3.5.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
-	
+	<script src="<%=request.getContextPath()%>/frontend/datetimepicker/jquery.datetimepicker.full.js"></script>
+
 </head>
 
 <body>
@@ -90,7 +91,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
                                     <i class="ti-user"></i>
-									<label>First name</label>
+									<label>Name</label>
 									<input type="text" name="memberName" class="form-control" placeholder="名字" value="${memberVO.memberName}" required="required">
 									<div class="help-block with-errors" style="color:#AE0000; font-family:Poppins, Helvetica, sans-serif"></div>
 								</div>
@@ -101,13 +102,13 @@
 							<div class="col-md-6">
 								<div class="form-group">
                                     <i class="ti-user"></i>
-									<label>Last name</label>
-									<input type="text" name="memberNickName" class="form-control" placeholder="姓" value="${memberVO.memberNickName}" required="required">
+									<label>Nickname</label>
+									<input type="text" name="memberNickName" class="form-control" placeholder="暱稱" value="${memberVO.memberNickName}" required="required">
 									<div class="help-block with-errors" style="color:#AE0000; font-family:Poppins, Helvetica, sans-serif"></div>
 								</div>
 							</div>
 						</div>
-                        <!-- /row-->
+						<!-- /row-->
                         <div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -115,6 +116,7 @@
 									<label>Email</label>
 									<input type="email" name="memberEmail" class="form-control" placeholder="Email" data-error="Email格式錯誤" value="${memberVO.memberEmail}" required="required">
 									<div class="help-block with-errors" style="color:#AE0000; font-family:Poppins, Helvetica, sans-serif"></div>
+									<div style="color:#AE0000; font-family:Poppins, Helvetica, sans-serif">${errorMsgs.memberEmailDuplicated}</div>
 								</div>
 							</div>
 						</div>
@@ -141,36 +143,19 @@
 							</div>
 						</div>
                         <!-- /row-->
-                        <div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-                                    <i class="icon_calendar"></i>
-									<label>Birth</label>
-									<input type="text" name="memberBirth" class="form-control" placeholder="生日" value="${memberVO.memberBirth}" required="required">
-									<div class="help-block with-errors" style="color:#AE0000; font-family:Poppins, Helvetica, sans-serif"></div>
-								</div>
-							</div>
-						</div>
-						<!-- /row-->
 					</div>
 				</div>
 			</div>		
             <!-- /row-->
             <input type="hidden" name="action" value="addMember">
             <p><input type="submit" class="btn btn-danger" value="註冊"/></p>
-				<c:if test="${not empty errorMsgs}">
-					<ul>
-						<c:forEach var="message" items="${errorMsgs}">
-							<li style="color: red">${message.value}</li>
-						</c:forEach>
-					</ul>
-				</c:if>
         </div>
     </form>
 		  <!-- /.container-fluid-->
     	</div>
     </div>
-	<script>
+
+	<script> 
 		$("form[name='form_signup']").validator().on('submit', function(e) {
 			if (e.isDefaultPrevented()) { 
 				return;
@@ -181,7 +166,7 @@
 		});
 	</script>
 	
-	<!-- COMMON SCRIPTS -->
+	<!-- common script -->
     <script src="<%=request.getContextPath()%>/frontend/js/common_scripts.js"></script>
     <script src="<%=request.getContextPath()%>/frontend/js/main.js"></script> 
 </body>

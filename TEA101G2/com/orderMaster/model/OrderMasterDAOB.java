@@ -8,12 +8,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
-	String driver = "oracle.jdbc.driver.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "TEA101G2";
-	String passwd = "TEA101G2";
+//	String driver = "oracle.jdbc.driver.OracleDriver";
+//	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+//	String userid = "TEA101G2";
+//	String passwd = "TEA101G2";
 	
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource)ctx.lookup("java:comp/env/jdbc/TEA101G2");
+		}
+		catch(NamingException e){
+			e.printStackTrace();
+		}
+	}
 
 	private static final String INSERT_STMT = 
 	    "INSERT INTO ORDER_MASTER VALUES (ORDER_MASTER_ID_SEQ.NEXTVAL,?,?,?,?,?,?)";
@@ -35,8 +50,9 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(INSERT_STMT);
 			
 			ptmt.setString(1, orderMasterVO.getMemberId());
@@ -48,8 +64,6 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 
 			ptmt.executeUpdate();
 			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -77,16 +91,15 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 		PreparedStatement ptmt = null;
 
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(DELETE);
 			
 			ptmt.setString(1, orderMasterId);
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {
@@ -114,8 +127,9 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(UPDATE);
 			
 			ptmt.setString(1, orderMasterVO.getMemberId());
@@ -128,8 +142,6 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -160,8 +172,9 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 		OrderMasterVO orderMasterVO = new OrderMasterVO();
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ONE_STMT);
 			
 			ptmt.setString(1, orderMasterId);
@@ -177,8 +190,6 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 				orderMasterVO.setOrderStatusComm(rs.getString("ORDER_STATUS_COMM"));
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -217,8 +228,9 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 		List<OrderMasterVO> list = new ArrayList<OrderMasterVO>();;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+//			Class.forName(driver);
+//			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ALL_STMT);
 			
 			rs = ptmt.executeQuery();
@@ -234,8 +246,6 @@ public class OrderMasterDAOB implements OrderMasterDAOInterfaceB{
 				list.add(orderMasterVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}finally {

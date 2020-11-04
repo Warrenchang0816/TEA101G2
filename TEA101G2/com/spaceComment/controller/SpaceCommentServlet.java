@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import com.google.gson.Gson;
 import com.spaceComment.model.*;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 5 * 5 * 1024 * 1024)
@@ -197,85 +198,89 @@ public class SpaceCommentServlet extends HttpServlet {
 		}
 
 		if ("insert".equals(action)) { 
-			List<String> errorMessages = new LinkedList<String>();
-			 //Store this set in the request scope, in case we need to
-			 //send the ErrorPage view.
-			req.setAttribute("errorMessages", errorMessages);
+				res.setContentType("text/html; charset=utf-8");
+				req.setCharacterEncoding("UTF-8");
+			   List<String> errorMessages = new LinkedList<String>();
+			    //Store this set in the request scope, in case we need to
+			    //send the ErrorPage view.
+			   req.setAttribute("errorMessages", errorMessages);
 
-			try {
-				/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
-				
-				String spaceCommentId = new String(req.getParameter("spaceCommentId").trim());
-				if (spaceCommentId == null || spaceCommentId.trim().length() == 0) {
-					errorMessages.add("場地評價ID請勿空白");
-				}
+			   try {
+			    /*************************** 1.接收請求參數 - 輸入格式的錯誤處理 **********************/
+			    String spaceId = req.getParameter("spaceId");
+			    if (spaceId == null || spaceId.trim().length() == 0) {
+			     errorMessages.add("場地ID請勿空白");
+			    }
+			    
+			    String memberId = req.getParameter("memberId");
+			    if (memberId == null || memberId.trim().length() == 0) {
+			     errorMessages.add("會員ID請勿空白");
+			    }
+			    
+			    String spaceCommentContent = req.getParameter("spaceCommentContent");
+			    if (spaceCommentContent == null || spaceCommentContent.trim().length() == 0) {
+			     errorMessages.add("場地評價內容請勿空白");
+			    }
+			    
+			    Double spaceCommentLevel = null;
+			    try {
+			     spaceCommentLevel = Double.parseDouble(req.getParameter("spaceCommentLevel").trim());
+			     if(spaceCommentLevel <= 0 || spaceCommentLevel > 5) errorMessages.add("場地評價星等: 請確認");
+			    } catch (NumberFormatException e) {
+			     spaceCommentLevel = 0.0;
+			     errorMessages.add("場地評價星等錯誤");
+			    }
 
-				String spaceId = req.getParameter("spaceId");
-				if (spaceId == null || spaceId.trim().length() == 0) {
-					errorMessages.add("場地ID請勿空白");
-				}
-				
-				String memId = req.getParameter("memId");
-				if (memId == null || memId.trim().length() == 0) {
-					errorMessages.add("會員ID請勿空白");
-				}
-				
-				String spaceCommentContent = req.getParameter("spaceCommentContent");
-				if (spaceCommentContent == null || spaceCommentContent.trim().length() == 0) {
-					errorMessages.add("場地評價內容請勿空白");
-				}
-				
-				Double spaceCommentLevel = null;
-				try {
-					spaceCommentLevel = Double.parseDouble(req.getParameter("spaceCommentLevel").trim());
-					if(spaceCommentLevel <= 0 || spaceCommentLevel > 5) errorMessages.add("場地評價星等: 請確認");
-				} catch (NumberFormatException e) {
-					spaceCommentLevel = 0.0;
-					errorMessages.add("場地評價星等錯誤");
-				}
+//			    java.sql.Date spaceCommentDate = null;
+//			    try {
+//			     spaceCommentDate = java.sql.Date.valueOf(req.getParameter("spaceCommentDate").trim());
+//			    } catch (IllegalArgumentException e) {
+//			     e.printStackTrace();
+//			     errorMessages.add("場地評價日期錯誤");
+//			    }
+			    
+			    java.util.Date date = new java.util.Date();
+			    java.sql.Date spaceCommentDate = new java.sql.Date(date.getTime());
+			    
+			    SpaceCommentVO spaceCommentVO = new SpaceCommentVO();
+			    spaceCommentVO.setSpaceId(spaceId);
+			    spaceCommentVO.setMemberId(memberId);
+			    spaceCommentVO.setSpaceCommentContent(spaceCommentContent);
+			    spaceCommentVO.setSpaceCommentLevel(spaceCommentLevel);
+			    spaceCommentVO.setSpaceCommentDate(spaceCommentDate);
+			    spaceCommentVO.setSpaceCommStatus("Y");
+			    spaceCommentVO.setSpaceCommStatusEmp("Y");
+			    spaceCommentVO.setSpaceCommStatusComm("Y");
+			    
+			    // Send the use back to the form, if there were errors
+			    if (!errorMessages.isEmpty()) {
+			     req.setAttribute("spaceCommentVO", spaceCommentVO); // 含有輸入格式錯誤的spaceCommentVO物件,也存入req
+			     RequestDispatcher failureView = req.getRequestDispatcher("/frontend/spacecomment/updateSpaceComment.jsp");
+			     failureView.forward(req, res);
+			     return; // 程式中斷
+			    }
+			    /*************************** 2.開始新增資料 ***************************************/
+			    SpaceCommentService spaceCommentSvc = new SpaceCommentService();
+			    spaceCommentVO = spaceCommentSvc.addSpaceComment(spaceCommentVO);
+			    Gson gson = new Gson();
+			    String jsonString = gson.toJson(spaceCommentVO);
+			    res.getWriter().write(jsonString);
+			    System.out.println(jsonString);
+			    System.out.println(spaceCommentVO);
+			   
+//			    /*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
+//			    String url = "/frontend/spacecomment/listAllSpaceComment.jsp";
+//			    RequestDispatcher successView = req.getRequestDispatcher(url);
+//			    successView.forward(req, res);
 
-				java.sql.Date spaceCommentDate = null;
-				try {
-					spaceCommentDate = java.sql.Date.valueOf(req.getParameter("spaceCommentDate").trim());
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-					errorMessages.add("場地評價日期錯誤");
-				}
-
-				
-				SpaceCommentVO spaceCommentVO = new SpaceCommentVO();
-				spaceCommentVO.setSpaceCommentId(spaceCommentId);
-				spaceCommentVO.setSpaceId(spaceId);
-				spaceCommentVO.setMemberId(memId);
-				spaceCommentVO.setSpaceCommentContent(spaceCommentContent);
-				spaceCommentVO.setSpaceCommentLevel(spaceCommentLevel);
-				spaceCommentVO.setSpaceCommentDate(spaceCommentDate);
-				
-				// Send the use back to the form, if there were errors
-				if (!errorMessages.isEmpty()) {
-					req.setAttribute("spaceCommentVO", spaceCommentVO); // 含有輸入格式錯誤的spaceCommentVO物件,也存入req
-					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/spacecomment/updateSpaceComment.jsp");
-					failureView.forward(req, res);
-					return; // 程式中斷
-				}
-				/*************************** 2.開始新增資料 ***************************************/
-				SpaceCommentService spaceCommentSvc = new SpaceCommentService();
-				spaceCommentVO = spaceCommentSvc.addSpaceComment(spaceCommentVO);
-				System.out.println(spaceCommentVO);
-				
-				/*************************** 3.新增完成,準備轉交(Send the Success view) ***********/
-				String url = "/frontend/spacecomment/listAllSpaceComment.jsp";
-				RequestDispatcher successView = req.getRequestDispatcher(url);
-				successView.forward(req, res);
-
-				/*************************** 其他可能的錯誤處理 **********************************/
-			} catch (Exception e) {
-				e.printStackTrace();
-				errorMessages.add(e.getMessage());
-				RequestDispatcher failureView = req.getRequestDispatcher("/frontend/spacecomment/addSpaceComment.jsp");
-				failureView.forward(req, res);
-			}
-		}
+			    /*************************** 其他可能的錯誤處理 **********************************/
+			   } catch (Exception e) {
+			    e.printStackTrace();
+			    errorMessages.add(e.getMessage());
+			    RequestDispatcher failureView = req.getRequestDispatcher("/frontend/spacecomment/addSpaceComment.jsp");
+			    failureView.forward(req, res);
+			   }
+			  }
 
 		if ("delete".equals(action)) { // 來自listAllSpace.jsp
 

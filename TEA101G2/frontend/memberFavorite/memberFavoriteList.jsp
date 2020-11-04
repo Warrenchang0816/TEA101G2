@@ -6,8 +6,13 @@
 <%@ page import="com.spaceDetail.model.*"%>
 <%@ page import="com.spacePhoto.model.*"%>
 <%@ page import="java.util.*"%>
-<% Base64.Encoder encode = Base64.getEncoder();%>
-<%MemberVO userVO = (MemberVO) session.getAttribute("userVO");%>
+
+<jsp:useBean id="memberFavoriteSvc" scope="page" class="com.memberFavorite.model.MemberFavoriteService" />
+<jsp:useBean id="spaceSvc" scope="page" class="com.space.model.SpaceService" />
+<jsp:useBean id="spaceDetailSvc" scope="page" class="com.spaceDetail.model.SpaceDetailService" />	
+<jsp:useBean id="spacePhotoSvc" scope="page" class="com.spacePhoto.model.SpacePhotoService" />
+<jsp:useBean id="spaceCommentSvc" scope="page" class="com.spaceComment.model.SpaceCommentService" />
+		
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,58 +43,10 @@
 	            white-space: nowrap;
 	            text-overflow: ellipsis;
 	            display: -webkit-box;
-	            -webkit-line-clamp: 5; /*最多顯示5行*/
+	            -webkit-line-clamp: 3; 
 	            -webkit-box-orient: vertical;
 	            white-space: normal;
 	    }
-	        
-         .list-wrapper {
-            padding: 15px;
-            overflow: hidden;
-        }
-
-        .list-item h4 {
-            color: #FF7182;
-            font-size: 18px;
-            margin: 0 0 5px;
-        }
-
-        .list-item p {
-            margin: 0;
-        }
-
-        .simple-pagination ul {
-            margin: 0 0 20px;
-            padding: 0;
-            list-style: none;
-            text-align: center;
-        }
-
-        .simple-pagination li {
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        .simple-pagination li a,
-        .simple-pagination li span {
-            color: #666;
-            padding: 5px 10px;
-            text-decoration: none;
-            border: 1px solid #EEE;
-            background-color: #FFF;
-            box-shadow: 0px 0px 10px 0px #EEE;
-        }
-
-        .simple-pagination .current {
-            color: #FFF;
-            background-color: #FF7182;
-            border-color: #FF7182;
-        }
-
-        .simple-pagination .prev.current,
-        .simple-pagination .next.current {
-            background: #e04e60;
-        }
     </style>
     
 </head>
@@ -99,40 +56,50 @@
     	<jsp:include page="/frontend/other/header.jsp"/>
         <!-- /header -->
 		<div class="container margin_60_35" style="margin-top: 50px">
-		
-				<%  
-					MemberFavoriteService memFavoriteSvc = new MemberFavoriteService();
-                	String memberId = userVO.getMemberId();
-				    List<MemberFavoriteVO> list = memFavoriteSvc.getAllMemberFavoriteById(memberId);
-				    pageContext.setAttribute("list",list);
-				%>
-		<jsp:useBean id="spaceSvc" scope="page" class="com.space.model.SpaceService" />
-		<jsp:useBean id="spaceDetailSvc" scope="page" class="com.spaceDetail.model.SpaceDetailService" />	
-		<jsp:useBean id="spacePhotoSvc" scope="page" class="com.spacePhoto.model.SpacePhotoService" />
-	
 			
             <div class="wrapper-grid">
             
                 <div class="row list-wrapper">
-				<c:forEach var="memberFavoriteVO" items="${list}" begin="0" end="<%=list.size()%>" varStatus="s">
+				<c:forEach var="memberFavoriteVO" items="${memberFavoriteSvc.getAllMemberFavoriteById(userVO.memberId)}" varStatus="s">
                     <div class="col-xl-4 col-lg-6 col-md-6 list-item">
                         <div class="box_grid">
-                            <figure>													 
-                                <a href="#" class="wish_bt liked wish_del${s.index}"></a>
-                                <a href="#"><img src="<%=request.getContextPath()%>/space/showonepicture?spaceId=${memberFavoriteVO.spaceId}" class="img-fluid" alt="" width="800" height="533"></a>
+                            <figure>
+                           	    <form method="post" action="<%=request.getContextPath()%>/space/space.do" id="form_getOneSpace${s.index}">
+									<input type="hidden" name="spaceId" value="${memberFavoriteVO.spaceId}">
+									<input type="hidden" name="action" value="getOne_For_Display">
+       							</form>													 
+                                <a href="#0" class="wish_bt liked wish_del${s.index}"></a>
+                                <a href="#0" onclick="document.getElementById('form_getOneSpace${s.index}').submit()">
+                                <img src="<%=request.getContextPath()%>/space/showonepicture?spaceId=${memberFavoriteVO.spaceId}" class="img-fluid" alt="" width="800" height="533"></a>
                                 <small>${spaceSvc.selectOneSpace(memberFavoriteVO.spaceId).spaceType}</small>
                                 <div class="read_more"><span>Read more</span></div>
                             </figure>
                             <div class="wrapper">
+                            		<div class="cat_star">
+									<c:forEach var="i" begin="1" end="${spaceCommentSvc.getSpaceRating(memberFavoriteVO.spaceId)}">
+										<i class="icon_star"></i>
+									</c:forEach>
+								</div>
                             	<h3><a href="#">${spaceSvc.selectOneSpace(memberFavoriteVO.spaceId).spaceName}</a></h3>
                                 <p class="ellipsis">${spaceSvc.selectOneSpace(memberFavoriteVO.spaceId).spaceText}</p>
+                                
+                                <span class="price"><i class="icon_clock_alt" style="margin-right:8px"></i>1 hr
+											/ <strong>${spaceDetailSvc.selectOneLowest(memberFavoriteVO.spaceId).spaceDetailCharge}
+												$</strong></span>
+								<br>
+								<small class="address_ellipsis">${spaceSvc.selectOneSpace(memberFavoriteVO.spaceId).spaceAddress}</small>
                             </div>
                             <ul>
-                                <li><i class="icon_clock_alt" style="margin-right:8px"></i>30min / <span class="price">
-                                <strong>${spaceDetailSvc.selectOneLowest(memberFavoriteVO.spaceId).spaceDetailCharge}
-                                $</strong></span></li>
+                                <li><i class="ti-eye"></i></li>
                                 <li>
-								<!--  <div class="score"><span>Good<em>350 Reviews</em></span><strong>5.0</strong></div> -->
+								 <div class="score"><span>
+									<c:if test="${spaceCommentSvc.getSpaceRating(memberFavoriteVO.spaceId) >= 3.0 and spaceCommentSvc.getSpaceRating(memberFavoriteVO.spaceId) <= 3.9 }">
+										Good
+									</c:if>
+									<c:if test="${spaceCommentSvc.getSpaceRating(memberFavoriteVO.spaceId) >= 4.0}">
+										Awesome
+									</c:if>			
+								 <em>${spaceCommentSvc.getSpaceCommentCount(memberFavoriteVO.spaceId)} Reviews</em></span><strong>${spaceCommentSvc.getSpaceRating(memberFavoriteVO.spaceId)}</strong></div>
                                 </li>
                             </ul>
                         </div>
@@ -182,13 +149,12 @@
         });
 
         $(function () {
-            var len = 90; 
+            var len = 20; 
             $(".ellipsis").each(function (i) {
                 if ($(this).text().length > len) {
                     $(this).attr("title", $(this).text());
                     var text = $(this).text().substring(0, len - 1);
-                    $(this).text(text+"...").append
-                    ('<a href="" style="font-size:8px;font-weight:bold">(Read More)</a>'); 
+                    $(this).text(text+"..."); 
                 }
             });
         });

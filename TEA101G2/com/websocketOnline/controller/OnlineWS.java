@@ -59,7 +59,7 @@ public class OnlineWS {
         
         
         onlineSessionsMap.put(userName, userSession);
-        System.out.println("onlineUserName: " + userName);
+//        System.out.println("onlineUserName: " + userName);
         Set<String> userNames = onlineSessionsMap.keySet();
 		OnlineState onlineList = new OnlineState("online", userName, userNames);
 		String onlineListJson = gson.toJson(onlineList); 
@@ -70,8 +70,8 @@ public class OnlineWS {
 			}
 		}
         
-		String text = String.format("OnlineSession ID = %s, connected; userName = %s", userSession.getId(), userName);
-		System.out.println(text);
+//		String text = String.format("OnlineSession ID = %s, connected; userName = %s", userSession.getId(), userName);
+//		System.out.println(text);
 	}
 	
 	@OnMessage
@@ -79,8 +79,8 @@ public class OnlineWS {
 		Set<String> userSessionNames = onlineSessionsMap.keySet();
 		String[] messagesplit = message.split(",");
 		String type = messagesplit[0].substring(messagesplit[0].lastIndexOf(":") + 2, messagesplit[0].length()-1);
-		System.out.println("type:"+type);
-		System.out.println("message type:"+ type.equals("mail"));
+//		System.out.println("type:"+type);
+//		System.out.println("message type:"+ type.equals("mail"));
 		
 		if("mail".equals(type)) {
 			EmpService es = new EmpService();
@@ -88,14 +88,14 @@ public class OnlineWS {
 			Mail mail = gson.fromJson(message, Mail.class);
 			String sender = mail.getSender();
 			String senderName = empNames.get(sender);
-			System.out.println("sender"+sender);
-			System.out.println("sender"+empNames.get(sender));
+//			System.out.println("sender"+sender);
+//			System.out.println("sender"+empNames.get(sender));
 			String receivers = mail.getReceivers();
-			System.out.println("receivers:"+receivers);
+//			System.out.println("receivers:"+receivers);
 			String title = mail.getTitle();
-			System.out.println("title:"+title);
+//			System.out.println("title:"+title);
 			String time = mail.getTime();
-			System.out.println("time:"+time);
+//			System.out.println("time:"+time);
 			
 			String[] emps = receivers.split(";");
 			if (userSession != null && userSession.isOpen()) {
@@ -114,7 +114,7 @@ public class OnlineWS {
 	@OnClose
 	public void offLine(Session userSession, CloseReason reason) {
 		HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpSession");
-		System.out.println(userSession.getId()+"close");
+//		System.out.println(userSession.getId()+"close");
 //		System.out.println("httpSession:"+httpSession);
         ServletContext servletContext = httpSession.getServletContext();
 //        System.out.println("servletContext:"+servletContext);
@@ -156,9 +156,9 @@ public class OnlineWS {
         
         
         
-		String text = String.format("OnlineCloseSession ID = %s, disconnected; close code = %d%nusers:", userSession.getId(),
-				reason.getCloseCode().getCode());
-		System.out.println(text);
+//		String text = String.format("OnlineCloseSession ID = %s, disconnected; close code = %d%nusers:", userSession.getId(),
+//				reason.getCloseCode().getCode());
+//		System.out.println(text);
 	}
 
 }

@@ -54,10 +54,9 @@
 		</table>
 
 <br>
-<input type="hidden" name="action" value="updateOrderMaster">
-<input type="hidden" name="orderMasterId" value="<%=orderMasterVO.getOrderMasterId()%>">
+<input type="hidden" name="action" value="purchase">
+<input type="hidden" name="orderMasterVO" value="<%=orderMasterVO%>">
 <button name="update" value="修改" type="submit" class="update" onclick="javascript:return confirm('確認修改?');">送出修改</button>
-<a href='<%=request.getContextPath()%>/frontend/ordermaster/orderMaster.jsp'><input type="button" value="取消修改"></a>
 
 </FORM>
 

@@ -36,8 +36,8 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 //	String passwd = "123456";
 	
 
-	private static final String INSERT_STMT = 
-	    "INSERT INTO ORDER_MASTER VALUES ('OMS' || lpad(ORDER_MASTER_ID_SEQ.NEXTVAL, 6, '0'),?,?,?,?)";
+	private static final String INSERT_STMT =
+		"INSERT INTO ORDER_MASTER (ORDER_MASTER_ID, MEMBER_ID, ORDER_CREATE_DATE, ORDER_AMOUNT, ORDER_STATUS) VALUES ('OMS' || lpad(ORDER_MASTER_ID_SEQ.NEXTVAL, 6, '0'),?,?,?,?)";
 	private static final String SELECT_ALL_STMT = 
 		"SELECT * FROM ORDER_MASTER order by ORDER_MASTER_ID";
 	private static final String SELECT_ONE_STMT = 
@@ -67,8 +67,8 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 			ptmt.setString(4, orderMasterVO.getOrderStatus());
 
 			ptmt.executeUpdate();
-			
-		} catch (SQLException e) {
+		
+		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			if (ptmt != null) {
@@ -88,12 +88,12 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 		}
 	}
 	
-	/***********************新增OrderMaster以及OrderDetail***********************/
+	/***********************同時新增OrderMaster以及OrderDetail***********************/
 	@Override
-	public void insertwithOrderDetail(OrderMasterVO orderMasterVO, List<OrderDetailVO> odlist) {
+	public String insertwithOrderDetail(OrderMasterVO orderMasterVO, List<OrderDetailVO> odlist) {
 		Connection con = null;
 		PreparedStatement ptmt = null;
-		
+		String orderMasterId = null;
 		try {
 			con = ds.getConnection();
 			con.setAutoCommit(false);
@@ -104,13 +104,14 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 			ptmt.setDate(2, orderMasterVO.getOrderCreateDate());
 			ptmt.setInt(3, orderMasterVO.getOrderAmount());
 			ptmt.setString(4, orderMasterVO.getOrderStatus());
-
+			
 			ptmt.executeUpdate();
 			
 			/***********************取得當前新增的自增主鍵***********************/
 			String nowOMId = null;
+			
 			ResultSet rs = ptmt.getGeneratedKeys();
-			System.out.println(rs);
+			//System.out.println(rs);
 			if(rs.next()) {
 				nowOMId = rs.getString(1);
 				System.out.println("OrderMaster自增主鍵值="+ nowOMId + "剛新增成功的訂單編號");
@@ -129,13 +130,15 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 			}
 			
 			con.commit();
-			
+			orderMasterId = nowOMId;
+			System.out.println(orderMasterId);
 			System.out.println("新增訂單編號" + nowOMId + "時，共有明細" + odlist.size() + "筆同時被新增");
 			
 		} catch (Exception e) {
 			if (con != null) {
 				try {
 					System.err.print("Transaction is being rolled back due to OrderMaster");
+					e.printStackTrace(System.err);
 					con.rollback();
 				} catch (SQLException se) {
 					e.printStackTrace(System.err);
@@ -164,6 +167,7 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 				}
 			}
 		}
+		return orderMasterId;
 	}
 
 	@Override
@@ -179,7 +183,7 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 			
 			ptmt.executeUpdate();
 			
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
 				if (ptmt != null) {
@@ -217,7 +221,7 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 			
 			ptmt.executeUpdate();
 			
-		}catch (SQLException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			if (ptmt != null) {
@@ -238,7 +242,7 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 	}
 	/*******************************訂單確認已付款，更改訂單狀態*******************************/
 	@Override
-	public void updateStatus(OrderMasterVO orderMasterVO) {
+	public void purchaseDone(String orderMasterId) {
 		Connection con = null;
 		PreparedStatement ptmt = null;
 		
@@ -246,7 +250,8 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 			con = ds.getConnection();
 			ptmt = con.prepareStatement(UPDATE_STATUS);
 			
-			ptmt.setString(1, orderMasterVO.getOrderStatus());
+			ptmt.setString(1, "F");
+			ptmt.setString(2, orderMasterId);
 			
 			ptmt.executeUpdate();
 			
@@ -295,12 +300,12 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 			while (rs.next()) {
 				orderMasterVO.setOrderMasterId(rs.getString("ORDER_MASTER_ID"));
 				orderMasterVO.setMemberId(rs.getString("MEMBER_ID"));
-				orderMasterVO.setOrderCreateDate(rs.getDate("ORDER_CREATEDATE"));
+				orderMasterVO.setOrderCreateDate(rs.getDate("ORDER_CREATE_DATE"));
 				orderMasterVO.setOrderAmount(rs.getInt("ORDER_AMOUNT"));
 				orderMasterVO.setOrderStatus(rs.getString("ORDER_STATUS"));
 			}
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			if (rs != null) {
@@ -346,13 +351,13 @@ public class OrderMasterDAO implements OrderMasterDAOInterface{
 				orderMasterVO = new OrderMasterVO();
 				orderMasterVO.setOrderMasterId(rs.getString("ORDER_MASTER_ID"));
 				orderMasterVO.setMemberId(rs.getString("MEMBER_ID"));
-				orderMasterVO.setOrderCreateDate(rs.getDate("ORDER_CREATEDATE"));
+				orderMasterVO.setOrderCreateDate(rs.getDate("ORDER_CREATE_DATE"));
 				orderMasterVO.setOrderAmount(rs.getInt("ORDER_AMOUNT"));
 				orderMasterVO.setOrderStatus(rs.getString("ORDER_STATUS"));
 				list.add(orderMasterVO);
 			}
 
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
 				if (rs != null) {

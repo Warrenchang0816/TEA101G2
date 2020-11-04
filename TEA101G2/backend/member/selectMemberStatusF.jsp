@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>停權會員</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
@@ -45,9 +45,29 @@
   <link href="<%=request.getContextPath()%>/backend/css/custom.css" rel="stylesheet">
 
 <style>
-    #perview {
-      width: 100px;
-    }
+#img {
+	height: 110px;
+	position: relative;
+	left: -30%;
+    top: -10px;
+}
+#figure {
+	left: 30px;
+    top: 30px;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin-bottom: 0px;
+    margin-right: 0px;
+}
+
+#dataTable td {
+    text-align: center; 
+    vertical-align: middle;
+}
 </style>
 	
 </head>
@@ -100,7 +120,7 @@
 <c:forEach var="memberVO" items="${listP}" begin="0" end="<%=listP.size()%>">
 <% Base64.Encoder encode = Base64.getEncoder();%>
 	<tr>
-		<td><img src="data:image/png;base64,<%=encode.encodeToString(((MemberVO)pageContext.getAttribute("memberVO")).getMemberPhoto())%>" id="perview"/></td>
+		<td><figure id="figure" style="margin: 0 2rem;"><img src="data:image/png;base64,<%=encode.encodeToString(((MemberVO)pageContext.getAttribute("memberVO")).getMemberPhoto())%>" id="img"/></figure></td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">${memberVO.memberAccount}
 			   	<button type="submit" class="btn btn-link">
@@ -169,7 +189,7 @@
 <c:forEach var="memberVO" items="${listB}" begin="0" end="<%=listB.size()%>">
 <% Base64.Encoder encode = Base64.getEncoder();%>
 	<tr>
-		<td><img src="data:image/png;base64,<%=encode.encodeToString(((MemberVO)pageContext.getAttribute("memberVO")).getMemberPhoto())%>" id="perview"/></td>
+		<td><figure id="figure" style="margin: 0 2rem;"><img src="data:image/png;base64,<%=encode.encodeToString(((MemberVO)pageContext.getAttribute("memberVO")).getMemberPhoto())%>" id="img"/></figure></td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">${memberVO.memberAccount}
 			   	<button type="submit" class="btn btn-link">

@@ -11,8 +11,8 @@ public class SpaceDetailService {
 	}
 	
 	public SpaceDetailVO addSpaceDetail(SpaceDetailVO spaceDetailVO) {
-		dao.insert(spaceDetailVO);
-		return spaceDetailVO;
+		SpaceDetailVO newsdVO = dao.insert(spaceDetailVO);
+		return newsdVO;
 	}
 	
 	public SpaceDetailVO updateSpaceDetail(SpaceDetailVO spaceDetailVO) {

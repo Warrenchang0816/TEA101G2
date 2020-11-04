@@ -16,6 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.orderMaster.model.*;
+import com.formList.model.FormListService;
+import com.formList.model.FormListVO;
+import com.mail.service.MailService;
+import com.member.model.MemberServiceB;
+import com.member.model.MemberVO;
 import com.orderDetail.model.*;
 import com.spaceDetail.model.*;
 
@@ -36,7 +41,6 @@ public class OrderMasterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
 		String action = req.getParameter("action");
-		
 
 		
 		if ("addOrderMaster".equals(action)) {
@@ -96,8 +100,15 @@ public class OrderMasterServlet extends HttpServlet {
 			req.setAttribute("errorMsgs", errorMsgs);
 			
 			try {
-//				String memberId = req.getParameter("memberId").trim();
-//				if(memberId == null || memberId.isEmpty()) errorMsgs.add("會員編號: 請勿空白");
+				String memberId = req.getParameter("memberId").trim();
+				if (memberId == null || memberId.trim().length() == 0) {
+					errorMsgs.add("請先登入會員");
+				}
+				
+				String spaceId = req.getParameter("spaceId");
+				if (spaceId == null || (spaceId.trim()).length() == 0) {
+					errorMsgs.add("請輸入場地ID");
+				}
 				
 				java.sql.Date orderCreateDate = null;
 				try {
@@ -108,16 +119,10 @@ public class OrderMasterServlet extends HttpServlet {
 				}
 				
 				OrderMasterVO addOrderMaster = new OrderMasterVO();
-				addOrderMaster.setMemberId("MEM00001");
+				addOrderMaster.setMemberId(memberId);
 				addOrderMaster.setOrderCreateDate(orderCreateDate);
-				addOrderMaster.setOrderStatus("N");
+				addOrderMaster.setOrderStatus("T");
 				
-				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("addOrderMaster", addOrderMaster); 
-					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/ordermaster/addOrderMaster.jsp");
-					failureView.forward(req, res);
-					return;
-				}
 				
 				//撈出odlist要用的資料
 				String[] spaceDetaillist = null;
@@ -126,34 +131,39 @@ public class OrderMasterServlet extends HttpServlet {
 				
 				String[] rentStartTimelist = null;
 				rentStartTimelist = req.getParameterValues("rentStartTime");
-				System.out.println(rentStartTimelist);
+				for(int i = 0; i < rentStartTimelist.length; i++) {
+					System.out.println(rentStartTimelist[i]);
+				}
+				
 				
 				String[] rentEndTimelist = null;
 				rentEndTimelist = req.getParameterValues("rentEndTime");
 				System.out.println(rentEndTimelist);
 				
-				String[] spaceDetailChargelist = null;
-				spaceDetailChargelist = req.getParameterValues("spaceDetailCharge");
-				System.out.println(spaceDetailChargelist);
-				
+				String[] spaceDetailChargelistStr = null;
+				spaceDetailChargelistStr = req.getParameterValues("spaceDetailCharge");
 				Integer rentCharge = 0;
 				
 				
 				//撈出資料建立OrderDetailVO，並將OrderMaster總金額修改成訂單總金額
 				List<OrderDetailVO> odlist = new ArrayList<OrderDetailVO>();
 				OrderDetailService orderDetailSvc = new OrderDetailService();
-				SpaceDetailServiceB spaceDetailSvc = new SpaceDetailServiceB();
-				
+				SpaceDetailService spaceDetailSvc = new SpaceDetailService();
 				
 				for (int i = 0; i < rentStartTimelist.length; i++) {
-					if(rentStartTimelist[i] == null || rentStartTimelist[i].isEmpty() || rentEndTimelist[i] == null || rentEndTimelist[i].isEmpty()) {}
-					else {	
+					if(!(rentStartTimelist[i] == null || rentStartTimelist[i].trim().isEmpty() || rentStartTimelist[i].trim().equals("") || rentEndTimelist[i] == null || rentEndTimelist[i].trim().isEmpty() || rentEndTimelist[i].trim().equals(""))){
+					
 						OrderDetailVO orderDetailVO = new OrderDetailVO();
 						orderDetailVO.setSpaceDetailId(spaceDetaillist[i]);
 						//判斷訂單時間是否合法
 						SpaceDetailVO spaceDetailVO = spaceDetailSvc.selectOneSpaceDetail(spaceDetaillist[i]);
+						System.out.println("===================================");
+						System.out.println(spaceDetaillist[i]);
+						System.out.println(rentStartTimelist[i]);
+						System.out.println(spaceDetailVO.getSpaceDetailFreeTimeStart().getTime());
 						long spaceStartTimeLong = (spaceDetailVO.getSpaceDetailFreeTimeStart().getTime());
 						long spaceEndTimeLong = (spaceDetailVO.getSpaceDetailFreeTimeEnd().getTime());
+						
 						long rentStartTimeLong = (java.sql.Timestamp.valueOf(rentStartTimelist[i]).getTime());	
 						long rentEndTimeLong = (java.sql.Timestamp.valueOf(rentEndTimelist[i]).getTime());
 						
@@ -192,28 +202,53 @@ public class OrderMasterServlet extends HttpServlet {
 						System.out.println("第"+ (i + 1) +"筆訂單，預訂結束時間：" + rentEndTimelist[i]);
 						odlist.add(orderDetailVO);
 						//將訂單金額新增至rentCharge
-						rentCharge += (Integer.parseInt(spaceDetailChargelist[i]) * (int)(rentEndTimeLong-rentStartTimeLong)/1000/60/60);
+						rentCharge += (Integer.parseInt(spaceDetailChargelistStr[i]) * ((int)(rentEndTimeLong-rentStartTimeLong)/1000/60/60));
 					}
 				}
 				
 				
 				// Send the use back to the form, if there were errors
 				if (!errorMsgs.isEmpty()) {
+					OrderDetailService ods = new OrderDetailService();
+					List<SpaceDetailVO> spaceDetailIdList = spaceDetailSvc.getSpaceIdList(spaceId);
+					List<SpaceDetailVO> calendarList = spaceDetailSvc.getSpaceIdList(spaceId);
+					List<OrderDetailVO> orderDetaillist = new ArrayList<OrderDetailVO>();
+					//兩個for迴圈滾出相關orderDetailVO
+					for(int i = 0; i < spaceDetailIdList.size(); i++) {
+						List<OrderDetailVO> odlisttemp = ods.selectAllOrderDetailBySD(spaceDetailIdList.get(i).getSpaceDetailId());
+						System.out.println("取得場地明細編號："+ spaceDetailIdList.get(i).getSpaceDetailId() + "，該時段已被預約" + odlisttemp.size()+"筆資料");
+						for(OrderDetailVO odVO : odlisttemp) {
+							orderDetaillist.add(odVO);
+						}
+					}
+					
+					req.setAttribute("spaceDetailIdList", spaceDetailIdList); // 資料庫取出的spaceDetailVO物件,存入req
+					req.setAttribute("spaceId", spaceId);
+					req.setAttribute("calendarList", calendarList);
+					req.setAttribute("odlist", odlist);
+					req.setAttribute("errorMsgs", errorMsgs);
 					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/spacedetail/listAllSpaceDetail.jsp");
 					failureView.forward(req, res);
+					System.out.println("送回去!!");
 					return;// 程式中斷
 				}
 				
-				System.out.println("訂單金額共"+rentCharge+"元，設定至OrderMaster的OrderAmount");
+				System.out.println("訂單金額共" + rentCharge + "元，設定至OrderMaster的OrderAmount");
 				addOrderMaster.setOrderAmount(rentCharge);
+				System.out.println(addOrderMaster);
 				System.out.println("資料無誤，開始新增資料");
 				OrderMasterService orderMasterServ = new OrderMasterService();
-				orderMasterServ.insertwithOrderDetail(addOrderMaster, odlist);
+				String orderMasterId = orderMasterServ.insertwithOrderDetail(addOrderMaster, odlist);
+				System.out.println("orderMasterId:"+orderMasterId+"設定至orderMasterVO");
+				addOrderMaster.setOrderMasterId(orderMasterId);
+				System.out.println("設置完成的orderMasterVO:"+addOrderMaster);
 				
 				/*************************** 3.查詢完成,準備轉交(Send the Success view) ********************************/
-				req.setAttribute("memberId", addOrderMaster.getMemberId());
-				req.setAttribute("selectOneOrderMaster", addOrderMaster);
-				String url = "/frontend/ordermaster/selectOneOrderMaster.jsp";
+				req.setAttribute("orderMasterVO", addOrderMaster);
+				
+//				req.setAttribute("orderMasterId", orderMasterId);
+//				req.setAttribute("odlist", odlist);
+				String url = "/frontend/ordermaster/orderCart.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				
@@ -240,10 +275,9 @@ public class OrderMasterServlet extends HttpServlet {
 				}
 
 				OrderMasterService orderMasterServ = new OrderMasterService();
-				OrderMasterVO selectOneOrderMaster = new OrderMasterVO();
-				selectOneOrderMaster = orderMasterServ.selectOneOrderMaster(orderMasterId);
+				OrderMasterVO orderMasterVO = orderMasterServ.selectOneOrderMaster(orderMasterId);
 				
-				if (selectOneOrderMaster == null) {
+				if (orderMasterVO == null) {
 					errorMsgs.add("查無資料");
 				}
 				if (!errorMsgs.isEmpty()) {
@@ -251,10 +285,10 @@ public class OrderMasterServlet extends HttpServlet {
 					failureView.forward(req, res);
 					return;
 				}
-				
-				req.setAttribute("selectOneOrderMaster", selectOneOrderMaster);
+				System.out.println(orderMasterVO);
+				req.setAttribute("orderMasterVO", orderMasterVO);
 
-				String url = "/frontend/orderMaster/selectOneOrderMaster.jsp";
+				String url = "/frontend/ordermaster/orderCart.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				
@@ -347,7 +381,6 @@ public class OrderMasterServlet extends HttpServlet {
 				updateOrderMaster.setMemberId(memberId);
 				updateOrderMaster.setOrderCreateDate(orderCreateDate);
 				updateOrderMaster.setOrderStatus(orderStatus);
-				System.out.println();
 				updateOrderMaster.setOrderAmount(orderAmount);
 				
 				if (!errorMsgs.isEmpty()) {
@@ -371,7 +404,70 @@ public class OrderMasterServlet extends HttpServlet {
 				RequestDispatcher exceptionView = req.getRequestDispatcher("/frontend/error.jsp");
 				exceptionView.forward(req, res);
 			}
-		}	
+		}
+		
+		/*************************** 確認付款，更改orderStatus ********************************/
+		if ("purchasedone".equals(action)) {
+			Queue<String> errorMsgs = new LinkedList<String>();
+			req.setAttribute("errorMsgs", errorMsgs);
+			
+			try {
+				String orderMasterId = req.getParameter("orderMasterId").trim();
+				if(orderMasterId == null || orderMasterId.isEmpty()) errorMsgs.add("訂單編號錯誤");
+				
+				
+				if (!errorMsgs.isEmpty()) {
+					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/ordermaster/orderCart.jsp");
+					failureView.forward(req, res);
+					return;
+				}
+
+				OrderMasterService oms = new OrderMasterService();
+				oms.purchaseDone(orderMasterId);
+//				req.setAttribute("selectOneUpdate", updateMemberComm);
+				
+				OrderMasterVO omv = oms.selectOneOrderMaster(orderMasterId);
+				MemberServiceB msb = new MemberServiceB();
+				OrderMasterServiceB omsb = new OrderMasterServiceB();
+				String memberId = omsb.selectOneOrderMaster(orderMasterId).getMemberId();
+				java.sql.Date createDate = omv.getOrderCreateDate();
+				MemberVO m = msb.selectOneMember(memberId);
+				String mName = m.getMemberName();
+				String mMail = m.getMemberEmail();
+				FormListVO addMessage = new FormListVO();
+				//*MESSAGE
+//				MEMBER_ID----MEM00001
+//				EMP_ID----EMP00001
+//				FORM_LIST_TYPE----message
+//				FORM_SOLU----收件會員
+//				FORM_STATUS----'R':已讀,'M':未讀
+				addMessage.setMemberId("MEM00001");
+				addMessage.setEmpId("EMP00001");
+				addMessage.setFormListCreateDate(new java.sql.Date(System.currentTimeMillis()));
+				addMessage.setFormListType("message");
+				addMessage.setFormListTitle("訂單["+orderMasterId+"] 成立通知!!");
+				addMessage.setFormListContext("親愛的會員"+mName+"，您好<br />您預定的訂單已成功建立，有任何問題都可以聯絡我們，感謝。<br />訂單編號: " + orderMasterId + "，成立日期: " + new java.sql.Date(System.currentTimeMillis())) ;
+				addMessage.setFormListStatus("M");
+				addMessage.setFormListSolu(memberId);
+				FormListService formListServ = new FormListService();
+				formListServ.addFormList(addMessage);
+				
+				
+				MailService mailService = new MailService();
+				String messageText = "親愛的會員: "+ mName + "您好，" + "\n" + "您的訂單已經成立。" + "\n" + "訂單編號:" + orderMasterId ;
+				mailService.sendMail(mMail, "訂單成立", messageText);
+
+				String url = "/frontend/ordermaster/purchaseDone.jsp";
+				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
+				sucessVeiw.forward(req, res);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				errorMsgs.add(e.getMessage());
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/frontend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}
 		
 	}
 

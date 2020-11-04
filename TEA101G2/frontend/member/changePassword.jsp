@@ -60,6 +60,7 @@
 							<label>Old password</label>
 							<input type="password" name="oldPassword" class="form-control" placeholder="密碼" pattern="^(?=.*\d)(?=.*[a-zA-Z]).{6,16}$" data-error="格式錯誤。" required="required">
 							<div class="help-block with-errors" style="color:#AE0000; font-family:Poppins, Helvetica, sans-serif"></div>
+							<div style="color:#AE0000; font-family:Poppins, Helvetica, sans-serif">${errorMsgs.oldPasswordVerify}</div>
 						</div>
 						<div class="form-group">
 							<label>New password</label>

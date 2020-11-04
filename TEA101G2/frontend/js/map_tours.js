@@ -9,162 +9,51 @@ $('#collapseMap').on('shown.bs.collapse', function(e){
 			};
 
 		})(Array.prototype);
-
+		
 		var
 		mapObject,
 		markers = [],
 		markersData = {
 			'Marker': [
 			{
-				type_point: 'Historic',
-				name: 'Open Bus',
-				location_latitude: 48.865633, 
-				location_longitude: 2.321236,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Open Bus',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
+				type_point: '會議室',
+				name: 'TESTA',
+				location_latitude: 25.033493, 
+				location_longitude: 121.563101,
+				map_image_url: 'http://localhost:8081/TEA101G2TEA1018/space/showonepicture?spaceId=SPACE00001',
+				rate: '4.5',
+				name_point: '大安小樹屋',
+				phone: '+ 0911-222333',
+				url_point: '../tour-detail.html'
 			},
 			{
-				type_point: 'Wolking',
-				name: 'Senna River Tour',
-				location_latitude: 48.854183,
-				location_longitude: 2.354808,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Senna River Tour',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
+				type_point: '親子活動!',
+				name: 'TESTB',
+				location_latitude: 25.034493,
+				location_longitude: 121.564101,
+				map_image_url: 'http://localhost:8081/TEA101G2TEA1018/space/showonepicture?spaceId=SPACE00002',
+				rate: '3.5',
+				name_point: '藝文空間活動場地',
+				phone: '+ 0922-222333',
+				url_point: '../tour-detail.html'
 			},
 			{
-				type_point: 'Museum',
-				name: 'Louvre',
-				location_latitude: 48.863893, 
-				location_longitude: 2.342348,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Louvre',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
+				type_point: '攝影棚',
+				name: 'TESTC',
+				location_latitude: 25.035493, 
+				location_longitude: 121.565101,
+				map_image_url: 'http://localhost:8081/TEA101G2TEA1018/space/showonepicture?spaceId=SPACE00003',
+				rate: '3.8',
+				name_point: '收多易共同工作空間',
+				phone: '+ 0933-222333',
+				url_point: '../tour-detail.html'
 			},
-			{
-				type_point: 'Museum',
-				name: 'Pompidou ',
-				location_latitude: 48.860642,
-				location_longitude: 2.352245,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Pompidou',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Walking',
-				name: 'Tour Eiffel',
-				location_latitude: 48.858370, 
-				location_longitude: 2.294481,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Tour Eiffel',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Walking',
-				name: 'Montparnasse',
-				location_latitude: 48.837273,
-				location_longitude: 2.335387,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Montparnasse',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Museum',
-				name: 'Beaubourg',
-				location_latitude: 48.860819, 
-				location_longitude: 2.354507,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Beaubourg',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Walking',
-				name: 'St. Germain des Prés',
-				location_latitude: 48.853798,
-				location_longitude: 2.333328,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'St. Germain des Prés',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Walking',
-				name: 'Trocadero',
-				location_latitude: 48.862880, 
-				location_longitude: 2.287205,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Trocadero',
-				get_directions_start_address: '',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Walking',
-				name: 'Champs-Élysées',
-				location_latitude: 48.865784,
-				location_longitude: 2.307314,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Champs-Élysées',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Historic',
-				name: 'Notre Dame',
-				location_latitude: 48.852729, 
-				location_longitude: 2.350564,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Notre Dame',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			},
-			{
-				type_point: 'Historic',
-				name: 'Madeleine',
-				location_latitude: 48.870587, 
-				location_longitude: 2.318943,
-				map_image_url: 'img/thumb_map_single_tour.jpg',
-				rate: 'Superb | 7.5',
-				name_point: 'Madeleine',
-				get_directions_start_address: '',
-				phone: '+3934245255',
-				url_point: 'tour-detail.html'
-			}
 			]
-
 		};
 
 			var mapOptions = {
-				zoom: 14,
-				center: new google.maps.LatLng(48.865633, 2.321236),
+				zoom: 16,
+				center: new google.maps.LatLng(25.033493, 121.564101),
 				mapTypeId: google.maps.MapTypeId.ROADMAP,
 
 				mapTypeControl: false,
@@ -453,7 +342,7 @@ $('#collapseMap').on('shown.bs.collapse', function(e){
 					marker = new google.maps.Marker({
 						position: new google.maps.LatLng(item.location_latitude, item.location_longitude),
 						map: mapObject,
-						icon: 'img/pins/' + key + '.png',
+						icon: '../frontend/img/pins/' + key + '.png',
 					});
 
 					if ('undefined' === typeof markers[key])
@@ -484,14 +373,13 @@ $('#collapseMap').on('shown.bs.collapse', function(e){
 			return new InfoBox({
 				content:
 				'<div class="marker_info" id="marker_info">' +
-				'<img src="' + item.map_image_url + '" alt=""/>' +
+				'<img src="' + item.map_image_url + '" alt="" width="240" height="140"/>' +
 				'<span>'+ 
 					'<span class="infobox_rate">'+ item.rate +'</span>' +
 					'<h3>'+ item.name_point +'</h3>' +
 				'<em>'+ item.type_point +'</em>' +
 				'<strong>'+ item.description_point +'</strong>' +
 				'<a href="'+ item.url_point + '" class="btn_infobox_detail"></a>' +
-				'<form action="http://maps.google.com/maps" method="get" target="_blank"><input name="saddr" value="'+ item.get_directions_start_address +'" type="hidden"><input type="hidden" name="daddr" value="'+ item.location_latitude +',' +item.location_longitude +'"><button type="submit" value="Get directions" class="btn_infobox_get_directions">Get directions</button></form>' +
 					'<a href="tel://'+ item.phone +'" class="btn_infobox_phone">'+ item.phone +'</a>' +
 					'</span>' +
 				'</div>',
@@ -499,7 +387,7 @@ $('#collapseMap').on('shown.bs.collapse', function(e){
 				maxWidth: 0,
 				pixelOffset: new google.maps.Size(10, 92),
 				closeBoxMargin: '',
-				closeBoxURL: "img/close_infobox.png",
+				closeBoxURL: "../frontend/img/close_infobox.png",
 				isHidden: false,
 				alignBottom: true,
 				pane: 'floatPane',

@@ -4,27 +4,23 @@
 <%@ page import="com.member.model.*"%>
 <%@ page import="com.memberComment.model.*"%>
 <%@ page import="java.util.*"%>
-<%
-	Base64.Encoder encode = Base64.getEncoder();
-%>
-<%
-	MemberVO userVO = (MemberVO) session.getAttribute("userVO");
-%>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <style>
 
 /* Button used to open the chat form - fixed at the bottom of the page */
 .open-button {
-  background-color: #555;
+  background-color: blue;
   color: white;
   border: none;
   cursor: pointer;
   opacity: 0.8;
   position: fixed;
-  bottom: 10px;
-  right: 80px;
-  width: 60px;
-  height: 60px;
+  bottom: 8px;
+  right: 78px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
 }
 
@@ -50,7 +46,7 @@
 			</div>
 			<!-- /Page Preload -->
 			<div id="logo">
-				<a href="index.html"> <!-- TODO <img src="img/logo_sticky.png" width="150" height="36" data-retina="true" alt=""> -->
+				<a href="<%=request.getContextPath()%>/frontend/home.jsp"><img src="<%=request.getContextPath()%>/frontend/image/logo.png" width="180" height="50" data-retina="true" />
 				</a>
 			</div>
 			<ul id="top_menu" style="margin-top: 8px">
@@ -65,19 +61,38 @@
 			</a>
 			<nav id="menu" class="main-menu">
 				<ul>
-					<li><span><a href="#">AAAAA</a></span></li>
-					<li><span><a href="#">BBBBB</a></span></li>
-					<li><span><a href="#">CCCCC</a></span></li>
-					<li><span><a href="#">DDDDD</a></span></li>
+					<li><span><a href="#0">場地</a></span>
+						<ul>
+							<li>
+								<span><a href="#0">場地管理</a></span>
+								<ul>
+									<li><a href="<%=request.getContextPath()%>/frontend/space/addSpace.jsp">新增場地</a></li>
+									<li><a href="<%=request.getContextPath()%>/frontend/space/memberSpace.jsp">我的場地</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><span><a href="#0">訂單</a></span>
+						<ul>
+							<li>
+								<span><a href="#0">訂單管理</a></span>
+								<ul>
+									<li><a href="<%=request.getContextPath()%>/frontend/ordermaster/selectAllOrderMaster.jsp">我的訂單</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><span><a href="#">常見問題</a></span></li>
+					<li><span><a href="<%=request.getContextPath()%>/frontend/formList/faq.jsp">客服表單</a></span></li>
 					<li><span><a href="#"> <img
-								src="data:image/png;base64,<%=encode.encodeToString(userVO.getMemberPhoto())%>"
+								src="<%=request.getContextPath()%>/memberPhoto/showpicture?memberId=${userVO.memberId}"
 								width="36" height="36"
 								style="margin-right: 110px; border-radius: 100%">
 						</a></span>
 						<ul>
 							<li><a
 								href="<%=request.getContextPath()%>/frontend/member/memberSetting.jsp"><i
-									class="fa fa-cog" style="margin-right: 5px"></i> Setting</a></li>
+									class="fa fa-cog" style="margin-right: 5px"></i> 設定</a></li>
 							<!-- Setting -->
 							<li>
 								<form method="post"
@@ -87,16 +102,16 @@
 									<input type="hidden" name="action" value="getOneMember">
 								</form> <a href="#"
 								onclick="document.getElementById('form_getOneMember').submit()"><i
-									class="fa fa-user-o" style="margin-right: 5px"></i> Profile</a>
+									class="fa fa-user-o" style="margin-right: 5px"></i> 個人頁面</a>
 							</li>
 
 							<!-- Profile -->
 							<li><a
 								href="<%=request.getContextPath()%>/frontend/memberFavorite/memberFavoriteList.jsp"><i
-									class="fa fa-heart" style="margin-right: 5px"></i> Favorite</a></li>
+									class="fa fa-heart" style="margin-right: 5px"></i> 我的收藏</a></li>
 							<!-- Favorite -->
 							<li><a href="<%=request.getContextPath()%>/LogoutHandler.do"><i
-									class="fa fa-sign-out" style="margin-right: 5px"></i> Logout</a></li>
+									class="fa fa-sign-out" style="margin-right: 5px"></i> 登出</a></li>
 							<!-- Logout -->
 						</ul></li>
 				</ul>
@@ -110,7 +125,7 @@
 			</div>
 			<!-- /Page Preload -->
 			<div id="logo">
-				<a href="index.html"> <!-- TODO <img src="img/logo_sticky.png" width="150" height="36" data-retina="true" alt=""> -->
+				<a href="<%=request.getContextPath()%>/frontend/home.jsp"><img src="<%=request.getContextPath()%>/frontend/image/logo.png" width=180" height="50" data-retina="true" />
 				</a>
 			</div>
 			<!-- /top_menu -->
@@ -123,13 +138,12 @@
 			</a>
 			<nav id="menu" class="main-menu">
 				<ul>
-					<li><span><a href="#0">AAAAA</a></span></li>
-					<li><span><a href="#0">BBBBB</a></span></li>
-					<li><span><a href="adventure.html">CCCCC</a></span></li>
-					<li><span><a href="#0">DDDDD</a></span></li>
-					<li><span><a
-							href="<%=request.getContextPath()%>/frontend/login.jsp"> <span
-								style="font-style: italic;">LogIn</span>
+<!-- 					<li><span><a href="#0">AAAAA</a></span></li> -->
+<!-- 					<li><span><a href="#0">BBBBB</a></span></li> -->
+<!-- 					<li><span><a href="adventure.html">CCCCC</a></span></li> -->
+<!-- 					<li><span><a href="#0">DDDDD</a></span></li> -->
+					<li><span><a href="<%=request.getContextPath()%>/frontend/login.jsp"> <span style="font-style: italic;">
+					登入</span>
 						</a></span></li>
 				</ul>
 			</nav>
@@ -138,13 +152,7 @@
 </c:choose>
 
 <%@ include file="/frontend/other/memberChat.jsp" %>
-<%@ include file="/frontend/other/memberOnlineList.jsp" %>
+<%@include file="/frontend/other/memberOnlineList.jsp"%>
 
-<button class="open-button" onclick="openChat();" style="z-index:10">Chat</button>
-<button class="open-online" style="z-index:10" onclick="openOnlineList()">OnlineList</button>
-
-
-
-
-
-
+<button class="open-button" id="openChat-button" onclick="openChat();" style="z-index:10">即時聊天</button>
+<%--<button class="open-online" style="z-index:10" onclick="openOnlineList()">OnlineList</button> --%>

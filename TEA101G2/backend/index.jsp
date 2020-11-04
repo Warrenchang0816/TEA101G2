@@ -23,7 +23,7 @@ pageContext.setAttribute("connectedSessions", connectedSessions);
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>後台首頁</title>
   
     
 </head>
@@ -44,6 +44,10 @@ pageContext.setAttribute("connectedSessions", connectedSessions);
       
 	  <!-- Icon Cards-->
       <div class="row">
+      
+        <div class="col-xl-3 col-sm-6 mb-3">
+        </div>
+      
         <div class="col-xl-3 col-sm-6 mb-3">
           <div class="card dashboard text-white bg-primary o-hidden h-100">
             <div class="card-body">
@@ -80,9 +84,11 @@ pageContext.setAttribute("connectedSessions", connectedSessions);
           </div>
         </div>
         
+        <div class="col-xl-3 col-sm-6 mb-3">
+        </div>
+        
 	</div>
 		
-
 
 	  
 

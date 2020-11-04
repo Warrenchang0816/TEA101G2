@@ -35,14 +35,11 @@ public class backendLogoutHandler extends HttpServlet {
 		
 		try {
 			if(session.getAttribute("loginEmp") != null) {
-//				System.out.println("YAYAYAYAY");
 				EmpVO loginEmp = (EmpVO)session.getAttribute("loginEmp");
 				EmpService empService = new EmpService();
-				empService.updateEmpOnline(loginEmp, "N");
 				session.invalidate();
 				res.sendRedirect(req.getContextPath() + "/backend/backendLogin.jsp");
 			}else {
-//				System.out.println("YAYAYAYAY222");
 				res.sendRedirect(req.getContextPath() + "/backend/backendLogin.jsp");
 			}
 			

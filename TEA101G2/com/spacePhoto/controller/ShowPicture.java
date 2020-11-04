@@ -4,6 +4,7 @@ import java.io.*;
 import java.sql.*;
 
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
@@ -12,24 +13,34 @@ import javax.sql.DataSource;
 @WebServlet("/space/showpicture")
 public class ShowPicture extends HttpServlet {
 	
-	private static final String driver = "oracle.jdbc.driver.OracleDriver";
-	private static final String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	private static final String userid = "TEA101G2";
-	private static final String passwd = "123456";
-	private static final String GET_PHOTO = "SELECT SPACE_PHOTO FROM SPACE_PHOTO WHERE SPACE_ID = ?";
+	//用DataSource連線
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource)ctx.lookup("java:comp/env/jdbc/TEA101G2");
+		}
+		catch(NamingException e){
+			e.printStackTrace();
+		}
+	}
+	
+	//用JDBC連線	
+//	private static final String driver = "oracle.jdbc.driver.OracleDriver";
+//	private static final String url = "jdbc:oracle:thin:@localhost:1521:XE";
+//	private static final String userid = "TEA101G2";
+//	private static final String passwd = "123456";
+	private static final String GET_PHOTO = "SELECT SPACE_PHOTO FROM SPACE_PHOTO WHERE SPACE_PHOTO_ID = ?";
 
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 		Connection con = null;
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
+			con = ds.getConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 		
 
 		res.setContentType("image/gif");
@@ -37,8 +48,8 @@ public class ShowPicture extends HttpServlet {
 
 		try {
 			PreparedStatement pstmt = con.prepareStatement(GET_PHOTO);
-			String spaceId = req.getParameter("spaceId").trim();
-			pstmt.setString(1, spaceId);
+			String spacePhotoId = req.getParameter("spacePhotoId").trim();
+			pstmt.setString(1, spacePhotoId);
 			ResultSet rs = pstmt.executeQuery();
 			
 
@@ -60,7 +71,7 @@ public class ShowPicture extends HttpServlet {
 			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
-			System.out.println(req.getParameter("spaceId").trim());
+			System.out.println(req.getParameter("spacePhotoId").trim());
 		}
 	}
 

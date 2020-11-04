@@ -23,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>退費訂單</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
@@ -121,7 +121,7 @@
 			 	<input type="hidden" name="action"	value="backend_SelectOneMember"></FORM>
 		</td>
 		<td>${orderMasterVO.orderAmount}</td>
-		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "交易暫停" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費"}</td>
+		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "申請退費" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費完成"}</td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/OrderMasterServletB" style="margin-bottom: 0px;">
 			    <button type="submit" class="btn btn-link" onclick="javascript:return confirm('確認完成?');">
@@ -211,7 +211,7 @@
 			 	<input type="hidden" name="action"	value="backend_SelectOneMember"></FORM>
 		</td>
 		<td>${orderMasterVO.orderAmount}</td>
-		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "交易暫停" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費"}</td>
+		<td>${orderMasterVO.orderStatus.equals("T")? "交易成立(未付款)" : orderMasterVO.orderStatus.equals("F")? "交易成立(已付款)" : orderMasterVO.orderStatus.equals("P")? "交易暫停" : orderMasterVO.orderStatus.equals("C")? "交易取消" : "退費完成"}</td>
 		<td>${orderMasterVO.orderStatusEmp}</td>
 	
 </c:forEach>

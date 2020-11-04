@@ -403,7 +403,6 @@ public class SpaceServletB extends HttpServlet {
 					addMessage.setFormListType("message");
 					addMessage.setFormListTitle("場地["+spaceName+"] 上架成功!");
 					addMessage.setFormListContext("親愛的會員"+memberName+"，您好<br />您申請的場地已通過審核，感謝您的耐心等候。<br />場地名稱: " + spaceName + "，場地類型: " + spaceType + "，上架日期: " + spaceOnsaleDate + "，下架日期: " + spaceOffsaleDate);
-					addMessage.setFormListFile(formListFile);
 					addMessage.setFormListStatus("M");
 					addMessage.setFormListSolu(memberId);
 				}else if("F".equals(spaceStatus)) {
@@ -413,7 +412,6 @@ public class SpaceServletB extends HttpServlet {
 					addMessage.setFormListType("message");
 					addMessage.setFormListTitle("場地["+spaceName+"] 下架通知");
 					addMessage.setFormListContext("親愛的會員"+memberName+"，您好<br />您提供的場地已變更為下架，有任何問題都可以聯絡我們。<br />場地名稱: " + spaceName + "，場地類型: " + spaceType + "，下架日期: " + spaceOffsaleDate + "，原因: " + spaceStatusComm);
-					addMessage.setFormListFile(formListFile);
 					addMessage.setFormListStatus("M");
 					addMessage.setFormListSolu(memberId);
 				}else if("B".equals(spaceStatus)) {
@@ -423,7 +421,6 @@ public class SpaceServletB extends HttpServlet {
 					addMessage.setFormListType("message");
 					addMessage.setFormListTitle("場地["+spaceName+"] 觀察通知");
 					addMessage.setFormListContext("親愛的會員"+memberName+"，您好<br />您提供的場地已被加入觀察名單，有任何問題都可以聯絡我們。<br />場地名稱: " + spaceName + "，場地類型: " + spaceType + "，變更日期: " + spaceOffsaleDate + "，原因: " + spaceStatusComm);
-					addMessage.setFormListFile(formListFile);
 					addMessage.setFormListStatus("M");
 					addMessage.setFormListSolu(memberId);
 				}

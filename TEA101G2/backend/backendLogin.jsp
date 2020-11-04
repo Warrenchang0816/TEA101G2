@@ -54,7 +54,7 @@
 	<div id="login">
 		<aside>
 			<figure>
-				<a href="index.html"><img src="<%=request.getContextPath()%>/backend/img/logo_sticky.png" width="155" height="36" data-retina="true" alt="" class="logo_sticky"></a>
+				<img src="<%=request.getContextPath()%>/frontend/image/logo.png" width="180" height="50" data-retina="true" />
 			</figure>
 			
 			
@@ -73,15 +73,6 @@
 					<span style="color:red"><%=  (errorMsgs ==null)? "" : (empPassword.equals("") && empAccount.equals(""))? "密碼請勿空白" : "密碼錯誤"%></span>
 					<i class="icon_lock_alt"></i>
 				</div>
-				<div class="clearfix add_bottom_30">
-					<div class="checkboxes float-left">
-						<label class="container_check">Remember me
-						  <input type="checkbox">
-						  <span class="checkmark"></span>
-						</label>
-					</div>
-					<div class="float-right mt-1"><a id="forgot" href="javascript:void(0);">Forgot Password?</a></div>
-				</div>
 				
 				<button name="login" type="submit" class="btn_1 rounded full-width">登入</button>
 				<a class="btn_1 rounded full-width" href='<%=request.getContextPath()%>/backend/backendLogin.jsp'>取消</a>
@@ -89,7 +80,7 @@
 			</form>
 			
 			
-			<div class="copy">© 2018 Panagea</div>
+			<div class="copy">© 2020 BigZoo</div>
 		</aside>
 	</div>
 	<!-- /login -->

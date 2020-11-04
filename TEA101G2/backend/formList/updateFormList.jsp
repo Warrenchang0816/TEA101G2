@@ -23,7 +23,7 @@ java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>更新表單</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">
@@ -119,7 +119,7 @@ java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
 							<div class="form-group">
 								<label>表單圖片</label>
 								<div style="height:300px;" class="form-control" placeholder="Personal info">
-									<img src="<%=(formListVO.getFormListFile() == null)? application.getRealPath("/backend/img/BlobTest3") : "data:image/png;base64," + encode.encodeToString(formListVO.getFormListFile())%>" id="perview"/>
+									<%-- <img src="<%=(formListVO.getFormListFile() == null)? application.getRealPath("/backend/img/BlobTest3") : "data:image/png;base64," + encode.encodeToString(formListVO.getFormListFile())%>" id="perview"/> --%>
 								</div>
 							</div>
 						</div>

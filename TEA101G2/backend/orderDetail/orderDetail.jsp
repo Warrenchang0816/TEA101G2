@@ -25,7 +25,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>訂單明細</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
@@ -61,26 +61,20 @@
     <div class="container-fluid">
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/orderMaster/OrderMaster.jsp">管理訂單</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a href="<%=request.getContextPath()%>/backend/orderMaster/selectOrderMaster.jsp">搜尋訂單</a>
-        </li>
-        <li class="breadcrumb-item active"><%= orderMasterId%></li>
+        <li class="breadcrumb-item active">訂單編號:<%= orderMasterId%></li>
       </ol>
       
       
 		<!-- Example DataTables Card-->
       <div class="card mb-3">
         <div class="card-header">
-          <i class="fa fa-table"></i>  <%= orderMasterId%>清單</div>
+          <i class="fa fa-table"></i>  訂單明細</div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
 				<tr>
-					<th>訂單明細</th>
+					<th>明細</th>
 					<th>租借開始時間</th>
 					<th>租借結束時間</th>
 					<th>時段金額</th>
@@ -89,7 +83,7 @@
               </thead>
               <tfoot>
 				<tr>
-					<th>訂單明細</th>
+					<th>明細</th>
 					<th>租借開始時間</th>
 					<th>租借結束時間</th>
 					<th>時段金額</th>
@@ -97,7 +91,7 @@
 				</tr>
               </tfoot>
 
-<c:forEach var="orderDetailVO" items="${list}" begin="0" end="<%=list.size()%>">
+<c:forEach var="orderDetailVO" items="${list}" begin="0" end="<%=list.size()%>" varStatus="count">
 		<jsp:useBean id="orderDetailServ" scope="page" class="com.orderDetail.model.OrderDetailServiceB" />
 		<jsp:useBean id="spaceDetailServ" scope="page" class="com.spaceDetail.model.SpaceDetailServiceB" />
 		<jsp:useBean id="spaceServ" scope="page" class="com.space.model.SpaceServiceB" />
@@ -116,7 +110,7 @@
 			String spaceName = spaceVO.getSpaceName();
 		%>
 	<tr>
-		<td>${orderDetailVO.orderDetailId}</td>
+		<td>${count.count}</td>
 		<td>${orderDetailVO.rentStartTime}</td>
 		<td>${orderDetailVO.rentEndTime}</td>
 		<td><%=SpaceDetail.getSpaceDetailCharge()%></td>

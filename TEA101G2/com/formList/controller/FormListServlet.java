@@ -5,8 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,6 +23,8 @@ import javax.servlet.http.Part;
 
 import com.formList.model.FormListService;
 import com.formList.model.FormListVO;
+import com.formListFile.model.FormListFileService;
+import com.formListFile.model.FormListFileVO;
 import com.member.model.MemberService;
 import com.member.model.MemberServiceB;
 import com.member.model.MemberVO;
@@ -70,35 +76,35 @@ public class FormListServlet extends HttpServlet {
 				String formListContext = req.getParameter("formListContext").trim();
 				if(formListContext == null || formListContext.isEmpty()) errorMsgs.add("客服表單內容: 請勿空白");
 				
-				Part part = req.getPart("formListFile");
-				InputStream in = null;
-				byte[] formListFile = null;
-				String filename = getFileNameFromPart(part);
-				if (filename == null || filename.isEmpty()) {
-//					if (part == null) {
-					File file = new File(getServletContext().getRealPath("/") + "/backend/img/BlobTest3.jpg");
-					FileInputStream fis = new FileInputStream(file);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-					byte[] buffer = new byte[8192];
-					int i;
-					while ((i = fis.read(buffer)) != -1) {
-						baos.write(buffer, 0, i);
-					}
-					formListFile = baos.toByteArray();
-					baos.close();
-					fis.close();
-				} else {
-					in = part.getInputStream();
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					byte[] buffer = new byte[8192];
-					int i;
-					while ((i = in.read(buffer)) != -1) {
-						baos.write(buffer, 0, i);
-					}
-					formListFile = baos.toByteArray();
-					baos.close();
-					in.close();
-				}
+//				Part part = req.getPart("formListFile");
+//				InputStream in = null;
+//				byte[] formListFile = null;
+//				String filename = getFileNameFromPart(part);
+//				if (filename == null || filename.isEmpty()) {
+////					if (part == null) {
+//					File file = new File(getServletContext().getRealPath("/") + "/backend/img/BlobTest3.jpg");
+//					FileInputStream fis = new FileInputStream(file);
+//					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+//					byte[] buffer = new byte[8192];
+//					int i;
+//					while ((i = fis.read(buffer)) != -1) {
+//						baos.write(buffer, 0, i);
+//					}
+//					formListFile = baos.toByteArray();
+//					baos.close();
+//					fis.close();
+//				} else {
+//					in = part.getInputStream();
+//					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//					byte[] buffer = new byte[8192];
+//					int i;
+//					while ((i = in.read(buffer)) != -1) {
+//						baos.write(buffer, 0, i);
+//					}
+//					formListFile = baos.toByteArray();
+//					baos.close();
+//					in.close();
+//				}
 				
 				String formListStatus = req.getParameter("formListStatus").trim();
 				if(formListStatus == null || formListStatus.isEmpty()) errorMsgs.add("表單狀態: 請勿空白");
@@ -110,7 +116,7 @@ public class FormListServlet extends HttpServlet {
 				addFormList.setFormListType(formListType);
 				addFormList.setFormListTitle(formListTitle);
 				addFormList.setFormListContext(formListContext);
-				addFormList.setFormListFile(formListFile);
+//				addFormList.setFormListFile(formListFile);
 				addFormList.setFormListStatus(formListStatus);
 				
 				
@@ -241,7 +247,7 @@ public class FormListServlet extends HttpServlet {
 				String formListType = updateFormList.getFormListType();
 				String formListTitle = updateFormList.getFormListTitle();
 				String formListContext = updateFormList.getFormListContext();
-				byte[] formListFile = updateFormList.getFormListFile();
+//				byte[] formListFile = updateFormList.getFormListFile();
 				
 				String formListStatus = req.getParameter("formListStatus").trim();
 				if(formListStatus == null || formListStatus.isEmpty()) errorMsgs.add("表單狀態: 請勿空白");
@@ -264,7 +270,7 @@ public class FormListServlet extends HttpServlet {
 				updateFormList.setFormListType(formListType);
 				updateFormList.setFormListTitle(formListTitle);
 				updateFormList.setFormListContext(formListContext);
-				updateFormList.setFormListFile(formListFile);
+//				updateFormList.setFormListFile(formListFile);
 				updateFormList.setFormListStatus(formListStatus);
 				updateFormList.setFormListSolu(formListSolu);
 				updateFormList.setFormListSoluDate(formListSoluDate);
@@ -286,7 +292,7 @@ public class FormListServlet extends HttpServlet {
 					addMessage.setFormListType("message");
 					addMessage.setFormListTitle("客服表單["+formListType+"]: "+formListTitle+"結案通知");
 					addMessage.setFormListContext("親愛的會員"+mName+"，您好<br />您日前申請的客服表單已由客服人員處理結案，感謝您的耐心等候，有任何問題都可以聯絡我們，感謝。<br />處理流程: " + formListSolu);
-					addMessage.setFormListFile(formListFile);
+//					addMessage.setFormListFile(formListFile);
 					addMessage.setFormListStatus("M");
 					addMessage.setFormListSolu(memberId);
 				}
@@ -344,6 +350,7 @@ public class FormListServlet extends HttpServlet {
 				}
 				
 				req.setAttribute("selectOneMail", selectOneMail);
+				req.setAttribute("formListId", formListId);
 
 				String url = "/backend/mail/mail.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
@@ -375,43 +382,86 @@ public class FormListServlet extends HttpServlet {
 				
 				String formListContext = req.getParameter("formListContext").trim();
 				
-				Part part = req.getPart("formListFile");
-				InputStream in = null;
-				byte[] formListFile = null;
-				String filename = getFileNameFromPart(part);
+				
+				List<FormListFileVO> formListFileList = new ArrayList<FormListFileVO>();
+				Part partCheck = req.getPart("formListFile");
+				String filename = getFileNameFromPart(partCheck);
 				if (filename == null || filename.isEmpty()) {
-					formListFile = null;
-				} else {
-					in = part.getInputStream();
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					byte[] buffer = new byte[8192];
-					int i;
-					while ((i = in.read(buffer)) != -1) {
-						baos.write(buffer, 0, i);
+					formListFileList = null;
+				}else {
+					Collection<Part> parts = req.getParts();
+					List<Part> allPartlist = new ArrayList<Part>();
+					Part[] allPartArray = parts.toArray(new Part[parts.size()]);
+					for(Part p: allPartArray) {
+						System.out.println("allPartArrayname: " + p.getName());
+						System.out.println("allPartArraysubmittedFileName: " + p.getSubmittedFileName());
+						allPartlist.add(p);
 					}
-					formListFile = baos.toByteArray();
-					baos.close();
-					in.close();
+					
+					List<Part> fileList = allPartlist.stream().filter(ap -> ap.getSubmittedFileName() != null).collect(Collectors.toList());
+					
+					for(Part file: fileList) {
+						System.out.println("fileListname: " + file.getName());
+						System.out.println("fileListsubmittedFileName: " + file.getSubmittedFileName());
+						
+						InputStream in = null;
+						FormListFileVO flf = new FormListFileVO();
+						in = file.getInputStream();
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						byte[] buffer = new byte[8192];
+						int i;
+						while ((i = in.read(buffer)) != -1) {
+							baos.write(buffer, 0, i);
+						}
+						
+						byte[] formListFile = baos.toByteArray();
+						flf.setFormListFile(formListFile);
+						formListFileList.add(flf);
+						baos.close();
+						in.close();
+					}
 				}
+				
+//				Collection<Part> parts = req.getParts();
+//				List<Part> allPartlist = new ArrayList<Part>();
+//				Part[] allPartArray = parts.toArray(new Part[parts.size()]);
+//				for(Part p: allPartArray) {
+//					System.out.println("name: " + p.getName());
+//					System.out.println("submittedFileName: " + p.getSubmittedFileName());
+//					allPartlist.add(p);
+//				}
+//				
+//				
+//				List<Part> fileList = allPartlist.stream().filter(apl -> apl.getSubmittedFileName().contains(".")).collect(Collectors.toList());
+//				List<FormListFileVO> formListFileList = new ArrayList<FormListFileVO>();
+//				for(Part p: fileList) {
+//					System.out.println("name: " + p.getName());
+//					System.out.println("submittedFileName: " + p.getSubmittedFileName());
+//					InputStream in = null;
+//					byte[] formListFile = null;
+//					String filename = getFileNameFromPart(p);
+//					if (filename == null || filename.isEmpty()) {
+//						formListFile = null;
+//						formListFileList = null;
+//					} else {
+//						FormListFileVO flf = new FormListFileVO();
+//						in = p.getInputStream();
+//						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//						byte[] buffer = new byte[8192];
+//						int i;
+//						while ((i = in.read(buffer)) != -1) {
+//							baos.write(buffer, 0, i);
+//						}
+//						formListFile = baos.toByteArray();
+//						flf.setFormListFile(formListFile);
+//						formListFileList.add(flf);
+//						baos.close();
+//						in.close();
+//					}
+//				}
+				
 				
 				FormListVO sendMail = new FormListVO();
-				sendMail.setMemberId("MEM00001"); //固定
-				sendMail.setEmpId(empId);
-				sendMail.setFormListCreateDate(new java.sql.Date(System.currentTimeMillis()));
-				sendMail.setFormListType("mail");
-				sendMail.setFormListTitle(formListTitle);
-				sendMail.setFormListContext(formListContext);
-				sendMail.setFormListFile(formListFile);
-				sendMail.setFormListStatus("M");
-				sendMail.setFormListSolu(formListSolu);
-				
-				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("sendMail", sendMail);
-					RequestDispatcher failureView = req.getRequestDispatcher("/backend/mail/sendMail.jsp");
-					failureView.forward(req, res);
-					return;
-				}
-				
 				if(empId.contains(";")) {
 					String[] idArray = empId.split(";");
 					for(String id: idArray) {
@@ -422,12 +472,16 @@ public class FormListServlet extends HttpServlet {
 						sendMail.setFormListType("mail");
 						sendMail.setFormListTitle(formListTitle);
 						sendMail.setFormListContext(formListContext);
-						sendMail.setFormListFile(formListFile);
+//						sendMail.setFormListFile(formListFile);
 						sendMail.setFormListStatus("M");
 						sendMail.setFormListSolu(formListSolu);
 						
 						FormListService formListServ = new FormListService();
-						sendMail = formListServ.addFormList(sendMail);
+						if(formListFileList == null) {
+							formListServ.addFormList(sendMail);
+						}else {
+							formListServ.addFormListAndFile(sendMail, formListFileList);
+						}
 					}
 				}else {
 					sendMail = new FormListVO();
@@ -437,12 +491,16 @@ public class FormListServlet extends HttpServlet {
 					sendMail.setFormListType("mail");
 					sendMail.setFormListTitle(formListTitle);
 					sendMail.setFormListContext(formListContext);
-					sendMail.setFormListFile(formListFile);
+//					sendMail.setFormListFile(formListFile);
 					sendMail.setFormListStatus("M");
 					sendMail.setFormListSolu(formListSolu);
 					
 					FormListService formListServ = new FormListService();
-					sendMail = formListServ.addFormList(sendMail);
+					if(formListFileList == null) {
+						formListServ.addFormList(sendMail);
+					}else {
+						formListServ.addFormListAndFile(sendMail, formListFileList);
+					}
 				}
 
 				String url = "/backend/mail/sendBox.jsp";
@@ -476,7 +534,7 @@ public class FormListServlet extends HttpServlet {
 					updateFormList.setFormListType(formListVO.getFormListType());
 					updateFormList.setFormListTitle(formListVO.getFormListTitle());
 					updateFormList.setFormListContext(formListVO.getFormListContext());
-					updateFormList.setFormListFile(formListVO.getFormListFile());
+//					updateFormList.setFormListFile(formListVO.getFormListFile());
 					updateFormList.setFormListStatus("trash");
 					updateFormList.setFormListSolu(formListVO.getFormListSolu());
 					updateFormList.setFormListSoluDate(formListVO.getFormListSoluDate());
@@ -571,13 +629,15 @@ public class FormListServlet extends HttpServlet {
 				String formListContextforMessage = req.getParameter("formListContext").trim();
 				String formListContext = req.getParameter("formListContext").trim();
 				if(formListContext == null || formListContext.isEmpty()) errorMsgs.add("客服表單內容: 請勿空白");
-				 else formListContext = contactPhone + ";" + contactEmail + ";" + req.getParameter("formListContext").trim(); 
+				 else if(contactPhone != null || contactEmail != null) formListContext = contactPhone + ";" + contactEmail + ";" + req.getParameter("formListContext").trim(); 
+				 else formListContext = req.getParameter("formListContext").trim(); 
 				
 				System.out.println(formListContext);
 				
 				Part part = req.getPart("formListFile");
 				InputStream in = null;
 				byte[] formListFile = null;
+				List<FormListFileVO> fileList = new ArrayList<FormListFileVO>();
 				String filename = getFileNameFromPart(part);
 				if (filename == null || filename.isEmpty()) {
 //					File file = new File(getServletContext().getRealPath("/") + "/backend/img/BlobTest3.jpg");
@@ -592,7 +652,9 @@ public class FormListServlet extends HttpServlet {
 //					baos.close();
 //					fis.close();
 					formListFile = null;
+					fileList = null;
 				} else {
+					FormListFileVO formListFileVO = new FormListFileVO();
 					in = part.getInputStream();
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					byte[] buffer = new byte[8192];
@@ -601,6 +663,8 @@ public class FormListServlet extends HttpServlet {
 						baos.write(buffer, 0, i);
 					}
 					formListFile = baos.toByteArray();
+					formListFileVO.setFormListFile(formListFile);
+					fileList.add(formListFileVO);
 					baos.close();
 					in.close();
 				}
@@ -613,7 +677,23 @@ public class FormListServlet extends HttpServlet {
 				addFormList.setFormListTitle(formListTitle);
 				addFormList.setFormListContext(formListContext);
 				addFormList.setFormListStatus("undo");
-				addFormList.setFormListFile(formListFile);
+//				addFormList.setFormListFile(formListFile);
+				FormListFileVO addFormListFile = new FormListFileVO();
+				
+				
+				if (!errorMsgs.isEmpty()) {
+					req.setAttribute("addFormList", addFormList);
+					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/formList/addFormList.jsp");
+					failureView.forward(req, res);
+					return;
+				}
+
+				FormListService formListServ = new FormListService();
+				if(filename == null || filename.isEmpty()) {
+					formListServ.addFormList(addFormList);
+				}else {
+					formListServ.addFormListAndFile(addFormList, fileList);
+				}
 				
 				MemberServiceB msb = new MemberServiceB();
 				MemberVO m = msb.selectOneMember(memberId);
@@ -626,6 +706,7 @@ public class FormListServlet extends HttpServlet {
 //				FORM_SOLU----收件會員
 //				FORM_STATUS----'R':已讀,'M':未讀
 				
+				System.out.println("FUCKMMMMMM");
 				FormListVO addMessage = new FormListVO();
 				addMessage.setMemberId("MEM00001");
 				addMessage.setEmpId("EMP00001");
@@ -633,23 +714,13 @@ public class FormListServlet extends HttpServlet {
 				addMessage.setFormListType("message");
 				addMessage.setFormListTitle("客服表單["+formListType+"]: "+formListTitle+"提交成功");
 				addMessage.setFormListContext("親愛的會員"+mName+"，您好<br />您申請的客服表單已成功提交，目前客服人員處理中，請耐心等候回覆，感謝。<br />表單內容: " + formListContextforMessage);
-				addMessage.setFormListFile(formListFile);
+//				addMessage.setFormListFile(formListFile);
 				addMessage.setFormListStatus("M");
 				addMessage.setFormListSolu(memberId);
-				
-				
-				if (!errorMsgs.isEmpty()) {
-					req.setAttribute("addFormList", addFormList);
-					RequestDispatcher failureView = req.getRequestDispatcher("/frontend/formList/addFormList.jsp");
-					failureView.forward(req, res);
-					return;
-				}
-
-				FormListService formListServ = new FormListService();
-				addFormList = formListServ.addFormList(addFormList);
+				System.out.println("FUCKMMMMMM22222");
 				formListServ.addFormList(addMessage);
-				
-				String url = "/frontend/formList/faq.jsp";
+				System.out.println("FUCKMMMMMM3333");
+				String url = "/frontend/formList/messageBox.jsp";
 				RequestDispatcher sucessVeiw = req.getRequestDispatcher(url);
 				sucessVeiw.forward(req, res);
 				
@@ -661,7 +732,19 @@ public class FormListServlet extends HttpServlet {
 			}
 		}
 		
-		
+		if ("readMessage".equals(action)) {
+			try {
+				String formListId = req.getParameter("formListId");
+				
+				FormListService fls = new FormListService();
+				fls.readMessage(formListId);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				RequestDispatcher exceptionView = req.getRequestDispatcher("/backend/error.jsp");
+				exceptionView.forward(req, res);
+			}
+		}	
 		
 		
 	}

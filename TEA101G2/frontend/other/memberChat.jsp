@@ -30,8 +30,9 @@ pageContext.setAttribute("loginMember", loginMember);
   position: fixed;
   bottom: 80px;
   right: 15px;
-  border: 3px solid #f1f1f1;
+  border: 3px solid steelblue;
   z-index: 9;
+  border-radius: 10px;
 }
 
 /* Add styles to the form container */
@@ -39,7 +40,9 @@ pageContext.setAttribute("loginMember", loginMember);
   max-width: 300px;
   padding: 10px;
   background-color: white;
-  height: 200px
+  height: 200px;
+  border-radius: 10px;
+  z-index: 9;
 }
 
 /* Full-width textarea */
@@ -51,12 +54,14 @@ pageContext.setAttribute("loginMember", loginMember);
   background: #f1f1f1;
   resize: none;
   min-height: 200px;
+  z-index: 9;
 }
 
 /* When the textarea gets focus, do something */
 .form-container textarea:focus {
   background-color: #ddd;
   outline: none;
+  z-index: 9;
 }
 
 /* Set a style for the submit/send button */
@@ -65,12 +70,14 @@ pageContext.setAttribute("loginMember", loginMember);
   cursor: pointer;
   margin-bottom:10px;
   opacity: 0.8;
+  z-index: 9;
   
 }
 
 /* Add a red background color to the cancel button */
 .form-container .cancel {
   background-color: red;
+  z-index: 9;
 }
 
 /* Add some hover effects to buttons */
@@ -80,17 +87,19 @@ pageContext.setAttribute("loginMember", loginMember);
 
 
 .message-area {
-    height: 200px;
+    height: 220px;
     resize: none;
     box-sizing: border-box;
     overflow: auto;
     background-color: #ffffff;
+    z-index: 9;
 }
 
 .panel {
 	border: 2px solid #0078ae;
 	border-radius: 5px;
 	bottom :0%;
+	z-index: 9;
 }
 
 
@@ -99,6 +108,7 @@ h1.chat {
 	font-size: 1.0em;
 	padding: 5px;
 	margin: 5px;
+	z-index: 9;
 }
 
 #area {
@@ -109,6 +119,7 @@ h1.chat {
  
     margin-top: 0px;
     margin-bottom: 0px;
+    z-index: 9;
 }
 
 .message {
@@ -117,6 +128,7 @@ h1.chat {
   margin-top: 5px;
   margin-bottom: 5px;
   display: inline-block;
+  z-index: 9;
 }
 
 .messages {
@@ -125,10 +137,12 @@ h1.chat {
   margin-top: 5px;
   margin-bottom: 5px;
   display: inline-block;
+  z-index: 9;
 }
 
 .friend {
   align-items: flex-start;
+  z-index: 9;
 }
 
 .friend .message{
@@ -136,6 +150,7 @@ h1.chat {
   background-color: #eee;
   position: relative;
   left: -10px;
+  z-index: 9;
 }
 
 .friend .message.last:before {
@@ -148,6 +163,7 @@ h1.chat {
   width: 20px;
   background: #eee;
   border-bottom-right-radius: 15px;
+  z-index: 9;
 }
 .friend .message.last:after {
   content: "";
@@ -159,28 +175,41 @@ h1.chat {
   height: 20px;
   background: white;
   border-bottom-right-radius: 10px;
+  z-index: 9;
 }
 
 .me {
   align-items: flex-end;
+  z-index: 9;
   }
 
 .me .message {
   color: white;
-  margin-left: 20%;
   float: left;
   background: linear-gradient(to bottom, #00D0EA 0%, #0085D1 100%);
   background-attachment: fixed;
   position: relative;
   left: 5%;
   float: right;
+  z-index: 9;
 }
 
-.time{
-    font-size: 0.01em;
-	position: relative;
-	left: 5%;
-	float: right;
+.friend .time{
+    margin-right: 20px;
+    font-weight: bold;
+    font-size: 0.8em;
+    position: relative;
+    top: 0px;
+    left: 0px;
+}
+
+.me .time{
+    margin-right: 20px;
+    font-weight: bold;
+    font-size: 0.8em;
+    position: relative;
+    top: 0px;
+    left: 140px;
 }
 
 .me .message.last:before {
@@ -194,6 +223,7 @@ h1.chat {
   background: linear-gradient(to bottom, #00D0EA 0%, #0085D1 100%);
   background-attachment: fixed;
   border-bottom-left-radius: 15px;
+  z-index: 9;
 }
 
 .me .message.last:after {
@@ -206,6 +236,7 @@ h1.chat {
   height: 20px;
   background: white;
   border-bottom-left-radius: 10px;
+  z-index: 9;
 }
 
 #closebtn{
@@ -214,7 +245,8 @@ h1.chat {
     top: 0px;
     /*設定重疊時的前後,數字大在前*/
     z-index: 2;
-
+	z-index: 9;
+	border-radius: 50%;
 }
 
 
@@ -224,22 +256,20 @@ h1.chat {
 </head>
 
 <body>
-<div class="chat-popup" id="myForm" style="height: 350px; background-color: white;">
-  <div class="form-container">
-    <h1 class="chat">${loginMember.memberName}</h1>
-   	<label for="conv"><b>To: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></label>
-   	<select id="receiver" size="1" class="receiver">
+<div class="chat-popup" id="myForm" style="height: 350px; background-color: aliceblue; border: 3px solid steelblue;">
+  <div class="form-container" style="background-color: aliceblue;">
+    <h1 class="chat">${loginMember.memberName}
+   	<label for="conv"><b>給: &nbsp;&nbsp;</b></label>
+   	<select id="receiver" size="1" class="receiver"></h1>
 	</select>
     <%-- <h3 id="statusOutput" class="statusOutput"></h3> --%>
-	<div id="messagesArea" class="panel message-area" ></div>
-	<div class="panel input-area">
-		<input id="message" class="text-field" type="text" placeholder="Message" onkeydown="if (event.keyCode == 13) sendChatMessage();" /> 
-		<button type="submit" id="sendMessage" class="btn btn-link" onclick="sendChatMessage();">
+	<div id="messagesArea" class="panel message-area" style="margin-top: 10px; height: 240px;"></div>
+		<input id="message" class="text-field" style="width: 220px;" type="text" placeholder="傳訊息" onkeydown="if (event.keyCode == 13) sendChatMessage();" /> 
+		<button type="submit" id="sendMessage" class="btn btn-link" style="margin-bottom: 5px;margin-top: 5px;padding-left: 0px;padding-right: 0px;" onclick="sendChatMessage();">
 			<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 			  <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
 			</svg>
 		</button> 
-	</div>
 	 <button name="delete" type="submit" class="btn btn-link" id="closebtn" onclick="closeForm();">
 	 	<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 			<path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
@@ -268,6 +298,7 @@ h1.chat {
 		  document.getElementById("myForm").style.display = "block";
 		  
 		  var friend = objButton.value;
+		  console.log("friend:" + friend)
 		  console.log("clickToChat11111111")
 		  $.when($.ajax({
 			    type: 'POST',
@@ -355,6 +386,7 @@ h1.chat {
 								// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
 								historyData.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
 								historyData.sender === self ? div.className += 'me message last' : div.className += 'friend message last';
+								jsonObj.sender === self ? span.className += 'me time' : span.className += 'friend time';
 								ul.appendChild(li);
 								li.appendChild(div);
 								li.appendChild(span);
@@ -364,6 +396,7 @@ h1.chat {
 							}
 							messagesArea.scrollTop = messagesArea.scrollHeight;
 						} else if ("chat" === jsonObj.type && friend === jsonObj.sender && self === jsonObj.receiver) {
+							console.log("CHATFUCKYAYAYA");
 							var currentdate = new Date(); 
 							var datetime = currentdate.getHours()  + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 							var li = document.createElement('li');
@@ -372,7 +405,7 @@ h1.chat {
 							div.className  = "message last";
 							var newContent = jsonObj.sender === self ? document.createTextNode('我: ' + jsonObj.message) : document.createTextNode(data.map[jsonObj.sender] + ': ' + jsonObj.message);
 							jsonObj.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
-							console.log(li);
+							jsonObj.sender === self ? span.className += 'me time' : span.className += 'friend time';
 							document.getElementById("area").appendChild(li);
 							li.appendChild(div);
 							div.appendChild(newContent);
@@ -434,7 +467,7 @@ h1.chat {
 				div.className  = "message last";
 				var newContent = document.createTextNode('我: ' + jsonObj.message);
 				li.className += 'me messages';
-				span.className += 'time';
+				span.className += 'me time';
 				document.getElementById("area").appendChild(li);
 				li.appendChild(div);
 				div.appendChild(newContent);
@@ -498,6 +531,7 @@ h1.chat {
 							// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
 							historyData.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
 							historyData.sender === self ? div.className += 'me message last' : div.className += 'friend message last';
+							jsonObj.sender === self ? span.className += 'me time' : span.className += 'friend time';
 							ul.appendChild(li);
 							li.appendChild(div);
 							div.appendChild(newContent);
@@ -515,6 +549,7 @@ h1.chat {
 						div.className  = "message last";
 						var newContent = jsonObj.sender === self ? document.createTextNode('我: ' + jsonObj.message) : document.createTextNode(optionName + ': ' + jsonObj.message);
 						jsonObj.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
+						jsonObj.sender === self ? span.className += 'me time' : span.className += 'friend time';
 						document.getElementById("area").appendChild(li);
 						li.appendChild(div);
 						div.appendChild(newContent);
@@ -639,6 +674,7 @@ h1.chat {
 									// 根據發送者是自己還是對方來給予不同的class名, 以達到訊息左右區分
 									historyData.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
 									historyData.sender === self ? div.className += 'me message last' : div.className += 'friend message last';
+									jsonObj.sender === self ? span.className += 'me time' : span.className += 'friend time';
 									ul.appendChild(li);
 									li.appendChild(div);
 									li.appendChild(span);
@@ -667,6 +703,7 @@ h1.chat {
 								div.className  = "message last";
 								var newContent = jsonObj.sender === self ? document.createTextNode('我: ' + jsonObj.message) : document.createTextNode(data.map[jsonObj.sender] + ': ' + jsonObj.message);
 								jsonObj.sender === self ? li.className += 'me messages' : li.className += 'friend messages';
+								jsonObj.sender === self ? span.className += 'me time' : span.className += 'friend time';
 								console.log(li);
 								document.getElementById("area").appendChild(li);
 								li.appendChild(div);

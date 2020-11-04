@@ -24,7 +24,7 @@
 			<li>
 				<a href='<%=request.getContextPath()%>/frontend/memberComment/addMemberComment.jsp'><input type="button" value="新增評論"></a>
 			</li>
-			<li><a href='getAllMemberComment.jsp'>List</a> all Comment. <br>
+			<li><a href='<%=request.getContextPath()%>/frontend/memberComment/getAllMemberComment.jsp'>List</a> all Comment. <br>
 			<li>                    
 				<form method="post" action="<%=request.getContextPath()%>/MemberCommentServlet.do">
 					<input type="text" name="memberCommentId" placeholder="請輸入會員評論編號" value="${param.memberCommentId}"/>

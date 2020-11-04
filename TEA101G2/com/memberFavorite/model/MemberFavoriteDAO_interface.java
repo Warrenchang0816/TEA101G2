@@ -9,4 +9,5 @@ public interface MemberFavoriteDAO_interface {
 	public MemberFavoriteVO findByPrimaryKey(String memberFavoriteId);
 	public List<MemberFavoriteVO> getAll();
 	public List<MemberFavoriteVO> getAllById(String memberFavoriteId);
+	public MemberFavoriteVO getMemberFavoriteStatus(String memberId, String spaceId);
 }

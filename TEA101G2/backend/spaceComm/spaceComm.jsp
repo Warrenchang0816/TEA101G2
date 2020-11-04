@@ -22,7 +22,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
-  <title>PANAGEA - Admin dashboard</title>
+  <title>場地評價</title>
 	
   <!-- Favicons-->
   <link rel="shortcut icon" href="img/favicon.ico" type="<%=request.getContextPath()%>/backend/image/x-icon">
@@ -95,6 +95,7 @@
 		<th>評論會員</th>
 		<th>評論</th>
 		<th>評價等級</th>
+		<th>評價狀態</th>
 					</tr>
 				</tr>
               </thead>
@@ -104,12 +105,13 @@
 		<th>評論會員</th>
 		<th>評論</th>
 		<th>評價等級</th>
+		<th>評價狀態</th>
 					</tr>
               </tfoot>
 			<tbody>
 <c:forEach var="spaceCommVO" items="${list}" begin="0" end="<%=list.size()%>">
 	<tr>
-		<td>${spaceCommVO.commDate}</td>
+		<td>${spaceCommVO.spaceCommentDate}</td>
 		<td>
 			<FORM METHOD="post" ACTION="<%=request.getContextPath()%>/MemberServlet" style="margin-bottom: 0px;">${spaceCommVO.memberId}
 				<button type="submit" class="btn btn-link">
@@ -118,19 +120,28 @@
 					  <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
 					</svg>
         		</button>
+        		<input type="hidden" name="spaceCommId"  value="${spaceCommVO.spaceCommentId}">
 			    <input type="hidden" name="memberId"  value="${spaceCommVO.memberId}">
 			    <input type="hidden" name="action"	value="backend_SelectOneMember"></FORM>
 		</td>
 		
 		
-		<td>${spaceCommVO.comm}</td>
+		<td>${spaceCommVO.spaceCommentContent}</td>
 		<td>
 			<div class="cat_star">
-				<c:forEach begin="1" end="${spaceCommVO.commLevel}">
+				<c:forEach begin="1" end="${spaceCommVO.spaceCommentLevel}">
 					<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 					<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
 					</svg>
 				</c:forEach>
+			</div>
+		</td>
+		<td>
+			<div class="styled-select">
+				<select size="1" name="spaceCommStatus" id="spaceCommStatus" onchange="javascript:return confirm('確認更改?');">
+					<option value = "Y" ${spaceCommVO == null ? "" : spaceCommVO.spaceCommStatus.equals("Y") ? "selected" : ""}>顯示</option>
+					<option value = "N" ${spaceCommVO == null ? "" : spaceCommVO.spaceCommStatus.equals("N") ? "selected" : ""}>隱藏</option>
+				</select>
 			</div>
 		</td>
 </c:forEach>
@@ -166,5 +177,50 @@
 	<!-- Custom scripts for this page-->
     <script src="<%=request.getContextPath()%>/backend/js/admin-datatables.js"></script>
 </body>
+
+<script>
+<%--
+function change() { 
+	
+    var doc; 
+    var result = confirm("Press a button!"); 
+    if (result == true) { 
+        doc = "OK was pressed."; 
+    } else { 
+        doc = "Cancel was pressed."; 
+    } 
+    document.getElementById("g").innerHTML = doc; 
+} 
+--%>
+$("td select").on("change", function() {
+	var spaceCommStatus = this.value;
+	console.log('spaceCommStatus:'+spaceCommStatus);
+	var spaceCommentId = $(this).parent().parent().parent().find('input').val();
+	console.log('spaceCommentId:'+spaceCommentId);
+	$.ajax({
+	    type: 'POST',
+	    url: '<%=request.getContextPath()%>/SpaceCommServletB',
+	    dataType: "json",
+	    data: {
+	    	action: 'backend_UpdateSpaceCommentStatus',
+	    	spaceCommentId: spaceCommentId,
+	    	spaceCommStatus: spaceCommStatus,
+	    },
+	    success: function(data) {
+	    },
+	})
+	<%--
+	var tableMemberId = document.getElementById('tableMemberId').value;
+	var table = document.getElementById('dataTable')
+	var getTBody = table.getElementsByTagName("tbody")[1];
+	var memberCommStatus = document.getElementById('memberCommStatus').value;
+	var value = this.value;
+    var $cell = $(this).parent();
+    var $row = $cell.parent();
+    alert("Selected ["+tableMemberId+"] in cell ["+$cell.index()+"] of row ["+$row.index()+"]");
+    --%>
+});
+
+</script>
 
 </html>

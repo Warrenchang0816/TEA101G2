@@ -20,7 +20,7 @@ LinkedList<String> errorMsgs = (LinkedList<String>) request.getAttribute("errorM
   <meta name="description" content="">
   <meta name="author" content="Ansonika">
   
-  <title>PANAGEA - Admin dashboard</title>
+  <title>員工變更密碼</title>
   
   <!-- Favicons-->
   <link rel="shortcut icon" href="<%=request.getContextPath()%>/backend/img/favicon.ico" type="image/x-icon">

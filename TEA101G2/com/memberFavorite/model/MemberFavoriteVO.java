@@ -6,12 +6,14 @@ public class MemberFavoriteVO {
 	private String memberFavoriteId;
 	private String memberId;
 	private String spaceId;
+	private String memberFavoriteStatus;
 	
 	public static class Builder {
 
 		private String memberFavoriteId = "";
 		private String memberId = "";
 		private String spaceId = "";
+		private String memberFavoriteStatus ="";
 	
 		public MemberFavoriteVO.Builder memberFavoriteId(String memberFavoriteId) {
 			this.memberFavoriteId = memberFavoriteId;
@@ -27,6 +29,11 @@ public class MemberFavoriteVO {
 			this.spaceId = spaceId;
 			return this;
 		}
+		
+		public MemberFavoriteVO.Builder memberFavoriteStatus(String memberFavoriteStatus) {
+			this.memberFavoriteStatus = memberFavoriteStatus;
+			return this;
+		}
 	
 	}
 
@@ -38,6 +45,7 @@ public class MemberFavoriteVO {
 		memberFavoriteId = builder.memberFavoriteId;
 		memberId = builder.memberId;
 		spaceId = builder.spaceId;
+		memberFavoriteStatus = builder.memberFavoriteStatus;
 	}
 	
 	public String getMemberFavoriteId() {
@@ -59,11 +67,17 @@ public class MemberFavoriteVO {
 		this.spaceId = spaceId;
 	}
 	
+	public String getMemberFavoriteStatus() {
+		return memberFavoriteStatus;
+	}
+
+	public void setMemberFavoriteStatus(String memberFavoriteStatus) {
+		this.memberFavoriteStatus = memberFavoriteStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "MemberFavoriteVO [memberFavoriteId=" + memberFavoriteId + ", memberId=" + memberId + ", spaceId="
 				+ spaceId + "]";
 	}
-
-	
 }

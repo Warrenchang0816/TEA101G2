@@ -8,14 +8,32 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import com.spaceDetail.model.SpaceDetailVO;
 
 public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 	
-	String driver = "oracle.jdbc.OracleDriver";
-	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	String userid = "TEA101G2";
-	String passwd = "TEA101G2";
+	//用DataSource連線
+	private static DataSource ds = null;
+	static {
+		try {
+			Context ctx = new InitialContext();
+			ds = (DataSource)ctx.lookup("java:comp/env/jdbc/TEA101G2");
+		}
+		catch(NamingException e){
+			e.printStackTrace();
+		}
+	}
+	
+	//用JDBC連線
+//	String driver = "oracle.jdbc.OracleDriver";
+//	String url = "jdbc:oracle:thin:@localhost:1521:XE";
+//	String userid = "TEA101G2";
+//	String passwd = "123456";
 	
 	private static final String INSERT_STMT =
 			"INSERT INTO SPACE_PHOTO VALUES ('SPACEPHOTO' || lpad(SPACE_PHOTO_ID_SEQ.NEXTVAL, 7, '0'),?,?)";
@@ -38,8 +56,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(INSERT_STMT);
 			
 			ptmt.setString(1, spacePhotoVO.getSpaceId());
@@ -47,9 +64,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 				
 			ptmt.executeUpdate();
 			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if(ptmt != null) {
@@ -75,17 +90,14 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 		PreparedStatement ptmt = null;
 
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(DELETE);
 			
 			ptmt.setString(1, spacePhotoId);
 			
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}catch (SQLException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			if (ptmt != null) {
@@ -111,8 +123,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 		PreparedStatement ptmt = null;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(UPDATE);
 			
 			ptmt.setString(1, spacePhotoVO.getSpaceId());
@@ -121,9 +132,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 
 			ptmt.executeUpdate();
 			
-		}catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}catch (SQLException e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			if (ptmt != null) {
@@ -152,8 +161,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 		SpacePhotoVO spacePhotoVO = new SpacePhotoVO();
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ONE_STMT);
 			
 			ptmt.setString(1, spacePhotoId);
@@ -165,9 +173,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 				spacePhotoVO.setSpacePhoto(rs.getBytes("SPACE_PHOTO"));
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 			if (rs != null) {
@@ -204,8 +210,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 		List<SpacePhotoVO> list = new ArrayList<SpacePhotoVO>();;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ALL_STMT);
 			
 			rs = ptmt.executeQuery();
@@ -218,9 +223,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 				list.add(spacePhotoVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
+			}catch (Exception e) {
 				e.printStackTrace();
 			}finally {
 				if (rs != null) {
@@ -257,8 +260,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 		List<SpacePhotoVO> list = new ArrayList<SpacePhotoVO>();;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_SPACE_STMT);
 			
 			ptmt.setString(1, spaceId);
@@ -273,9 +275,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 				list.add(spacePhotoVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
+			}catch (Exception e) {
 				e.printStackTrace();
 			}finally {
 				if (rs != null) {
@@ -312,8 +312,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 		List<SpacePhotoVO> list = new ArrayList<SpacePhotoVO>();;
 		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
+			con = ds.getConnection();
 			ptmt = con.prepareStatement(SELECT_ONE_SPACEPHOTO);
 			
 			ptmt.setString(1, spaceId);
@@ -328,9 +327,7 @@ public class SpacePhotoDAO implements SpacePhotoDAO_interface {
 				list.add(spacePhotoVO);
 			}
 
-			}catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
+			}catch (Exception e) {
 				e.printStackTrace();
 			}finally {
 				if (rs != null) {

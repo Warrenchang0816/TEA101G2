@@ -10,7 +10,11 @@ public interface OrderDetailDAOInterface {
 	public void update(OrderDetailVO orderDetailVO);
 	public OrderDetailVO selectOne(String orderDetailId);
 	public List<OrderDetailVO> selectAll();
+	//取所有相同spaceDetailId的OrderDetailVO
 	public List<OrderDetailVO> selectAllBySD(String spaceDetailId);
-//	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId);
+	//取所有相同orderMasterId的OrderDetailVO
+	public List<OrderDetailVO> selectAllByMasterId(String orderMasterId);
+	//遠征用
+	public String selectOneSPId(String orderMasterId);
 
 }
